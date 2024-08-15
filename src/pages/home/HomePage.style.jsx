@@ -17,7 +17,7 @@ justify-content: center;
 flex-direction: column;
 color: ${({fontColor})=> fontColor || 'white'};
 align-items: start;
-padding: 50px;
+padding: 200px; //50px
 /* gap: 20px; */
 line-height: 70px;
 
@@ -33,4 +33,11 @@ h1{
     padding: 50px;
 }
 
+`
+
+
+
+export const HomePageBody = styled.div`
+    width: 100%;
+    padding: 40px;
 `
