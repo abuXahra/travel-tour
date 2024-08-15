@@ -1,0 +1,292 @@
+[
+  {
+    "type": "location",
+    "subType": "AIRPORT",
+    "name": "NEZ PERCE COUNTY",
+    "detailedName": "LEWISTON/ID/US:NEZ PERCE COUNT",
+    "id": "ALWS",
+    "self": {
+      "href": "https://test.api.amadeus.com/v1/reference-data/locations/ALWS",
+      "methods": [
+        "GET"
+      ]
+    },
+    "timeZoneOffset": "-07:00",
+    "iataCode": "LWS",
+    "geoCode": {
+      "latitude": 46.37445,
+      "longitude": -117.0153
+    },
+    "address": {
+      "cityName": "LEWISTON",
+      "cityCode": "LWS",
+      "countryName": "UNITED STATES OF AMERICA",
+      "countryCode": "US",
+      "stateCode": "ID",
+      "regionCode": "NAMER"
+    },
+    "analytics": {
+      "travelers": {
+        "score": 0
+      }
+    }
+  },
+  {
+    "type": "location",
+    "subType": "CITY",
+    "name": "LEWISTON",
+    "detailedName": "LEWISTON/ID/US",
+    "id": "CLWS",
+    "self": {
+      "href": "https://test.api.amadeus.com/v1/reference-data/locations/CLWS",
+      "methods": [
+        "GET"
+      ]
+    },
+    "timeZoneOffset": "-07:00",
+    "iataCode": "LWS",
+    "geoCode": {
+      "latitude": 46.37445,
+      "longitude": -117.0153
+    },
+    "address": {
+      "cityName": "LEWISTON",
+      "cityCode": "LWS",
+      "countryName": "UNITED STATES OF AMERICA",
+      "countryCode": "US",
+      "stateCode": "ID",
+      "regionCode": "NAMER"
+    },
+    "analytics": {
+      "travelers": {
+        "score": 0
+      }
+    }
+  },
+  {
+    "type": "location",
+    "subType": "AIRPORT",
+    "name": "GREENBRIER VALLEY",
+    "detailedName": "LEWISBURG/WV/US:GREENBRIER VAL",
+    "id": "ALWB",
+    "self": {
+      "href": "https://test.api.amadeus.com/v1/reference-data/locations/ALWB",
+      "methods": [
+        "GET"
+      ]
+    },
+    "timeZoneOffset": "-04:00",
+    "iataCode": "LWB",
+    "geoCode": {
+      "latitude": 37.85806,
+      "longitude": -80.39916
+    },
+    "address": {
+      "cityName": "LEWISBURG",
+      "cityCode": "LWB",
+      "countryName": "UNITED STATES OF AMERICA",
+      "countryCode": "US",
+      "stateCode": "WV",
+      "regionCode": "NAMER"
+    },
+    "analytics": {
+      "travelers": {
+        "score": 0
+      }
+    }
+  },
+  {
+    "type": "location",
+    "subType": "CITY",
+    "name": "LEWISBURG",
+    "detailedName": "LEWISBURG/WV/US",
+    "id": "CLWB",
+    "self": {
+      "href": "https://test.api.amadeus.com/v1/reference-data/locations/CLWB",
+      "methods": [
+        "GET"
+      ]
+    },
+    "timeZoneOffset": "-04:00",
+    "iataCode": "LWB",
+    "geoCode": {
+      "latitude": 37.85806,
+      "longitude": -80.39916
+    },
+    "address": {
+      "cityName": "LEWISBURG",
+      "cityCode": "LWB",
+      "countryName": "UNITED STATES OF AMERICA",
+      "countryCode": "US",
+      "stateCode": "WV",
+      "regionCode": "NAMER"
+    },
+    "analytics": {
+      "travelers": {
+        "score": 0
+      }
+    }
+  },
+  {
+    "type": "location",
+    "subType": "AIRPORT",
+    "name": "GEORGE T. LEWIS",
+    "detailedName": "CEDAR KEY/FL/US:GEORGE T. LEWI",
+    "id": "ACDK",
+    "self": {
+      "href": "https://test.api.amadeus.com/v1/reference-data/locations/ACDK",
+      "methods": [
+        "GET"
+      ]
+    },
+    "timeZoneOffset": "-04:00",
+    "iataCode": "CDK",
+    "geoCode": {
+      "latitude": 29.13,
+      "longitude": -83.03
+    },
+    "address": {
+      "cityName": "CEDAR KEY",
+      "cityCode": "CDK",
+      "countryName": "UNITED STATES OF AMERICA",
+      "countryCode": "US",
+      "stateCode": "FL",
+      "regionCode": "NAMER"
+    }
+  },
+  {
+    "type": "location",
+    "subType": "CITY",
+    "name": "CEDAR KEY",
+    "detailedName": "CEDAR KEY/FL/US",
+    "id": "CCDK",
+    "self": {
+      "href": "https://test.api.amadeus.com/v1/reference-data/locations/CCDK",
+      "methods": [
+        "GET"
+      ]
+    },
+    "timeZoneOffset": "-04:00",
+    "iataCode": "CDK",
+    "geoCode": {
+      "latitude": 29.13,
+      "longitude": -83.03
+    },
+    "address": {
+      "cityName": "CEDAR KEY",
+      "cityCode": "CDK",
+      "countryName": "UNITED STATES OF AMERICA",
+      "countryCode": "US",
+      "stateCode": "FL",
+      "regionCode": "NAMER"
+    }
+  },
+  {
+    "type": "location",
+    "subType": "AIRPORT",
+    "name": "MUNICIPAL",
+    "detailedName": "LEWISTON AUBURN/ME/US:MUNICIPA",
+    "id": "ALEW",
+    "self": {
+      "href": "https://test.api.amadeus.com/v1/reference-data/locations/ALEW",
+      "methods": [
+        "GET"
+      ]
+    },
+    "timeZoneOffset": "-04:00",
+    "iataCode": "LEW",
+    "geoCode": {
+      "latitude": 44.04862,
+      "longitude": -70.28638
+    },
+    "address": {
+      "cityName": "LEWISTON AUBURN",
+      "cityCode": "LEW",
+      "countryName": "UNITED STATES OF AMERICA",
+      "countryCode": "US",
+      "stateCode": "ME",
+      "regionCode": "NAMER"
+    }
+  },
+  {
+    "type": "location",
+    "subType": "CITY",
+    "name": "LEWISTON AUBURN",
+    "detailedName": "LEWISTON AUBURN/ME/US",
+    "id": "CLEW",
+    "self": {
+      "href": "https://test.api.amadeus.com/v1/reference-data/locations/CLEW",
+      "methods": [
+        "GET"
+      ]
+    },
+    "timeZoneOffset": "-04:00",
+    "iataCode": "LEW",
+    "geoCode": {
+      "latitude": 44.04862,
+      "longitude": -70.28638
+    },
+    "address": {
+      "cityName": "LEWISTON AUBURN",
+      "cityCode": "LEW",
+      "countryName": "UNITED STATES OF AMERICA",
+      "countryCode": "US",
+      "stateCode": "ME",
+      "regionCode": "NAMER"
+    }
+  },
+  {
+    "type": "location",
+    "subType": "AIRPORT",
+    "name": "LEWIS UNIVERSITY",
+    "detailedName": "ROMEOVILLE/IL/US:LEWIS UNIVERS",
+    "id": "ALOT",
+    "self": {
+      "href": "https://test.api.amadeus.com/v1/reference-data/locations/ALOT",
+      "methods": [
+        "GET"
+      ]
+    },
+    "timeZoneOffset": "-05:00",
+    "iataCode": "LOT",
+    "geoCode": {
+      "latitude": 41.60584,
+      "longitude": -88.09388
+    },
+    "address": {
+      "cityName": "ROMEOVILLE",
+      "cityCode": "LOT",
+      "countryName": "UNITED STATES OF AMERICA",
+      "countryCode": "US",
+      "stateCode": "IL",
+      "regionCode": "NAMER"
+    }
+  },
+  {
+    "type": "location",
+    "subType": "CITY",
+    "name": "ROMEOVILLE",
+    "detailedName": "ROMEOVILLE/IL/US",
+    "id": "CLOT",
+    "self": {
+      "href": "https://test.api.amadeus.com/v1/reference-data/locations/CLOT",
+      "methods": [
+        "GET"
+      ]
+    },
+    "timeZoneOffset": "-05:00",
+    "iataCode": "LOT",
+    "geoCode": {
+      "latitude": 41.60584,
+      "longitude": -88.09388
+    },
+    "address": {
+      "cityName": "ROMEOVILLE",
+      "cityCode": "LOT",
+      "countryName": "UNITED STATES OF AMERICA",
+      "countryCode": "US",
+      "stateCode": "IL",
+      "regionCode": "NAMER"
+    }
+  }
+]
