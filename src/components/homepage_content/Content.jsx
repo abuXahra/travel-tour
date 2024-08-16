@@ -1,7 +1,7 @@
 
 
-import React from 'react'
-import { ContentInner, ContentWrapper, PackageBody, PackageContent, PackageImage, PackageSection } from './Content.style'
+import React, { useState } from 'react'
+import { ContentInner, ContentWrapper, PackageBody, PackageContent, PackageImage, PackageSection, SubFormWrapper, SubscriptForm, SubscriptionInner, SubscriptionWrapper, SubscriptPic } from './Content.style'
 import { FaArrowRight, FaChevronRight } from 'react-icons/fa'
 import packImage1 from '../../images/hotels/proxy-image1.jpg'
 import packImage2 from '../../images/hotels/proxy-image2.jpg'
@@ -14,6 +14,9 @@ import { hotelList } from '../../data/object/hotelList'
 import FlightPackage from '../Flight/flight_packages/FlightPackage'
 import FlightSlide from '../Flight/flight_packages/flight_slider/FlightSlider'
 import { FlightPackageList } from '../../data/object/flight_packagaes/FlightPackages'
+import subBg from '../../images/others/pexels-asadphoto-1450354.jpg'
+import Input from '../inputs/input/Input'
+import Button from '../button/Button'
 
 export default function Content() {
 
@@ -50,36 +53,26 @@ export default function Content() {
 
   const flightLists = FlightPackageList.slice(0, 2);
 
+  const packageflightLists = FlightPackageList.slice(0, 3);
+
+  const [subscribe, setSubscribe] = useState("");
+  const [subscribeError, setSubscribeError] = useState(false);
+
+  const onchangeSubcribe=(e)=>{
+      setSubscribe(e.target.value);
+      setSubscribeError(false)
+  }
+
+  const handleClick = (e) => {
+    e.preventDefault();
+     if(subscribe === null || subscribe === ""){
+        setSubscribeError(true);
+     }
+  }
+
   return (
     <ContentWrapper>
-       
-
-
-        {/* Flight Dealings Packages */}
-        <ContentInner>
-          <h3>Find great fare</h3>
-          <p>Wants to fly? choose from the package below and fly with Manzoair</p>            
-            <FlightSlide/>
-
-            <PackageSection>
-        {flightLists.map((item, i)=>(
-                <FlightPackage
-                    key={i}
-                    imgUrl={item.imgUrl}
-                    title={item.title}
-                    flightClass={item.flightClass}
-                    flightPrice={item.flightPrice}
-                    departDate={item.departDate}
-                    returnDate={item.returnDate}
-                    exploreUrl={item.exploreUrl}
-                    onClick={()=>navigate(item.flightUrl)}
-                  />
-              ))}
-          </PackageSection>
-          </ContentInner>
-    
-
-       
+              
         {/* Manzo Packages */}
         <ContentInner>
           <h3>Let's plan your next trip</h3>
@@ -91,10 +84,10 @@ export default function Content() {
                         <PackageImage bgImage={item.imgUrl}>
                         </PackageImage >
                         <PackageBody>
-                            <b><p>{item.title}</p></b>
+                            <p>{item.title}</p>
                             <hr />
                             <span>
-                              {item.calToAction}
+                             <b>{item.calToAction}</b> 
                               <FaChevronRight/>
                             </span>
                         </PackageBody>
@@ -132,7 +125,80 @@ export default function Content() {
             
             
 
+            
+        {/* Flight Dealings Packages */}
+        <ContentInner>
+          <h3>Find great fare</h3>
+          <p>Wants to fly? choose from the package below and fly with Manzoair</p>            
+            <FlightSlide/>
 
+            <PackageSection>
+        {flightLists.map((item, i)=>(
+                <FlightPackage
+                    key={i}
+                    imgUrl={item.imgUrl}
+                    title={item.title}
+                    flightClass={item.flightClass}
+                    flightPrice={item.flightPrice}
+                    departDate={item.departDate}
+                    returnDate={item.returnDate}
+                    exploreUrl={item.exploreUrl}
+                    scaling={'none'}
+                    onClick={()=>navigate(item.flightUrl)}
+                  />
+              ))}
+          </PackageSection>
+          </ContentInner>
+    
+
+
+               {/* Manzo Packages */}
+        <ContentInner>
+          <h3>Looking for a travel package?</h3>
+          <p>Save more and earn greater rewards when you patronize manzo travel packages.</p>            
+
+            <PackageSection>
+        {packageflightLists.map((item, i)=>(
+                <FlightPackage
+                    key={i}
+                    imgUrl={item.imgUrl}
+                    title={item.title}
+                    flightClass={item.flightClass}
+                    flightPrice={item.flightPrice}
+                    departDate={item.departDate}
+                    returnDate={item.returnDate}
+                    exploreUrl={item.exploreUrl}
+                    onClick={()=>navigate(item.flightUrl)}
+                  />
+              ))}
+          </PackageSection>
+          </ContentInner>
+
+
+
+              {/* Subscription */}
+            <ContentInner>
+                <SubscriptionWrapper>
+                  <SubscriptionInner>
+                    <SubscriptPic bg={subBg}></SubscriptPic>
+                    <SubscriptForm>
+                        <SubFormWrapper onSubmit={handleClick}>
+                            <h3>Don't miss a great deal</h3>
+                            <p>Stay one step ahead. Find the best value travel with the latest deals, tips and news.</p>
+                            <span>
+                              <Input
+                                value={subscribe}
+                                title={'Subcribe'}
+                                error={subscribeError} 
+                                onChange={onchangeSubcribe} 
+                                type={'text'}
+                                inputPadding={'15px'}/> 
+                              <Button text={'Subscribe'}/></span>
+                        </SubFormWrapper>
+                    </SubscriptForm>
+                  </SubscriptionInner> 
+                </SubscriptionWrapper>
+            </ContentInner>
     </ContentWrapper>
   )
 }

@@ -50,6 +50,7 @@ export default function FlightSlide() {
                         departDate={item.departDate}
                         returnDate={item.returnDate}
                         exploreUrl={item.exploreUrl}
+                        scaling={'none'}
                         onClick={()=>navigate(item.flightUrl)}
                       />         
                     ))

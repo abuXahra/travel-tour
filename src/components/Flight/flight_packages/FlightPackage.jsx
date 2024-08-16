@@ -13,12 +13,13 @@ export default function FlightPackage({
   departDate, 
   returnDate, 
   exploreUrl,
+  scaling,
   onClick
 }) {
 
 
   return (
-    <FlightPackageCard bgHeight={bgHeight} scaling='none'>
+    <FlightPackageCard bgHeight={bgHeight} scaling={scaling}>
     <FlightPackageBackground bg={imgUrl} className="background" >
         <FlightPackageOverlay>
             <PackageContent className="title">

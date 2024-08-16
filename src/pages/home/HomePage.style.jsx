@@ -18,8 +18,8 @@ flex-direction: column;
 color: ${({fontColor})=> fontColor || 'white'};
 align-items: start;
 padding: 200px; //50px
-/* gap: 20px; */
-line-height: 70px;
+gap: 20px; 
+// line-height: 70px;
 
 h4{
     font-size: 25px;
@@ -31,6 +31,7 @@ h1{
 @media (max-width:768px) {
     height: auto;
     padding: 50px;
+    gap: 20px; 
 }
 
 `

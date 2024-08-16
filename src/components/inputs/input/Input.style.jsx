@@ -19,7 +19,7 @@ export const InputLabel = styled.label`
 export const InputStyle = styled.input`
     border: 1px solid #0d398420; 
     border-radius: 10px;
-    padding: 10px;
+    padding: ${({inputPadding})=>inputPadding || '10px'};
     width: 100%;
 
     &:focus {
