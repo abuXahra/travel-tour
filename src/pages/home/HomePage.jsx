@@ -32,8 +32,8 @@ export default function HomePage() {
       </HeroSection>
 
     {/* BODY */}
-      <HomePageBody>
-        <Content ref={bodyRef}/>
+      <HomePageBody ref={bodyRef}>
+        <Content />
       </HomePageBody>
       
     </HomePageWrapper>

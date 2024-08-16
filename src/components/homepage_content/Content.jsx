@@ -13,7 +13,7 @@ import HotelCard from '../hotel_components/hotel_card/HotelCard'
 import { hotelList } from '../../data/object/hotelList'
 import FlightPackage from '../Flight/flight_packages/FlightPackage'
 import FlightSlide from '../Flight/flight_packages/flight_slider/FlightSlider'
-import { FlightPackageList } from '../../data/object/flight_packagaes/FlightPackages'
+import { FlightPackageList, FlightPackageList2 } from '../../data/object/flight_packagaes/FlightPackages'
 import subBg from '../../images/others/pexels-asadphoto-1450354.jpg'
 import Input from '../inputs/input/Input'
 import Button from '../button/Button'
@@ -53,7 +53,7 @@ export default function Content() {
 
   const flightLists = FlightPackageList.slice(0, 2);
 
-  const packageflightLists = FlightPackageList.slice(0, 3);
+  // const packageflightLists = FlightPackageList.slice(0, 3);
 
   const [subscribe, setSubscribe] = useState("");
   const [subscribeError, setSubscribeError] = useState(false);
@@ -158,7 +158,7 @@ export default function Content() {
           <p>Save more and earn greater rewards when you patronize manzo travel packages.</p>            
 
             <PackageSection>
-        {packageflightLists.map((item, i)=>(
+        {FlightPackageList2.map((item, i)=>(
                 <FlightPackage
                     key={i}
                     imgUrl={item.imgUrl}
@@ -193,7 +193,8 @@ export default function Content() {
                                 onChange={onchangeSubcribe} 
                                 type={'text'}
                                 inputPadding={'15px'}/> 
-                              <Button text={'Subscribe'}/></span>
+                                <div> <Button text={'Subscribe'}/></div>
+                             </span>
                         </SubFormWrapper>
                     </SubscriptForm>
                   </SubscriptionInner> 

@@ -23,10 +23,10 @@ export const ContentInner = styled.div`
     flex-direction: column;
     gap: 30px;
    
-    h3{
-        font-size: 40px;
-        color: #0D3984;
-    }
+    // h3{
+    //     font-size: 40px;
+    //     color: #0D3984;
+    // }
 `
 
 export const PackageSection = styled.div`
@@ -151,6 +151,12 @@ export const SubFormWrapper = styled.form`
     span{
         display: flex;
         gap: 5px;
+        align-items: start;
+        justify-content: start;
+
+        div{
+            margin-top: 3px;
+        }
     }
 `
  
