@@ -73,7 +73,7 @@ export const menuItems = [
     submenu: [
       {
         subTile: "Packages",
-        href: "#",
+        href: "/tour-packages",
       },
       {
         subTile: "Manage Bookings",

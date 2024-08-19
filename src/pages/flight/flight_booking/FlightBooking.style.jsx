@@ -6,9 +6,7 @@ export const FlightWrapper = styled.div`
     display: flex;
     flex-direction: column;
     height: auto;
-    width: 100%;
-
-    
+    width: 100%;   
 `
 
 
