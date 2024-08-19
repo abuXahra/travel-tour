@@ -139,7 +139,8 @@ export const SubscriptForm = styled.div`
 
 
 export const SubFormWrapper = styled.form`
-    display: flex;
+
+    display: none;
     flex-direction: column;
     gap: 20px;
     padding: 0px 100px;
