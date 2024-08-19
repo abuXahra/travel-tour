@@ -28,25 +28,25 @@ export default function Content() {
       title: 'An unforgettable holiday in Dubai',
       imgUrl: packImage1,
       calToAction: 'Book now',
-      link: '/holiday-in-dubai'
+      link: 'dubai-holiday'
     },
     {
-      title: 'Your perfect holiday await',
+      title: 'Your perfect Tour Packages await',
       imgUrl: packImage2,
       calToAction: 'Book a package',
-      link: '/packages'
+      link: 'packages'
     },
     {
       title: 'Elevate your experience',
       imgUrl: packImage3,
       calToAction: 'Purchase Addons',
-      link: '/holiday-in-dubai'
+      link: 'holiday-in-dubai'
     },
     {
       title: 'Travel Requirements',
       imgUrl: packImage4,
       calToAction: 'Find out more',
-      link: '/travel-requirements'
+      link: 'travel-requirements'
     },
   ]
 
@@ -185,16 +185,15 @@ export default function Content() {
                         <SubFormWrapper onSubmit={handleClick}>
                             <h3>Don't miss a great deal</h3>
                             <p>Stay one step ahead. Find the best value travel with the latest deals, tips and news.</p>
-                            <span>
-                              <Input
+                                 <Input
                                 value={subscribe}
                                 title={'Subcribe'}
                                 error={subscribeError} 
                                 onChange={onchangeSubcribe} 
                                 type={'text'}
-                                inputPadding={'15px'}/> 
-                                <div> <Button text={'Subscribe'}/></div>
-                             </span>
+                                inputPadding={'15px'}/>
+                              <span> <Button text={'Subscribe'}/></span>
+                     
                         </SubFormWrapper>
                     </SubscriptForm>
                   </SubscriptionInner> 

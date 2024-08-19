@@ -11,6 +11,7 @@ export default function BookingHeaderContent({
   checkInOnClickFunc, checkInBtBorder,
   flightStatusOnClickFunc, flightStatusBtBorder,
   stopOverOnClickFunc, stopOverBtBorder,
+  showItems,
 }) {
 
 
@@ -48,51 +49,13 @@ export default function BookingHeaderContent({
     },
   ]
 
-   // FlightItems
-   const FlightItems2 = [
-    {
-      title: 'Hotel',
-      onClickFunc: '#',
-      Icon: <MdFlightTakeoff/>,
-      bgColor: '',
-      border: 'none'
-    },
-    {
-      title: 'Stop-over',
-      onClickFunc: '/hotel-reservation',
- 
-      bgColor: 'none',
-      border: 'none'
-    },
-    {
-      title: 'Car',
-      onClickFunc: '/visa',
-
-      bgColor: 'none',
-      border: "none"
-    },
-    {
-      title: 'Holiday',
-      onClickFunc: '/visa',
-   
-      bgColor: 'none',
-      border: "none"
-    },
-    {
-      title: 'Umrah',
-      onClickFunc: '/visa',
-
-      bgColor: 'none',
-      border: "none"
-    }
-  ]
 
 
   return (
     <ContentSubHeader>
-      <div>
+  {  showItems &&  <div>
             {/* FlightITEMS */}
-    {
+    { 
       FlightItems.map((item, i)=>(
           <BookingIcons
             key={i}
@@ -104,7 +67,7 @@ export default function BookingHeaderContent({
       />
       ))
     }  
-      </div>
+      </div>}
       <div>
         <GeneralHeaders backgroundColor={'transparent'} displayInMobile={'flex'} gapInMobile={'15px'}/>
       </div>

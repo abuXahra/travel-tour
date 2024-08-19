@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import HeroSection from '../../../components/hero/HeroSection'
 import heroImage from '../../../images/travelunsplash.jpg'
-import { ContentMain, ContentSubHeader, DestinationWrapper, FlightDepartWrapper, FlightDepatWrapContent, FlightForm, FlightFormSection, FlightFormSectionContent, FlightFormSectionTitle, FlightInputAndDropDown, FlightInputContainer, FlightInputWrapper, FlightPassengerClass, FlightPassengerContent, FlightPassengerWrapper, FlightType, Flightwrapper, FlightWrapper, FormWrapper, Label, LocationDropdownWrapper, PassengerWrapper, RadioCheck, RadioItem, RadioItemWrapper, RoundTripImg, TakeOffWrapper } from './FlightBooking.style'
+import { BodyContent, ContentMain, ContentSubHeader, DestinationWrapper, FlightDepartWrapper, FlightDepatWrapContent, FlightForm, FlightFormSection, FlightFormSectionContent, FlightFormSectionTitle, FlightInputAndDropDown, FlightInputContainer, FlightInputWrapper, FlightPassengerClass, FlightPassengerContent, FlightPassengerWrapper, FlightType, Flightwrapper, FlightWrapper, FormWrapper, Label, LocationDropdownWrapper, PassengerWrapper, RadioCheck, RadioItem, RadioItemWrapper, RoundTripImg, TakeOffWrapper } from './FlightBooking.style'
 import { FormWrapperContainer } from '../../../components/booking_icons/form_wrapper/FormWrapper.style'
 import MulticitySearchForm from './multi_city/MulticitySearchForm'
 import { FaCircle } from 'react-icons/fa'
@@ -12,6 +12,7 @@ import StopOver from './stop_over/StopOver';
 import ManageBooking from './manage_booking/ManageBooking'
 import FlightCheckin from './checkin.jsx/FlightCheckin'
 import FlightStatus from './flight_status/FlightStatus'
+import Content from '../../../components/homepage_content/Content'
 
 export default function FlightBooking() {  
 
@@ -211,6 +212,7 @@ const handleClick = (type)=>{
                 flightStatusBtBorder ={flightStatusBtBorder}
                 stopOverOnClickFunc ={()=>handleClick('stop over')} 
                 stopOverBtBorder ={stopOverBtBorder}
+                showItems={true}
            />
       <FormWrapperContainer>    
       <FormWrapper>    
@@ -259,6 +261,12 @@ const handleClick = (type)=>{
       </HeroSection>
 
 {/* =============================Body Content==================== */}
+
+<BodyContent> 
+  <Content/>
+
+</BodyContent>
+
     </FlightWrapper>
 )}
 

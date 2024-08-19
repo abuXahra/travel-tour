@@ -297,6 +297,7 @@ export const PassengerWrapper = styled.div`
         display: flex;
         flex-direction: column;
         gap: 20px;
+        z-index: 999;
 
 `
 
@@ -311,3 +312,11 @@ export const DestinationWrapper = styled.div`
                 position: relative;
 `
 
+
+export const BodyContent = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 40px;
+`

@@ -39,6 +39,7 @@ import VissaSuccess from "./pages/visa/visa_success/VissaSuccess";
 import VisaOverview from "./pages/visa/visa_overview/VisaOverview";
 import VisaEdit from "./pages/visa/visa_edit/VisaEdit";
 import HomePage from "./pages/home/HomePage";
+import DubaiHoliday from "./pages/flight/dubai_holiday/DubaiHoliday";
 
 function App() {
   return (
@@ -100,6 +101,9 @@ function App() {
             <Route path="/visa-overview" element={<VisaOverview />} />
             <Route path="/edit-visa" element={<VisaEdit />} />
             <Route path="/visa-success" element={<VissaSuccess />} />
+
+            {/* Other routes */}
+            <Route path="/dubai-holiday" element={<DubaiHoliday />} />
           </Routes>
           <Footer />
         </ScrollToTop>

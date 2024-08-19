@@ -9,7 +9,7 @@ export const FormWrapperContainer = styled.div`
     padding: 15px 20px 20px 20px;
     border-radius: 10px;
     border-top-left-radius: ${({tLeftRadius}) => tLeftRadius || '0px'};
-    border-top-right-radius: ${({tLeftRadius}) => tLeftRadius || '0px'};
+    border-top-right-radius: ${({tRightRadius}) => tRightRadius || '0px'};
 
 @media (max-width:768px) {
     padding: 20px;

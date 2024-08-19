@@ -142,22 +142,12 @@ export const SubFormWrapper = styled.form`
 
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     padding: 0px 100px;
+
 
     p{
         font-size: 20px;
-    }
-
-    span{
-        display: flex;
-        gap: 5px;
-        align-items: start;
-        justify-content: start;
-
-        div{
-            margin-top: 3px;
-        }
     }
 `
  
