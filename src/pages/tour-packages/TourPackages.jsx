@@ -7,6 +7,8 @@ import { FaChevronRight, FaLongArrowAltDown } from 'react-icons/fa'
 import Button from '../../components/button/Button'
 import { BodyContent } from '../flight/flight_booking/FlightBooking.style'
 import PackageCard from './components/PackageCard'
+import { ButtonWrapper } from '../flight/dubai_holiday/DubaiHoliday.style'
+import { TourPackagesList } from '../../data/object/TourPackages'
 
 export default function TourPackages() {
 
@@ -39,17 +41,17 @@ export default function TourPackages() {
             Escape to sunny shores or immerse in city life in your favourite destinations. Take advantage of great offers on flights plus hotel packages.
         </p>
             <TourPackagesItems>
-                     <PackageCard/>
-                     <PackageCard/>
-                     <PackageCard/>
-                     <PackageCard/>
-                     <PackageCard/>
-                     <PackageCard/>
-                     <PackageCard/>
-                     <PackageCard/>
-                     <PackageCard/>
+                {TourPackagesList.map((item, i)=>(
+                    <PackageCard
+                        title={item.title}
+                        price={item.price}
+                        imgUrl={item.imgUrl}
+                        onClick={item.onClick}
+                    />
+                ))}
             </TourPackagesItems>
-            <span><Button text={'More Packages'} rightIcon={<FaChevronRight/>} onClick={()=>{}}/></span>
+            <ButtonWrapper justify={'flex-end'}><span><Button text={'More Packages'} rightIcon={<FaChevronRight/>} onClick={()=>{}}/></span></ButtonWrapper>
+            
         </BodyContent>
 
     </TourWrapper>
