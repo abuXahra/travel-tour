@@ -46,7 +46,7 @@ export default function Content() {
       title: 'Travel Requirements',
       imgUrl: packImage4,
       calToAction: 'Find out more',
-      link: 'travel-requirements.'
+      link: 'travel-requirements'
     },
   ]
 

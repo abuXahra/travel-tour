@@ -1,0 +1,28 @@
+export const TravelDocumentTypeList = [
+  { value: "", title: "Select" },
+  { value: "passport", title: "Passport" },
+  { value: "visa", title: "Visa" },
+  { value: "id_card", title: "ID Card" },
+  { value: "driver_license", title: "Driver License" },
+  { value: "residency_permit", title: "Residency Permit" },
+  { value: "national_id", title: "National ID" },
+  { value: "e_residence", title: "E-Residency Card" },
+  { value: "diplomatic_passport", title: "Diplomatic Passport" },
+  { value: "military_id", title: "Military ID" },
+  { value: "refugee_travel_document", title: "Refugee Travel Document" },
+  { value: "stateless_persons_document", title: "Stateless Persons Document" },
+  {
+    value: "travel_document_for_asylum_seekers",
+    title: "Travel Document for Asylum Seekers",
+  },
+  { value: "service_passport", title: "Service Passport" },
+  { value: "temporary_residence_permit", title: "Temporary Residence Permit" },
+  { value: "permanent_residence_permit", title: "Permanent Residence Permit" },
+  { value: "entry_permit", title: "Entry Permit" },
+  { value: "exit_permit", title: "Exit Permit" },
+  { value: "student_id", title: "Student ID" },
+  { value: "employee_id", title: "Employee ID" },
+  { value: "health_card", title: "Health Card" },
+  { value: "travel_authorization", title: "Travel Authorization (e.g., ESTA)" },
+  // Add more document types as needed
+];

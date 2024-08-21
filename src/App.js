@@ -41,6 +41,7 @@ import VisaEdit from "./pages/visa/visa_edit/VisaEdit";
 import HomePage from "./pages/home/HomePage";
 import DubaiHoliday from "./pages/flight/dubai_holiday/DubaiHoliday";
 import TourPackages from "./pages/tour-packages/TourPackages";
+import TravelRequirement from "./pages/travel-requirement/TravelRequirement";
 
 function App() {
   return (
@@ -106,6 +107,10 @@ function App() {
             {/* Other routes */}
             <Route path="/dubai-holiday" element={<DubaiHoliday />} />
             <Route path="/tour-packages" element={<TourPackages />} />
+            <Route
+              path="/travel-requirements"
+              element={<TravelRequirement />}
+            />
           </Routes>
           <Footer />
         </ScrollToTop>

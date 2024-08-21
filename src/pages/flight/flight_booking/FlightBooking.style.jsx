@@ -317,4 +317,8 @@ export const BodyContent = styled.div`
     flex-direction: column;
     gap: 30px;
     padding: 40px;
+
+    p{
+        line-height: 25px;
+    }
 `
