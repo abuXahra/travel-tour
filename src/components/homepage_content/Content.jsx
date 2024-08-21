@@ -34,7 +34,7 @@ export default function Content() {
       title: 'Your perfect Tour Packages await',
       imgUrl: packImage2,
       calToAction: 'Book a package',
-      link: 'packages'
+      link: 'tour-packages'
     },
     {
       title: 'Elevate your experience',
@@ -46,7 +46,7 @@ export default function Content() {
       title: 'Travel Requirements',
       imgUrl: packImage4,
       calToAction: 'Find out more',
-      link: 'travel-requirements'
+      link: 'travel-requirements.'
     },
   ]
 
