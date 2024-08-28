@@ -187,10 +187,10 @@ export default function Content() {
                             <p>Stay one step ahead. Find the best value travel with the latest deals, tips and news.</p>
                                  <Input
                                 value={subscribe}
-                                title={'Subcribe'}
+                                title={'Your email'}
                                 error={subscribeError} 
                                 onChange={onchangeSubcribe} 
-                                type={'text'}
+                                type={'email'}
                                 inputPadding={'15px'}/>
                               <span> <Button text={'Subscribe'}/></span>
                      

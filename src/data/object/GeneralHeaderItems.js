@@ -34,7 +34,7 @@ export const GeneralHeaderItems = [
   },
   {
     title: "Tour Package",
-    onClickFunc: "/packages",
+    onClickFunc: "/tour-packages",
     Icon: <FiPackage />,
     bgColor: "none",
     border: "none",

@@ -64,7 +64,7 @@ export const PackageImage = styled.div`
   border-top-left-radius: 20px;
   @media (max-width:768px) {
     height: 300px;
-  
+        
     }
 
 `
@@ -103,12 +103,26 @@ export const SubscriptionWrapper = styled.div`
        border-radius: 20px;
        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 
+       @media (max-width:768px) {
+            height: auto;
+  
+    }
+       
+
 `
 
 export const SubscriptionInner = styled.div`
            width: 100%;
            height: 100%; 
            display: flex;
+           justify-content: start;
+           align-items: start;
+
+           @media (max-width:768px) {
+                 flex-direction: column;
+                 gap: 20px;
+  
+             }
       
 `
 
@@ -122,6 +136,13 @@ export const SubscriptPic = styled.div`
                 background-position: center; /* Centers the background image */
                 background-repeat: no-repeat; 
                 width: 40%;
+
+                @media (max-width:768px) {
+                     height: 200px;
+                     width: 100%;
+                     border-top-right-radius: 20px;
+                     border-bottom-left-radius: 0px;
+                 }
 `
 
 export const SubscriptForm = styled.div`
@@ -134,6 +155,12 @@ export const SubscriptForm = styled.div`
              display: flex;
              justify-content: center;
              align-items: center;
+
+             @media (max-width:768px) {
+                     width: 100%;
+                     border-bottom-left-radius: 20px;
+                     padding-bottom: 20px;
+                 }
 `
 
 
@@ -147,7 +174,14 @@ export const SubFormWrapper = styled.form`
 
 
     p{
-        font-size: 20px;
+        font-size: 16px;
+        line-height: 20px;
     }
+
+    @media (max-width:768px) {
+        padding: 0px 20px;
+  
+    }
+
 `
  

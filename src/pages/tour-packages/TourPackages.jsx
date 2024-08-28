@@ -28,7 +28,7 @@ export default function TourPackages() {
             <TourSection>
                 <TourSectionTitle>
                     <h4>Travel & Tour packages</h4>
-                    <h1>Choose from Manzo exlusive tour packages</h1>
+                    <h1>Choose from our exclusive tour packages</h1>
                    <span><Button onClick={()=>handleBodyRef(bodyRef)} text={'Learn more'} rightIcon={<FaLongArrowAltDown />} bgColor={'transparent'} btnBorder={'2px solid white'}/></span>   
                 </TourSectionTitle>
             </TourSection>

@@ -9,13 +9,14 @@ import FormWrapper from '../../components/booking_icons/form_wrapper/FormWrapper
 import HotelForm from '../../components/hotel_components/hotel_form/hotel_form/hotel_form/hotel_form/HotelForm';
 import taxiBg from '../../images/cab.png'
 import { useNavigate } from 'react-router-dom';
-import { RadioCheck, RadioItem, RadioItemWrapper } from '../flight/flight_booking/FlightBooking.style';
+import { BodyContent, RadioCheck, RadioItem, RadioItemWrapper } from '../flight/flight_booking/FlightBooking.style';
 import { FaCircle, FaHotel, FaTaxi } from 'react-icons/fa';
 import TaxiForm from '../../components/taxi/TaxiForm';
 import { MdFlightTakeoff } from 'react-icons/md';
 import { RiVisaFill } from 'react-icons/ri';
 import { FiPackage } from 'react-icons/fi';
 import GeneralHeaders from '../../components/booking_icons/book_sub_header/booking_general_headers/GeneralHeaders';
+import Content from '../../components/homepage_content/Content';
 
 export default function Taxi() {
   const navigate = useNavigate();
@@ -300,58 +301,9 @@ const handleToAirport = ()=>{
       </HeroSection>
 
     {/* Taxi Body */}
-    <TaxiBody>
-      
-{/* Taxi Category */}
-      {/* <Section>
-        <h2>Taxi Categories</h2>
-            <TaxiSlide/>
-      </Section>
-    */}
-
-
-
-        {/* List of Taxis */}   
-        {/* <Section>
-          <SpaceBetweenContent>
-            <h2>Accommodation Visitors Love</h2> <a href='/'>Explore </a>
-          </SpaceBetweenContent>
-            <TaxiContentWrapper>
-                {
-                    TaxiList.map((item, i)=>(
-                      <TaxiCard 
-                        key={i} 
-                        imgUrl={item.imgUrl}
-                        title={item.title}
-                        subTitle={item.subTitle}
-                        rating={item.rating}
-                        reviewCount={item.reviewCount}
-                        price={item.price}
-                      />         
-                    ))
-                  } 
-           </TaxiContentWrapper> 
-          </Section> */}
-
-     
-
-
-
-        {/* Destination Taxi */}   
-        {/* <Section>
-        <h2>Popular Destination Taxis</h2>       
-           <TaxiContentWrapper>
-            <TaxiDestination imgUrl={riyad} title={'Riyad'}/>
-            <TaxiDestination imgUrl={trav} title={'dubai'}/>
-           </TaxiContentWrapper>
-           
-           <TaxiContentWrapper>
-              <TaxiDestination imgUrl={riyad} title={'Riyad'} bgHeight={'300px'}/>
-              <TaxiDestination imgUrl={trav} title={'dubai'} bgHeight={'300px'}/>
-              <TaxiDestination imgUrl={trav} title={'dubai'} bgHeight={'300px'}/>
-           </TaxiContentWrapper>
-          </Section>  */}
-      </TaxiBody>
+    <BodyContent>
+      <Content/>
+    </BodyContent>
   </TaxiWrapper>
   )
 }
