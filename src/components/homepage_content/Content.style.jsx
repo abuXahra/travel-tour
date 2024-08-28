@@ -160,7 +160,6 @@ export const SubscriptForm = styled.div`
                      width: 100%;
                      border-bottom-left-radius: 20px;
                      padding-bottom: 20px;
-                     padding-top: 20px;
                  }
 `
 
