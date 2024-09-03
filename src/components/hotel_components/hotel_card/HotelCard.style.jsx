@@ -112,7 +112,9 @@ export const CardContent = styled.div`
 `
 
 export const IoIosCheckmarkCircleStyled = styled(IoIosCheckmarkCircleOutline)`
-  color: red;
+  color: blue;
+  height: 25px;
+  width: 25px;
 `
 
 export const CardTitle = styled.div`
