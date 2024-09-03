@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import himage from '../../../images/hotel-bg.png'
-import { CardContent, CardImage, CardPrice, CardRating, CardSubTitle, CardTitle, HotelCardWrapper } from './HotelCard.style'
+import { CardContent, CardImage, CardPrice, CardRating, CardSubTitle, CardTitle, FCardAdded, HotelCardWrapper, IoIosCheckmarkCircleStyled, SafeInfo } from './HotelCard.style'
 import { MdOutlineFavorite } from 'react-icons/md'
 import { GrFavorite } from 'react-icons/gr'
 
@@ -24,6 +24,16 @@ export default function HotelCard({imgUrl, title, subTitle, rating, reviewCount,
           <span onClick={handleFavorite}>
               <MdOutlineFavorite />
           </span>
+          
+          {/* Added to favorite card */}
+          <FCardAdded onClick={()=>{}}>
+            <div>Saved to: <b>My next trip</b> </div>
+            <hr/>
+            <div><IoIosCheckmarkCircleStyled /> My next trip</div>
+          </FCardAdded>
+
+
+
         </CardImage>
         <CardContent>
             <CardTitle>
@@ -38,6 +48,11 @@ export default function HotelCard({imgUrl, title, subTitle, rating, reviewCount,
               Starting from <b>NGN {price}</b>
             </CardPrice>
         </CardContent>
+
+        {/* save info*/}
+        <SafeInfo>
+          Save
+        </SafeInfo>
     </HotelCardWrapper>
   )
 }

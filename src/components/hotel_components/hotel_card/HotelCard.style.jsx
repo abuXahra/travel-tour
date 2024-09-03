@@ -1,3 +1,4 @@
+import { IoIosCheckmarkCircleOutline } from "react-icons/io"
 import styled from "styled-components"
 
 export const HotelCardWrapper = styled.div`
@@ -9,6 +10,7 @@ export const HotelCardWrapper = styled.div`
            flex-direction: column;
            border-radius: 10px;
            padding: 1px;
+           position: relative;
       @media (max-width:768px) {
         width: 100%;
   
@@ -52,12 +54,65 @@ export const CardImage = styled.div`
   }
 `
 
+export const FCardAdded = styled.div`
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 10px;
+      position: absolute;
+      width: auto;
+      top: 45px;
+      right:25px;
+      background-color: white;
+      height: auto;
+      border-radius: 10px;
+      border-top-right-radius: 0px;
+
+      div{
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+        font-size: 12px;
+        width: 100%;
+        cursor: pointer;
+
+        b{
+          color: blue;
+          
+          &:hover{
+            text-decoration: underline;
+          }
+        }
+      }
+    `
+
+
+export const SafeInfo = styled.div`
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #232323;
+  color: white;
+  font-size: 12px;
+  border-radius: 5px;
+  position: absolute;
+  padding: 5px;
+  right: 0px;
+  top: -25px;
+  z-index: 1000px;
+`
+
 export const CardContent = styled.div`
      display: flex;
      flex-direction: column;
      gap: 20px;
      padding: 20px;
     
+`
+
+export const IoIosCheckmarkCircleStyled = styled(IoIosCheckmarkCircleOutline)`
+  color: red;
 `
 
 export const CardTitle = styled.div`
