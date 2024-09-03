@@ -138,7 +138,7 @@ export const SocialIconsContent =styled.div`
             justify-content: center;
             align-items: center;
             padding: 10px;
-          
+            cursor: pointer;
             border-radius: 50%;
             border: 1px solid black;
         }
