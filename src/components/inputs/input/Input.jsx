@@ -3,7 +3,7 @@
 
 import { InputError, InputLabel, InputStyle, InputWrapper } from './Input.style'
 
-export default function Input({title, value, error, onChange, requiredSymbol, InputWidth, type, maxLength, label, inputPadding}) {
+export default function Input({title, value, error, onChange, requiredSymbol, InputWidth, type, maxLength, label, inputPadding, placeholder}) {
 
   return (
                 <InputWrapper InputWidth={InputWidth}>
@@ -11,7 +11,7 @@ export default function Input({title, value, error, onChange, requiredSymbol, In
                     <InputStyle
                     inputPadding={inputPadding} 
                         type={type} 
-                        placeholder={''} 
+                        placeholder={placeholder} 
                         value={value}
                         onChange={onChange}
                         maxLength={maxLength}

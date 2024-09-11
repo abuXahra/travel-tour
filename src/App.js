@@ -42,16 +42,23 @@ import HomePage from "./pages/home/HomePage";
 import DubaiHoliday from "./pages/flight/dubai_holiday/DubaiHoliday";
 import TourPackages from "./pages/tour-packages/TourPackages";
 import TravelRequirement from "./pages/travel-requirement/TravelRequirement";
+import HideNavbar from "./components/hidenavbar/HideNavbar";
+import Register from "./pages/auth/register/Register";
 
 function App() {
   return (
     <div>
       <Router>
         <ScrollToTop>
-          <Header />
+          {/*hide header for login page */}
+          <HideNavbar>
+            <Header />
+          </HideNavbar>{" "}
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/reset" element={<passwordReset />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/visa" element={<Visa />} />
             <Route path="/affiliate" element={<Affiliate />} />
@@ -112,7 +119,10 @@ function App() {
               element={<TravelRequirement />}
             />
           </Routes>
-          <Footer />
+          {/*hide header for login page */}
+          <HideNavbar>
+            <Footer />
+          </HideNavbar>
         </ScrollToTop>
       </Router>
     </div>
