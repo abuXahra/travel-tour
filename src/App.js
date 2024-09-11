@@ -44,6 +44,7 @@ import TourPackages from "./pages/tour-packages/TourPackages";
 import TravelRequirement from "./pages/travel-requirement/TravelRequirement";
 import HideNavbar from "./components/hidenavbar/HideNavbar";
 import Register from "./pages/auth/register/Register";
+import PasswordReset from "./pages/auth/password_reset/PasswordReset";
 
 function App() {
   return (
@@ -58,7 +59,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/reset" element={<passwordReset />} />
+            <Route path="/reset" element={<PasswordReset />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/visa" element={<Visa />} />
             <Route path="/affiliate" element={<Affiliate />} />

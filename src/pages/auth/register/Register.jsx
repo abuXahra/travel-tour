@@ -114,32 +114,17 @@ const handleSubmit = (e)=>{
               placeholder={'**********'}              
           />
 
-        {/* Checkboxe */}
-           <CallToAction>
-                <div>
-                <Checkbox
-                    checkboxId={'password'}
-                    isChecked={isChecked}
-                    handleCheckboxChange={handleCheckboxChange}
-                    checkboxMessage={'Keep me logged in on this device'}
-                    isValid={isValid}
-                />
-                    {/* <input type="checkbox" id="password" />
-                    <span>Keep me logged in on this device</span> */}
-                 </div>
-                    <span><a href="resetpassword.html">Forget Password</a></span>
-            </CallToAction>
+                 
             
             
-            
-            {/* login button */}
+            {/* Register button */}
             <div>
-                <Button text={'Login'}  rightIcon={''}/>
+                <Button text={'Register'}  rightIcon={''}/>
             </div>
 
 
 
-            <CallToAction>Not yet registered? <a href="signup.html"> Create Account here</a></CallToAction>
+            <CallToAction>Already registered? <a href="/login"> Sign In here</a></CallToAction>
         </AuthFormWrapper>
     </AuthWrapper>
   )
