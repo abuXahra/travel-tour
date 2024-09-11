@@ -45,6 +45,7 @@ import TravelRequirement from "./pages/travel-requirement/TravelRequirement";
 import HideNavbar from "./components/hidenavbar/HideNavbar";
 import Register from "./pages/auth/register/Register";
 import PasswordReset from "./pages/auth/password_reset/PasswordReset";
+import Contact from "./pages/contact/Contact";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/visa" element={<Visa />} />
             <Route path="/affiliate" element={<Affiliate />} />
+            <Route path="/contact" element={<Contact />} />
 
             {/* Flight Routes */}
             <Route path="/flight-booking" element={<FlightBooking />} />

@@ -53,7 +53,7 @@ export default function Footer() {
               <a href="/login">Login</a>
               <a href="/register">Register</a>
               <a href="/reset">Reset Password</a>
-              <a href="/contact us"><p>Contact us</p></a> 
+              <a href="/contact"><p>Contact us</p></a> 
               {/* <a href="#"><p>Travel alert</p></a>      */}
             </FooterItems>
    
@@ -110,16 +110,6 @@ export default function Footer() {
           </ul>
         </div>
         <span>Manzo Airline. All rights reserved</span>
-      </CopyWriterWrapper>
-      <CopyWriterWrapper>
-        <div>
-          <ul>
-              <li><a href="">Login</a></li> 
-              <li><a href="">Register</a></li>
-              <li><a href="">Reset Password</a></li>
-          </ul>
-        </div>
-        
       </CopyWriterWrapper>
     </FooterWrapper>
   )
