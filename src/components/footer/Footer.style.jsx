@@ -10,7 +10,7 @@ export const FooterWrapper = styled.div`
     padding: 50px;
     border-top-right-radius: 30px;
     border-top-left-radius: 30px;
-    margin-top: 40px;
+    /* margin-top: 40px; */
     font-size: 12px;
 
         hr{
@@ -138,7 +138,7 @@ export const SocialIconsContent =styled.div`
             justify-content: center;
             align-items: center;
             padding: 10px;
-          
+            cursor: pointer;
             border-radius: 50%;
             border: 1px solid black;
         }

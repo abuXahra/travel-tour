@@ -36,12 +36,12 @@ export default function Content() {
       calToAction: 'Book a package',
       link: 'tour-packages'
     },
-    {
-      title: 'Elevate your experience',
-      imgUrl: packImage3,
-      calToAction: 'Purchase Addons',
-      link: 'holiday-in-dubai'
-    },
+    // {
+    //   title: 'Elevate your experience',
+    //   imgUrl: packImage3,
+    //   calToAction: 'Purchase Addons',
+    //   link: 'holiday-in-dubai'
+    // },
     {
       title: 'Travel Requirements',
       imgUrl: packImage4,

@@ -27,6 +27,7 @@ import CategorySlide from '../../../components/hotel_components/hotel_slide_comp
 import { MdFlightTakeoff, MdOutlineArrowRightAlt } from 'react-icons/md'
 import BookingIcons from '../../../components/booking_icons/book_icon/BookingIcons'
 import GeneralHeaders from '../../../components/booking_icons/book_sub_header/booking_general_headers/GeneralHeaders'
+import Content from '../../../components/homepage_content/Content'
 
 export default function HotelBooking() {
   const navigate = useNavigate();
@@ -252,49 +253,10 @@ export default function HotelBooking() {
             <HotelSlide/>
       </Section>
    
-
-
-
-        {/* List of Hotels */}   
-        <Section>
-          <SpaceBetweenContent>
-            <h2>Accommodation Visitors Love</h2> <a href='/'>Explore </a>
-          </SpaceBetweenContent>
-            <HotelContentWrapper>
-                {
-                    hotelList.map((item, i)=>(
-                      <HotelCard 
-                        key={i} 
-                        imgUrl={item.imgUrl}
-                        title={item.title}
-                        subTitle={item.subTitle}
-                        rating={item.rating}
-                        reviewCount={item.reviewCount}
-                        price={item.price}
-                      />         
-                    ))
-                  } 
-           </HotelContentWrapper> 
+{/* contents */}
+          <Section>
+            <Content/>
           </Section>
-
-     
-
-
-
-        {/* Destination Hotel */}   
-        <Section>
-        <h2>Popular Destination Hotels</h2>       
-           <HotelContentWrapper>
-            <HotelDestination imgUrl={riyad} title={'Riyad'}/>
-            <HotelDestination imgUrl={trav} title={'dubai'}/>
-           </HotelContentWrapper>
-           
-           <HotelContentWrapper>
-              <HotelDestination imgUrl={riyad} title={'Riyad'} bgHeight={'300px'}/>
-              <HotelDestination imgUrl={trav} title={'dubai'} bgHeight={'300px'}/>
-              <HotelDestination imgUrl={trav} title={'dubai'} bgHeight={'300px'}/>
-           </HotelContentWrapper>
-          </Section> 
       </HotelBody>
   </HotelWrapper>
   )

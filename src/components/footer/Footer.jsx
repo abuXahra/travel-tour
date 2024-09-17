@@ -1,10 +1,16 @@
 import React from 'react'
 import { AwardWrapper, CopyWriterWrapper, FooterContent, FooterItems, FooterItemWrapper, FooterSocialWrapper, FooterWrapper, SocialIconsContent, SocialIconsWrapper } from './Footer.style'
-import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter, FaYoutube } from 'react-icons/fa'
 import iata from '../../images/iata2.png'
 import skytrax from '../../images/svg-icon/skytrax.svg'
+import { useNavigate } from 'react-router-dom'
+import { SocialMediaIconLists } from '../../data/object/SocialMediaList'
 
 export default function Footer() {
+
+  const navigate = useNavigate();
+
+ 
+
   return (
     <FooterWrapper>
 
@@ -44,10 +50,11 @@ export default function Footer() {
             <FooterItems>
               <p>BUSINESS PARTNERS</p>
               <a href="#"><p>Affiliate marketing</p></a> 
-              <a href="#"><p> e-Procurement and Supplier Registration</p></a> 
-              <a href="#"><p>Trad partners</p></a>   
-              <a href="#"><p>Contact us</p></a> 
-              <a href="#"><p>Travel alert</p></a>     
+              <a href="/login">Login</a>
+              <a href="/register">Register</a>
+              <a href="/reset">Reset Password</a>
+              <a href="/contact"><p>Contact us</p></a> 
+              {/* <a href="#"><p>Travel alert</p></a>      */}
             </FooterItems>
    
         </div>
@@ -60,11 +67,10 @@ export default function Footer() {
             <SocialIconsWrapper>
               <span>Let's stay connected</span>
                 <SocialIconsContent>
-                    <div><FaFacebook/></div>
-                    <div><FaTwitter/></div>
-                    <div><FaInstagram/></div>
-                    <div><FaLinkedin/></div>
-                    <div><FaYoutube/></div>
+                  {/* Social media items */}
+                  {SocialMediaIconLists.map((socialMediaItem, i)=>(
+                    <div key={i} onClick={()=>navigate(socialMediaItem.iconLink)}>{socialMediaItem.icon}</div>
+                  ))}
                 </SocialIconsContent>
             </SocialIconsWrapper>
         </FooterSocialWrapper>
