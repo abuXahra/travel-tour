@@ -61,9 +61,12 @@ function App() {
             <Route path="/flight-result" element={<FlightResult />} />
             <Route path="/oneway-result" element={<OneWayResult />} />
             <Route path="/multi-city-result" element={<MultiCityResult />} />
-            <Route path="/trip-info" element={<TripInfo />} />
             <Route
-              path="/flight-customization"
+              path="/trip-info/:flightResultIndex"
+              element={<TripInfo />}
+            />
+            <Route
+              path="/flight-customization/:flightResultIndex"
               element={<FlightCustomization />}
             />
             <Route path="/overview-payment" element={<FlightOverview />} />

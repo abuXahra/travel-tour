@@ -1,98 +1,71 @@
+import React, { useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import { MdFlightTakeoff } from "react-icons/md";
+import {
+  FaSearchStyled,
+  LocationDropdownAbrreviate,
+  LocationDropdownInput,
+  LocationDropdownLocation,
+  LocationDropdownSearchResult,
+  LocationDropdownTakeoff,
+  LocationDropdownWrapper,
+  MdFlightTakeoffStyled,
+} from "./LocationDropdown.style";
 
-
-import React, { useState } from 'react'
-import { FaSearch } from 'react-icons/fa'
-import { MdFlightTakeoff } from 'react-icons/md'
-import { FaSearchStyled, LocationDropdownAbrreviate, LocationDropdownInput, LocationDropdownLocation, LocationDropdownSearchResult, LocationDropdownTakeoff, LocationDropdownWrapper, MdFlightTakeoffStyled } from './LocationDropdown.style'
-
-export default function LocationDropdown({onChange, items, searchInputValue, setAirportSelected, onCloseDropdwon, Icon}) {
-  
-    
-  
-
-    return (
+export default function LocationDropdown({
+  onChange,
+  items,
+  setCityCode,
+  searchInputValue,
+  setAirportSelected,
+  onCloseDropdwon,
+  Icon,
+}) {
+  return (
     <LocationDropdownWrapper>
-        <LocationDropdownInput>
-
+      <LocationDropdownInput>
         <FaSearchStyled />
-        <input type="text" placeholder='search...' value={searchInputValue} onChange={onChange} />
-        </LocationDropdownInput>
+        <input
+          type="text"
+          placeholder="search..."
+          value={searchInputValue}
+          onChange={onChange}
+        />
+      </LocationDropdownInput>
 
-        <LocationDropdownSearchResult>
-            <h3>Recent Search</h3>
+      <LocationDropdownSearchResult>
+        <h3>Recent Search</h3>
 
-    {
-        items?.map((item, i)=>(
-             
-             <LocationDropdownLocation key={i} bottomBorder={''} onClick={()=>{setAirportSelected(item.airportAddress); onCloseDropdwon()}}>
-                <LocationDropdownTakeoff>
-                <MdFlightTakeoffStyled>{Icon}</MdFlightTakeoffStyled>
-                <div>
-                    <p><b>{item.airportAddress}</b></p>
-                    <p>{item.airportName}</p>
-                </div>
-                </LocationDropdownTakeoff>
-                <LocationDropdownAbrreviate>
-                    {item.airportAbbreviation}
-                </LocationDropdownAbrreviate>
-            </LocationDropdownLocation>
-
-        ))
-    }
-        </LocationDropdownSearchResult>
+        {items?.map((item, i) => (
+          <LocationDropdownLocation
+            key={i}
+            bottomBorder={""}
+            onClick={() => {
+              setAirportSelected(
+                `${item?.address?.cityName}, ${item?.address?.countryName}`
+              );
+              setCityCode(item?.address?.cityCode);
+              onCloseDropdwon();
+            }}
+          >
+            <LocationDropdownTakeoff>
+              <MdFlightTakeoffStyled>{Icon}</MdFlightTakeoffStyled>
+              <div>
+                <p>
+                  <b>{`${item?.address?.cityName}, ${item?.address?.countryName}`}</b>
+                </p>
+                <p>{`${item?.name}, ${item?.address?.regionCode}, ${item?.address?.countryName}, ${item?.address?.cityName}`}</p>
+              </div>
+            </LocationDropdownTakeoff>
+            <LocationDropdownAbrreviate>
+              {item?.address?.cityCode}
+            </LocationDropdownAbrreviate>
+          </LocationDropdownLocation>
+        ))}
+      </LocationDropdownSearchResult>
     </LocationDropdownWrapper>
-  )
+  );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import React, { useState } from 'react'
 // import { FaSearch } from 'react-icons/fa'
@@ -100,7 +73,7 @@ export default function LocationDropdown({onChange, items, searchInputValue, set
 // import { FaSearchStyled, LocationDropdownAbrreviate, LocationDropdownInput, LocationDropdownLocation, LocationDropdownSearchResult, LocationDropdownTakeoff, LocationDropdownWrapper, MdFlightTakeoffStyled } from './LocationDropdown.style'
 
 // export default function LocationDropdown({value, onChange, items, airportAddress, airportName, airportAbbreviation}) {
-  
+
 //     const [inputValue, setInputValue] = useState('');
 
 //     const [airportSelected, setAirportSelected] = useState('')
@@ -113,27 +86,27 @@ export default function LocationDropdown({onChange, items, searchInputValue, set
 //         {
 //             airportAddress: 'Abuja, Nigeria',
 //             airportName: 'Nnamdi Azikwe Internatinal Airport',
-//             airportAbbreviation: 'ABV'   
+//             airportAbbreviation: 'ABV'
 //         },
 //         {
 //             airportAddress: 'Abuja, Nigeria',
 //             airportName: 'Nnamdi Azikwe Internatinal Airport',
-//             airportAbbreviation: 'ABV'   
+//             airportAbbreviation: 'ABV'
 //         },
 //         {
 //             airportAddress: 'Abuja, Nigeria',
 //             airportName: 'Nnamdi Azikwe Internatinal Airport',
-//             airportAbbreviation: 'ABV'   
+//             airportAbbreviation: 'ABV'
 //         },
 //         {
 //             airportAddress: 'Abuja, Nigeria',
 //             airportName: 'Nnamdi Azikwe Internatinal Airport',
-//             airportAbbreviation: 'ABV'   
+//             airportAbbreviation: 'ABV'
 //         },
 //         {
 //             airportAddress: 'Abuja, Nigeria',
 //             airportName: 'Nnamdi Azikwe Internatinal Airport',
-//             airportAbbreviation: 'ABV'   
+//             airportAbbreviation: 'ABV'
 //         }
 //     ]
 
@@ -163,7 +136,7 @@ export default function LocationDropdown({onChange, items, searchInputValue, set
 
 //     {
 //         takeOffList.map((item, i)=>(
-             
+
 //              <LocationDropdownLocation key={i} bottomBorder={''} onClick={()=>setAirportSelected(item.airportName)}>
 //                 <LocationDropdownTakeoff>
 //                 <MdFlightTakeoffStyled/>
@@ -183,9 +156,3 @@ export default function LocationDropdown({onChange, items, searchInputValue, set
 //     </LocationDropdownWrapper>
 //   )
 // }
-
-
-
-
-
-

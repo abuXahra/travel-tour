@@ -11,7 +11,11 @@ import { MdFlight } from "react-icons/md";
 import flightLogo from "../../images/aire-peace.png";
 import AirlineFlightLogo from "./AirlineFlightLogo";
 import AirlineCodeLookup from "./AirlineCodeLookup";
-const FlightResultForDepartandReturn = ({ flightSearchResultData }) => {
+const FlightResultForDepartandReturn = ({
+  flightSearchResultData,
+  setIndex,
+  showViewDetail,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const money = new Intl.NumberFormat("en-us", {
     currency: "NGN",
@@ -50,7 +54,12 @@ const FlightResultForDepartandReturn = ({ flightSearchResultData }) => {
         <FlightCard key={index}>
           {/* flight logo */}
 
-          <AirlineFlightLogo keyWord={data.validatingAirlineCodes[0]} />
+          <AirlineFlightLogo
+            keyWord={data.validatingAirlineCodes[0]}
+            index={index}
+            setIndex={setIndex}
+            showViewDetail={showViewDetail}
+          />
 
           {/* Depart and Return Wrapper */}
           <FlightCardContent>
