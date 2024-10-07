@@ -36,15 +36,13 @@ export default function LocationDropdown({
       <LocationDropdownSearchResult>
         <h3>Recent Search</h3>
 
-        {items?.map((item, i) => (
+        {items?.slice(0, 10).map((item, i) => (
           <LocationDropdownLocation
             key={i}
             bottomBorder={""}
             onClick={() => {
-              setAirportSelected(
-                `${item?.address?.cityName}, ${item?.address?.countryName}`
-              );
-              setCityCode(item?.address?.cityCode);
+              setAirportSelected(`${item?.name}, ${item?.country}`);
+              setCityCode(item?.code);
               onCloseDropdwon();
             }}
           >
@@ -52,13 +50,13 @@ export default function LocationDropdown({
               <MdFlightTakeoffStyled>{Icon}</MdFlightTakeoffStyled>
               <div>
                 <p>
-                  <b>{`${item?.address?.cityName}, ${item?.address?.countryName}`}</b>
+                  <b>{`${item?.state}, ${item?.country}`}</b>
                 </p>
-                <p>{`${item?.name}, ${item?.address?.regionCode}, ${item?.address?.countryName}, ${item?.address?.cityName}`}</p>
+                <p>{`${item?.name}, ${item?.city}, ${item?.state}, ${item?.country}`}</p>
               </div>
             </LocationDropdownTakeoff>
             <LocationDropdownAbrreviate>
-              {item?.address?.cityCode}
+              {item?.code}
             </LocationDropdownAbrreviate>
           </LocationDropdownLocation>
         ))}

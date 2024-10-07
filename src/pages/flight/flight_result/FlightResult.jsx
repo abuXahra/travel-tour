@@ -53,19 +53,16 @@ import AirlineFlightLogo from "../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../store/store";
 
 export default function FlightResult() {
-  const { flightResult } = useAuthStore();
+  const { singleFlightResult } = useAuthStore();
   // const flightData = JSON.parse(myObject);
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  // if (Object.keys(flightResult).length === 0) {
-  if (flightResult?.length === 0) {
-    navigate("/flight-booking");
-  } else {
-    console.log("The object is not empty");
-  }
-  // }, [flightResult, navigate]);
+  useEffect(() => {
+    if (!singleFlightResult || singleFlightResult?.length === 0) {
+      navigate("/flight-booking");
+    }
+  }, [singleFlightResult, navigate]);
 
   // Show View Detail Variable
   const [showViewDetailCard, setShowViewDetailCard] = useState(false);
@@ -200,8 +197,8 @@ export default function FlightResult() {
       <FlightResultHeader>
         <DateFlight>Mon, 9 Sep 2024</DateFlight>
         <p>
-          Select your departure flight from <span>{flightResult[0]}</span> to{" "}
-          <span>{flightResult[1]}</span>
+          Select your departure flight from <span>{singleFlightResult[0]}</span>{" "}
+          to <span>{singleFlightResult[1]}</span>
         </p>
       </FlightResultHeader>
       {/* Flight Modification form */}
@@ -235,7 +232,7 @@ export default function FlightResult() {
           {/* Counter Summary */}
           <ResultCounter>
             <ResultCounterLeft>
-              <h3>{flightResult[2]?.length} results</h3>
+              <h3>{singleFlightResult[2]?.length} results</h3>
               <p>Fares displayed are for all passengers.</p>
             </ResultCounterLeft>
 
@@ -248,7 +245,8 @@ export default function FlightResult() {
 
           {/* Flight Result Card  1*/}
           <FlightResultForDepartandReturn
-            flightSearchResultData={flightResult[2]}
+            flightSearchResultData={singleFlightResult[2]}
+            locationName={[singleFlightResult[0], singleFlightResult[1]]}
             setIndex={setIndex}
             showViewDetail={showViewDetail}
           />
@@ -270,15 +268,15 @@ export default function FlightResult() {
               <span>
                 <div>
                   <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
-                  <h3>{`Flight From ${flightResult[0]} - ${flightResult[1]}`}</h3>
+                  <h3>{`Flight From ${singleFlightResult[0]} - ${singleFlightResult[1]}`}</h3>
                 </div>
                 <b>Outbound</b>
               </span>
               <DNRDetail>
                 <DNRDetailFlightImage>
                   <img
-                    src={`https://wakanow-images.azureedge.net/Images/flight-logos/${flightResult[2][index].validatingAirlineCodes[0]}.gif`}
-                    alt={flightResult[2][index].validatingAirlineCodes[0]}
+                    src={`https://wakanow-images.azureedge.net/Images/flight-logos/${singleFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
+                    alt={singleFlightResult[2][index].validatingAirlineCodes[0]}
                   />
                 </DNRDetailFlightImage>
 
@@ -286,7 +284,7 @@ export default function FlightResult() {
                   <span>
                     <h3>
                       {new Date(
-                        flightResult[2][
+                        singleFlightResult[2][
                           index
                         ].itineraries[0].segments[0].departure.at
                       ).toLocaleTimeString("en-US", {
@@ -294,28 +292,31 @@ export default function FlightResult() {
                         minute: "2-digit",
                       })}
                     </h3>
-                    <AirlineCodeLookup
+                    <p style={{ width: 150, fontSize: 10 }}>
+                      {singleFlightResult[0]}
+                    </p>
+                    {/* <AirlineCodeLookup
                       keyWord={
-                        flightResult[2][index].itineraries[0].segments[0]
+                        singleFlightResult[2][index].itineraries[0].segments[0]
                           .departure.iataCode
                       }
-                    />
+                    /> */}
                   </span>
                   <span>
                     {`${
                       parseDuration(
-                        flightResult[2][index].itineraries[0].segments[0]
+                        singleFlightResult[2][index].itineraries[0].segments[0]
                           .duration
                       ).hours
                     }hr ${
                       parseDuration(
-                        flightResult[2][index].itineraries[0].segments[0]
+                        singleFlightResult[2][index].itineraries[0].segments[0]
                           .duration
                       ).minutes
                     }min`}
                     <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
                     {
-                      flightResult[2][index].itineraries[0].segments[0]
+                      singleFlightResult[2][index].itineraries[0].segments[0]
                         .numberOfStops
                     }
                     -Stop
@@ -324,7 +325,7 @@ export default function FlightResult() {
                     <h3>
                       {" "}
                       {new Date(
-                        flightResult[2][
+                        singleFlightResult[2][
                           index
                         ].itineraries[0].segments[0].arrival.at
                       ).toLocaleTimeString("en-US", {
@@ -332,25 +333,30 @@ export default function FlightResult() {
                         minute: "2-digit",
                       })}
                     </h3>
-                    <AirlineCodeLookup
+                    <p style={{ width: 150, fontSize: 10 }}>
+                      {singleFlightResult[1]}
+                    </p>
+                    {/* <AirlineCodeLookup
                       keyWord={
-                        flightResult[2][index].itineraries[0].segments[0]
+                        singleFlightResult[2][index].itineraries[0].segments[0]
                           .arrival.iataCode
                       }
-                    />
+                    /> */}
                   </span>
                 </DNRDetailTime>
 
                 <DNRDetailAirport>
-                  <div>Airport ({flightResult[3]})</div>
-                  <div>Airport ({flightResult[4]})</div>
+                  <div>Airport ({singleFlightResult[3]})</div>
+                  <div>Airport ({singleFlightResult[4]})</div>
                 </DNRDetailAirport>
                 <DNRDetailBaggage>
                   <span>
                     <h3>Airline</h3>
 
                     <AirlineFlightLogo
-                      keyWord={flightResult[2][index].validatingAirlineCodes[0]}
+                      keyWord={
+                        singleFlightResult[2][index].validatingAirlineCodes[0]
+                      }
                       only={true}
                     />
                   </span>
@@ -368,7 +374,8 @@ export default function FlightResult() {
                 <div>
                   <FlightIcon rotate={"270deg"} iconColor={"#FF6805"} />
                   <h3>
-                    Flight From {flightResult[1]} - {flightResult[0]}
+                    Flight From {singleFlightResult[1]} -{" "}
+                    {singleFlightResult[0]}
                   </h3>
                 </div>
                 <b>Inbound</b>
@@ -376,8 +383,8 @@ export default function FlightResult() {
               <DNRDetail>
                 <DNRDetailFlightImage>
                   <img
-                    src={`https://wakanow-images.azureedge.net/Images/flight-logos/${flightResult[2][index].validatingAirlineCodes[0]}.gif`}
-                    alt={flightResult[2][index].validatingAirlineCodes[0]}
+                    src={`https://wakanow-images.azureedge.net/Images/flight-logos/${singleFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
+                    alt={singleFlightResult[2][index].validatingAirlineCodes[0]}
                   />
                 </DNRDetailFlightImage>
 
@@ -385,7 +392,7 @@ export default function FlightResult() {
                   <span>
                     <h3>
                       {new Date(
-                        flightResult[2][
+                        singleFlightResult[2][
                           index
                         ].itineraries[1].segments[0].departure.at
                       ).toLocaleTimeString("en-US", {
@@ -393,28 +400,31 @@ export default function FlightResult() {
                         minute: "2-digit",
                       })}
                     </h3>
-                    <AirlineCodeLookup
+                    <p style={{ width: 150, fontSize: 10 }}>
+                      {singleFlightResult[1]}
+                    </p>
+                    {/* <AirlineCodeLookup
                       keyWord={
-                        flightResult[2][index].itineraries[1].segments[0]
+                        singleFlightResult[2][index].itineraries[1].segments[0]
                           .departure.iataCode
                       }
-                    />
+                    /> */}
                   </span>
                   <span>
                     {`${
                       parseDuration(
-                        flightResult[2][index].itineraries[1].segments[0]
+                        singleFlightResult[2][index].itineraries[1].segments[0]
                           .duration
                       ).hours
                     }hr ${
                       parseDuration(
-                        flightResult[2][index].itineraries[1].segments[0]
+                        singleFlightResult[2][index].itineraries[1].segments[0]
                           .duration
                       ).minutes
                     }min`}
                     <FlightIcon rotate={"270deg"} iconColor={"#FF6805"} />
                     {
-                      flightResult[2][index].itineraries[1].segments[0]
+                      singleFlightResult[2][index].itineraries[1].segments[0]
                         .numberOfStops
                     }
                     -Stop
@@ -422,7 +432,7 @@ export default function FlightResult() {
                   <span>
                     <h3>
                       {new Date(
-                        flightResult[2][
+                        singleFlightResult[2][
                           index
                         ].itineraries[1].segments[0].arrival.at
                       ).toLocaleTimeString("en-US", {
@@ -430,24 +440,29 @@ export default function FlightResult() {
                         minute: "2-digit",
                       })}
                     </h3>
-                    <AirlineCodeLookup
+                    <p style={{ width: 150, fontSize: 10 }}>
+                      {singleFlightResult[0]}
+                    </p>
+                    {/* <AirlineCodeLookup
                       keyWord={
-                        flightResult[2][index].itineraries[1].segments[0]
+                        singleFlightResult[2][index].itineraries[1].segments[0]
                           .arrival.iataCode
                       }
-                    />
+                    /> */}
                   </span>
                 </DNRDetailTime>
 
                 <DNRDetailAirport>
-                  <div>({flightResult[4]})</div>
-                  <div>({flightResult[3]})</div>
+                  <div>({singleFlightResult[4]})</div>
+                  <div>({singleFlightResult[3]})</div>
                 </DNRDetailAirport>
                 <DNRDetailBaggage>
                   <span>
                     <h3>Airline</h3>
                     <AirlineFlightLogo
-                      keyWord={flightResult[2][index].validatingAirlineCodes[0]}
+                      keyWord={
+                        singleFlightResult[2][index].validatingAirlineCodes[0]
+                      }
                       only={true}
                     />
                   </span>

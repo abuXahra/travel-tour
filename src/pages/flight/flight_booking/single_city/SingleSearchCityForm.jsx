@@ -38,8 +38,52 @@ import { FaCircle } from "react-icons/fa";
 import axios from "axios";
 import { useAuthStore } from "../../../../store/store";
 import MulticitySearchForm from "../multi_city/MulticitySearchForm";
+import cityList from "../../../../flightDB/airports.json";
 import { SingleAndMulticityWrapper } from "./SingleSearchCityForm.style";
 import FlightRadioHeader from "../../../../components/booking_icons/flight_radio_header/FlightRadioHeader";
+
+const defaultCityList = [
+  {
+    code: "LOS",
+    lat: "6.575",
+    lon: "3.3222",
+    name: "Lagos Murtala Muhammed Airport",
+    city: "Ikeja",
+    state: "Lagos",
+    country: "Nigeria",
+    woeid: "12515073",
+    tz: "Africa/Lagos",
+    phone: "",
+    type: "Airports",
+    email: "",
+    url: "",
+    runway_length: "12795",
+    elev: "135",
+    icao: "DNMM",
+    direct_flights: "42",
+    carriers: "37",
+  },
+  {
+    code: "ABV",
+    lat: "9.0056",
+    lon: "7.2661",
+    name: "Abuja International Airport",
+    city: "Gwagwa",
+    state: "Abuja Capital Territory",
+    country: "Nigeria",
+    woeid: "12515056",
+    tz: "Africa/Lagos",
+    phone: "",
+    type: "Airports",
+    email: "",
+    url: "",
+    runway_length: "11808",
+    elev: "1122",
+    icao: "DNAA",
+    direct_flights: "9",
+    carriers: "12",
+  },
+];
 
 export default function SingleSearchCityForm({
   handleRoundTrip,
@@ -73,7 +117,7 @@ export default function SingleSearchCityForm({
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
   // Mr Bobai - >
-  const { setFlightResult } = useAuthStore();
+  const { setSingleFlightResult } = useAuthStore();
 
   const [originLocationCode, setOriginLocationCode] = useState("");
   const [destinationLocationCode, setDestinationLocationCode] = useState("");
@@ -164,126 +208,9 @@ export default function SingleSearchCityForm({
 
   // ]
 
-  const [takeOffAportList, setTakeOffAportList] = useState([
-    {
-      type: "location",
-      subType: "AIRPORT",
-      name: "Nnamdi Azikwe Internatinal Airport",
-      detailedName: "CHIFENG/CN:YULONG",
-      id: "ACIF",
-      self: {
-        href: "https://test.api.amadeus.com/v1/reference-data/locations/ACIF",
-        methods: ["GET"],
-      },
-      timeZoneOffset: "+08:00",
-      iataCode: "CIF",
-      geoCode: {
-        latitude: 42.23334,
-        longitude: 118.9095,
-      },
-      address: {
-        cityName: "Abuja",
-        cityCode: "ABV",
-        countryName: "Nigeria",
-        countryCode: "CN",
-        regionCode: "Africa",
-      },
-      analytics: {
-        travelers: {
-          score: 1,
-        },
-      },
-    },
-    {
-      type: "location",
-      subType: "CITY",
-      name: "Murtala Muhammad Internatinal Airport",
-      detailedName: "CHIFENG/CN",
-      id: "CCIF",
-      self: {
-        href: "https://test.api.amadeus.com/v1/reference-data/locations/CCIF",
-        methods: ["GET"],
-      },
-      timeZoneOffset: "+08:00",
-      iataCode: "CIF",
-      geoCode: {
-        latitude: 42.23334,
-        longitude: 118.9095,
-      },
-      address: {
-        cityName: "Lagos",
-        cityCode: "LOS",
-        countryName: "Nigeria",
-        countryCode: "CN",
-        regionCode: "Africa",
-      },
-      analytics: {
-        travelers: {
-          score: 1,
-        },
-      },
-    },
-  ]);
-  const [destinationAriporList, setDestinationAriporList] = useState([
-    {
-      type: "location",
-      subType: "AIRPORT",
-      name: "Nnamdi Azikwe Internatinal Airport",
-      detailedName: "CHIFENG/CN:YULONG",
-      id: "ACIF",
-      self: {
-        href: "https://test.api.amadeus.com/v1/reference-data/locations/ACIF",
-        methods: ["GET"],
-      },
-      timeZoneOffset: "+08:00",
-      iataCode: "CIF",
-      geoCode: {
-        latitude: 42.23334,
-        longitude: 118.9095,
-      },
-      address: {
-        cityName: "Abuja",
-        cityCode: "ABV",
-        countryName: "Nigeria",
-        countryCode: "CN",
-        regionCode: "Africa",
-      },
-      analytics: {
-        travelers: {
-          score: 1,
-        },
-      },
-    },
-    {
-      type: "location",
-      subType: "CITY",
-      name: "Murtala Muhammad Internatinal Airport",
-      detailedName: "CHIFENG/CN",
-      id: "CCIF",
-      self: {
-        href: "https://test.api.amadeus.com/v1/reference-data/locations/CCIF",
-        methods: ["GET"],
-      },
-      timeZoneOffset: "+08:00",
-      iataCode: "CIF",
-      geoCode: {
-        latitude: 42.23334,
-        longitude: 118.9095,
-      },
-      address: {
-        cityName: "Lagos",
-        cityCode: "LOS",
-        countryName: "Nigeria",
-        countryCode: "CN",
-        regionCode: "Africa",
-      },
-      analytics: {
-        travelers: {
-          score: 1,
-        },
-      },
-    },
-  ]);
+  const [takeOffAportList, setTakeOffAportList] = useState(defaultCityList);
+  const [destinationAriporList, setDestinationAriporList] =
+    useState(defaultCityList);
   // Mr Bobai - <
 
   const [searchTakeOffInputValue, setSearchTakeOffInputValue] = useState("");
@@ -293,10 +220,40 @@ export default function SingleSearchCityForm({
   const originLocation = useDebounce(searchTakeOffInputValue);
   const destinationLocation = useDebounce(searchDestinationInputValue);
   useEffect(() => {
-    airports(originLocation, 0);
+    if (originLocation !== "") {
+      // airports(originLocation, 0);
+      const newFilterData = cityList.filter((item) => {
+        if (item.name.toLowerCase().includes(originLocation.toLowerCase())) {
+          // if (item.city.toLowerCase().includes(originLocation.toLowerCase())) {
+          //   if (
+          //     item.state.toLowerCase().includes(originLocation.toLowerCase())
+          //   ) {
+          //     if (
+          //       item.country
+          //         .toLowerCase()
+          //         .includes(originLocation.toLowerCase())
+          //     ) {
+          return item;
+          //     }
+          //   }
+          // }
+        }
+      });
+      setTakeOffAportList(newFilterData);
+    }
   }, [originLocation]);
   useEffect(() => {
-    airports(destinationLocation, 1);
+    if (destinationLocation !== "") {
+      const newFilterData = cityList.filter((item) => {
+        if (
+          item.name.toLowerCase().includes(destinationLocation.toLowerCase())
+        ) {
+          // airports(destinationLocation, 1);
+          return item;
+        }
+      });
+      setDestinationAriporList(newFilterData);
+    }
   }, [destinationLocation]);
   const airports = async (keyWord, num) => {
     const res = await axios
@@ -394,7 +351,7 @@ export default function SingleSearchCityForm({
 
     if (res) {
       console.log(res.data.data);
-      setFlightResult([
+      setSingleFlightResult([
         takeOffAirport,
         destinationAirport,
         res.data.data,
@@ -403,7 +360,11 @@ export default function SingleSearchCityForm({
         queryParams,
       ]);
       // setFlightSearch(res.data.data);
-      navigate("/flight-result");
+      if (showReturnDate) {
+        navigate("/flight-result");
+      } else if (!showReturnDate) {
+        navigate("/oneway-result");
+      }
     }
   };
   return (

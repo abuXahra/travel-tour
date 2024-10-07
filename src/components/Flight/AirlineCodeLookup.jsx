@@ -49,11 +49,7 @@ const AirlineCodeLookup = React.memo(({ keyWord }) => {
     return <p>No data found</p>;
   }
 
-  return (
-    <p p style={{ width: 150, fontSize: 10 }}>
-      {cityName}
-    </p>
-  );
+  return <p style={{ width: 150, fontSize: 10 }}>{cityName}</p>;
 });
 
 export default AirlineCodeLookup;

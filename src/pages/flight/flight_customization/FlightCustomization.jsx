@@ -44,7 +44,7 @@ import { useAuthStore } from "../../../store/store";
 import axios from "axios";
 
 export default function FlightCustomization() {
-  const { flightResult, fravelDetail } = useAuthStore();
+  const { singleFlightResult, fravelDetail } = useAuthStore();
   //let FResult;
   const { flightResultIndex } = useParams();
   const money = new Intl.NumberFormat("en-us", {
@@ -53,6 +53,13 @@ export default function FlightCustomization() {
   });
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!singleFlightResult || singleFlightResult?.length === 0) {
+      navigate("/flight-booking");
+    }
+  }, [singleFlightResult, navigate]);
+
   const [showTripSummary, setShowTripSummary] = useState(false);
   const [showTravelDetail, setShowTravelDetail] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
@@ -71,7 +78,7 @@ export default function FlightCustomization() {
     const bookflights = async () => {
       try {
         const res = await axios.post("http://localhost:5000/pricelookup", {
-          flight: flightResult[2][flightResultIndex],
+          flight: singleFlightResult[2][flightResultIndex],
         });
         if (res) {
           console.log(res?.data?.data);
@@ -83,7 +90,7 @@ export default function FlightCustomization() {
     };
 
     bookflights();
-  }, [flightResult, flightResultIndex]);
+  }, [singleFlightResult, flightResultIndex]);
 
   // Cacula for duration
   function parseDuration(duration) {
@@ -102,472 +109,482 @@ export default function FlightCustomization() {
 
     return { hours, minutes };
   }
-
-  return (
-    <CustomizeWrapper>
-      {/* Header */}
-      <CustomizeHeader>
-        <CustomizeHeaderItems>
-          <CustomizeHeaderTitle>
-            <span>
-              <Button
-                text={"Back"}
-                onClick={() => navigate("/flight-result")}
-              />
-            </span>
-            <h2>Proceed with your booking</h2>
-          </CustomizeHeaderTitle>
-          {/* Timeline: Trip info steps */}
-          <Timeline currentStep={3} />
-        </CustomizeHeaderItems>
-      </CustomizeHeader>
-
-      {/* Body */}
-      <CustomizeBody>
-        {/* Sidebar */}
-        <CustomizeSideBar>
-          <CustomizeSideContent>
-            <h2>My Cart</h2>
-            <h4>Flight</h4>
-            <SideFlightAirport>
+  if (!singleFlightResult || singleFlightResult?.length === 0) {
+    navigate("/flight-booking");
+  } else {
+    return (
+      <CustomizeWrapper>
+        {/* Header */}
+        <CustomizeHeader>
+          <CustomizeHeaderItems>
+            <CustomizeHeaderTitle>
               <span>
-                <FlightIcon
-                  IconSize={"14px"}
-                  rotate={"45deg"}
-                  iconColor={"#4a4a4a"}
+                <Button
+                  text={"Back"}
+                  onClick={() => navigate("/flight-result")}
                 />
-                <div>
-                  <p>
-                    <b>
-                      {" "}
-                      {flightResult[0]} ({flightResult[3]}) TO {flightResult[1]}{" "}
-                      ({flightResult[4]})
-                    </b>
-                  </p>
-                  <p>
-                    {
-                      flightResult[2][flightResultIndex].travelerPricings[0]
-                        .fareDetailsBySegment[0].cabin
-                    }{" "}
-                    Round Trip
-                  </p>
-                </div>
               </span>
-              <span>
-                <FlightIcon
-                  IconSize={"14px"}
-                  rotate={"45deg"}
-                  iconColor={"#4a4a4a"}
-                />
-                <div>
-                  <p>
-                    <b>
-                      {" "}
-                      {flightResult[1]} ({flightResult[4]}) TO {flightResult[0]}{" "}
-                      ({flightResult[3]})
-                    </b>
-                  </p>
-                  <p>
-                    {
-                      flightResult[2][flightResultIndex].travelerPricings[0]
-                        .fareDetailsBySegment[0].cabin
-                    }{" "}
-                    Round Trip
-                  </p>
-                </div>
-              </span>
-            </SideFlightAirport>
-            <h4>Flight Fare Summary</h4>
-            <SideFlightSummary>
-              <div>
-                <span>Adult X 1</span>
-                <span></span>
-              </div>
-              <div>
-                <span>Base Fee</span>
-                <span>{money.format(FResult?.price?.base)}</span>
-              </div>
-              <div>
-                <span>Discount</span>
-                <span>0</span>
-              </div>
-              <div>
-                <span>Service Charge</span>
-                <span>0</span>
-              </div>
-              <div>
-                <span>
-                  <b>Total Fare</b>
-                </span>
-                <span>{money.format(FResult?.price?.total)}</span>
-              </div>
-            </SideFlightSummary>
-            <TotalTrip>
-              <div>
-                <span>Trip Total</span>
-                <span>{money.format(FResult?.price?.total)}</span>
-              </div>
-            </TotalTrip>
-          </CustomizeSideContent>
-        </CustomizeSideBar>
+              <h2>Proceed with your booking</h2>
+            </CustomizeHeaderTitle>
+            {/* Timeline: Trip info steps */}
+            <Timeline currentStep={3} />
+          </CustomizeHeaderItems>
+        </CustomizeHeader>
 
-        {/* Main Content */}
-        <TripMinContent>
-          {/* User info content */}
-          <CustomizeContent>
-            {/* Flight Detail section */}
-            <FlightDetailWrapper>
-              {/* Title */}
-              <TripDetailTile
-                onClick={() => setShowTripSummary(!showTripSummary)}
-              >
+        {/* Body */}
+        <CustomizeBody>
+          {/* Sidebar */}
+          <CustomizeSideBar>
+            <CustomizeSideContent>
+              <h2>My Cart</h2>
+              <h4>Flight</h4>
+              <SideFlightAirport>
                 <span>
-                  <h2>Trip Summary</h2>
-                </span>
-                <span>
+                  <FlightIcon
+                    IconSize={"14px"}
+                    rotate={"45deg"}
+                    iconColor={"#4a4a4a"}
+                  />
                   <div>
-                    <IoIosArrowDown />
+                    <p>
+                      <b>
+                        {" "}
+                        {singleFlightResult[0]} ({singleFlightResult[3]}) TO{" "}
+                        {singleFlightResult[1]} ({singleFlightResult[4]})
+                      </b>
+                    </p>
+                    <p>
+                      {
+                        singleFlightResult[2][flightResultIndex]
+                          .travelerPricings[0].fareDetailsBySegment[0].cabin
+                      }{" "}
+                      Round Trip
+                    </p>
                   </div>
                 </span>
-              </TripDetailTile>
-              {/* Body */}
-              {showTripSummary && (
+                <span>
+                  <FlightIcon
+                    IconSize={"14px"}
+                    rotate={"45deg"}
+                    iconColor={"#4a4a4a"}
+                  />
+                  <div>
+                    <p>
+                      <b>
+                        {" "}
+                        {singleFlightResult[1]} ({singleFlightResult[4]}) TO{" "}
+                        {singleFlightResult[0]} ({singleFlightResult[3]})
+                      </b>
+                    </p>
+                    <p>
+                      {
+                        singleFlightResult[2][flightResultIndex]
+                          .travelerPricings[0].fareDetailsBySegment[0].cabin
+                      }{" "}
+                      Round Trip
+                    </p>
+                  </div>
+                </span>
+              </SideFlightAirport>
+              <h4>Flight Fare Summary</h4>
+              <SideFlightSummary>
                 <div>
-                  <TripDetailBody mb={"20px"}>
-                    <TripDetailClass>
-                      <span>
-                        <AirlineFlightLogo
-                          keyWord={
-                            flightResult[2][flightResultIndex]
-                              .validatingAirlineCodes[0]
-                          }
-                          detail={true}
-                        />
-                      </span>
-                      <span>
-                        <a href="#">
-                          {
-                            flightResult[2][flightResultIndex]
-                              .travelerPricings[0].fareDetailsBySegment[0].cabin
-                          }
-                        </a>
-                      </span>
-                    </TripDetailClass>
-                    <TripDetailTime>
-                      <TripHour>
+                  <span>Adult X 1</span>
+                  <span></span>
+                </div>
+                <div>
+                  <span>Base Fee</span>
+                  <span>{money.format(FResult?.price?.base)}</span>
+                </div>
+                <div>
+                  <span>Discount</span>
+                  <span>0</span>
+                </div>
+                <div>
+                  <span>Service Charge</span>
+                  <span>0</span>
+                </div>
+                <div>
+                  <span>
+                    <b>Total Fare</b>
+                  </span>
+                  <span>{money.format(FResult?.price?.total)}</span>
+                </div>
+              </SideFlightSummary>
+              <TotalTrip>
+                <div>
+                  <span>Trip Total</span>
+                  <span>{money.format(FResult?.price?.total)}</span>
+                </div>
+              </TotalTrip>
+            </CustomizeSideContent>
+          </CustomizeSideBar>
+
+          {/* Main Content */}
+          <TripMinContent>
+            {/* User info content */}
+            <CustomizeContent>
+              {/* Flight Detail section */}
+              <FlightDetailWrapper>
+                {/* Title */}
+                <TripDetailTile
+                  onClick={() => setShowTripSummary(!showTripSummary)}
+                >
+                  <span>
+                    <h2>Trip Summary</h2>
+                  </span>
+                  <span>
+                    <div>
+                      <IoIosArrowDown />
+                    </div>
+                  </span>
+                </TripDetailTile>
+                {/* Body */}
+                {showTripSummary && (
+                  <div>
+                    <TripDetailBody mb={"20px"}>
+                      <TripDetailClass>
                         <span>
+                          <AirlineFlightLogo
+                            keyWord={
+                              singleFlightResult[2][flightResultIndex]
+                                .validatingAirlineCodes[0]
+                            }
+                            detail={true}
+                          />
+                        </span>
+                        <span>
+                          <a href="#">
+                            {
+                              singleFlightResult[2][flightResultIndex]
+                                .travelerPricings[0].fareDetailsBySegment[0]
+                                .cabin
+                            }
+                          </a>
+                        </span>
+                      </TripDetailClass>
+                      <TripDetailTime>
+                        <TripHour>
+                          <span>
+                            <div>
+                              <h4>
+                                {new Date(
+                                  singleFlightResult[2][
+                                    flightResultIndex
+                                  ].itineraries[0].segments[0].departure.at
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </h4>
+                              <h4>
+                                {" "}
+                                {new Date(
+                                  singleFlightResult[2][
+                                    flightResultIndex
+                                  ].itineraries[0].segments[0].arrival.at
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </h4>
+                            </div>
+                            <div>
+                              <hr />
+                              <FlightIcon
+                                rotate={"180deg"}
+                                iconColor={"#0D3984"}
+                              />
+                              <hr />
+                            </div>
+                          </span>
+                        </TripHour>
+                        <TripAirport>
                           <div>
-                            <h4>
-                              {new Date(
-                                flightResult[2][
-                                  flightResultIndex
-                                ].itineraries[0].segments[0].departure.at
-                              ).toLocaleTimeString("en-US", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </h4>
-                            <h4>
+                            <p>
+                              {singleFlightResult[0]}{" "}
+                              <b>({singleFlightResult[3]})</b>
+                            </p>
+                            <p>
+                              {singleFlightResult[1]}{" "}
+                              <b>({singleFlightResult[4]})</b>
+                            </p>
+                          </div>
+                          <div>
+                            <span>
+                              <h4>BAGGAGE:</h4> <p>ADULT</p>
+                            </span>
+                            <span>
+                              <h4>CHECK IN:</h4> <p>20KG</p>
+                            </span>
+                          </div>
+                          <div style={{ fontSize: "12px" }}>
+                            <p>
                               {" "}
                               {new Date(
-                                flightResult[2][
+                                singleFlightResult[2][
                                   flightResultIndex
-                                ].itineraries[0].segments[0].arrival.at
-                              ).toLocaleTimeString("en-US", {
-                                hour: "2-digit",
-                                minute: "2-digit",
+                                ].itineraries[0].segments[0].departure.at
+                              ).toLocaleDateString("en-US", {
+                                weekday: "long",
+                                month: "long",
+                                day: "numeric",
                               })}
-                            </h4>
+                            </p>
+                            <p>
+                              {
+                                singleFlightResult[2][flightResultIndex]
+                                  .itineraries[0].segments[0].numberOfStops
+                              }{" "}
+                              Stops.{" "}
+                              {`${
+                                parseDuration(
+                                  singleFlightResult[2][flightResultIndex]
+                                    .itineraries[0].segments[0].duration
+                                ).hours
+                              }hr ${
+                                parseDuration(
+                                  singleFlightResult[2][flightResultIndex]
+                                    .itineraries[0].segments[0].duration
+                                ).minutes
+                              }min`}
+                            </p>
+                          </div>
+                        </TripAirport>
+                      </TripDetailTime>
+                    </TripDetailBody>
+                    <TripDetailBody>
+                      <TripDetailClass>
+                        <span>
+                          <AirlineFlightLogo
+                            keyWord={
+                              singleFlightResult[2][flightResultIndex]
+                                .validatingAirlineCodes[0]
+                            }
+                            detail={true}
+                          />
+                        </span>
+                        <span>
+                          {" "}
+                          {
+                            singleFlightResult[2][flightResultIndex]
+                              .travelerPricings[0].fareDetailsBySegment[0].cabin
+                          }
+                        </span>
+                      </TripDetailClass>
+                      <TripDetailTime>
+                        <TripHour>
+                          <span>
+                            <div>
+                              <h4>
+                                {new Date(
+                                  singleFlightResult[2][
+                                    flightResultIndex
+                                  ].itineraries[1].segments[0].departure.at
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </h4>
+                              <h4>
+                                {" "}
+                                {new Date(
+                                  singleFlightResult[2][
+                                    flightResultIndex
+                                  ].itineraries[1].segments[0].arrival.at
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </h4>
+                            </div>
+                            <div>
+                              <hr />
+                              <FlightIcon
+                                rotate={"360deg"}
+                                iconColor={"#FF6805"}
+                              />
+                              <hr />
+                            </div>
+                          </span>
+                        </TripHour>
+                        <TripAirport>
+                          <div>
+                            <p>
+                              {singleFlightResult[1]}{" "}
+                              <b>({singleFlightResult[4]})</b>
+                            </p>
+                            {/* <p>1h 15m</p> */}
+                            <p>
+                              {singleFlightResult[0]}{" "}
+                              <b>({singleFlightResult[3]})</b>
+                            </p>
                           </div>
                           <div>
-                            <hr />
-                            <FlightIcon
-                              rotate={"180deg"}
-                              iconColor={"#0D3984"}
-                            />
-                            <hr />
+                            <span>
+                              <h4>BAGGAGE:</h4> <p>ADULT</p>
+                            </span>
+                            <span>
+                              <h4>CHECK IN:</h4> <p>20KG</p>
+                            </span>
                           </div>
-                        </span>
-                      </TripHour>
-                      <TripAirport>
-                        <div>
-                          <p>
-                            {flightResult[0]} <b>({flightResult[3]})</b>
-                          </p>
-                          <p>
-                            {flightResult[1]} <b>({flightResult[4]})</b>
-                          </p>
-                        </div>
-                        <div>
-                          <span>
-                            <h4>BAGGAGE:</h4> <p>ADULT</p>
-                          </span>
-                          <span>
-                            <h4>CHECK IN:</h4> <p>20KG</p>
-                          </span>
-                        </div>
-                        <div style={{ fontSize: "12px" }}>
-                          <p>
-                            {" "}
-                            {new Date(
-                              flightResult[2][
-                                flightResultIndex
-                              ].itineraries[0].segments[0].departure.at
-                            ).toLocaleDateString("en-US", {
-                              weekday: "long",
-                              month: "long",
-                              day: "numeric",
-                            })}
-                          </p>
-                          <p>
-                            {
-                              flightResult[2][flightResultIndex].itineraries[0]
-                                .segments[0].numberOfStops
-                            }{" "}
-                            Stops.{" "}
-                            {`${
-                              parseDuration(
-                                flightResult[2][flightResultIndex]
-                                  .itineraries[0].segments[0].duration
-                              ).hours
-                            }hr ${
-                              parseDuration(
-                                flightResult[2][flightResultIndex]
-                                  .itineraries[0].segments[0].duration
-                              ).minutes
-                            }min`}
-                          </p>
-                        </div>
-                      </TripAirport>
-                    </TripDetailTime>
-                  </TripDetailBody>
+                          <div style={{ fontSize: "12px" }}>
+                            <p>
+                              {" "}
+                              {new Date(
+                                singleFlightResult[2][
+                                  flightResultIndex
+                                ].itineraries[1].segments[0].departure.at
+                              ).toLocaleDateString("en-US", {
+                                weekday: "long",
+                                month: "long",
+                                day: "numeric",
+                              })}
+                            </p>
+                            <p>
+                              {
+                                singleFlightResult[2][flightResultIndex]
+                                  .itineraries[1].segments[0].numberOfStops
+                              }{" "}
+                              Stops.{" "}
+                              {`${
+                                parseDuration(
+                                  singleFlightResult[2][flightResultIndex]
+                                    .itineraries[1].segments[0].duration
+                                ).hours
+                              }hr ${
+                                parseDuration(
+                                  singleFlightResult[2][flightResultIndex]
+                                    .itineraries[1].segments[0].duration
+                                ).minutes
+                              }min`}
+                            </p>
+                          </div>
+                        </TripAirport>
+                      </TripDetailTime>
+                    </TripDetailBody>
+                  </div>
+                )}
+              </FlightDetailWrapper>
+
+              {/* For flight return */}
+              <FlightDetailWrapper>
+                {/* Title */}
+                <TripDetailTile
+                  onClick={() => setShowTravelDetail(!showTravelDetail)}
+                >
+                  <span>
+                    <h2>Travel Detail</h2>
+                  </span>
+                  <span>
+                    <div>
+                      <IoIosArrowDown />
+                    </div>
+                  </span>
+                </TripDetailTile>
+                {/* Body */}
+                {showTravelDetail && (
                   <TripDetailBody>
                     <TripDetailClass>
                       <span>
                         <AirlineFlightLogo
                           keyWord={
-                            flightResult[2][flightResultIndex]
+                            singleFlightResult[2][flightResultIndex]
                               .validatingAirlineCodes[0]
                           }
                           detail={true}
                         />
                       </span>
                       <span>
-                        {" "}
                         {
-                          flightResult[2][flightResultIndex].travelerPricings[0]
-                            .fareDetailsBySegment[0].cabin
+                          singleFlightResult[2][flightResultIndex]
+                            .travelerPricings[0].fareDetailsBySegment[0].cabin
                         }
                       </span>
                     </TripDetailClass>
                     <TripDetailTime>
-                      <TripHour>
-                        <span>
-                          <div>
-                            <h4>
-                              {new Date(
-                                flightResult[2][
-                                  flightResultIndex
-                                ].itineraries[1].segments[0].departure.at
-                              ).toLocaleTimeString("en-US", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </h4>
-                            <h4>
-                              {" "}
-                              {new Date(
-                                flightResult[2][
-                                  flightResultIndex
-                                ].itineraries[1].segments[0].arrival.at
-                              ).toLocaleTimeString("en-US", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </h4>
-                          </div>
-                          <div>
-                            <hr />
-                            <FlightIcon
-                              rotate={"360deg"}
-                              iconColor={"#FF6805"}
-                            />
-                            <hr />
-                          </div>
-                        </span>
-                      </TripHour>
-                      <TripAirport>
-                        <div>
-                          <p>
-                            {flightResult[1]} <b>({flightResult[4]})</b>
-                          </p>
-                          {/* <p>1h 15m</p> */}
-                          <p>
-                            {flightResult[0]} <b>({flightResult[3]})</b>
-                          </p>
-                        </div>
-                        <div>
-                          <span>
-                            <h4>BAGGAGE:</h4> <p>ADULT</p>
-                          </span>
-                          <span>
-                            <h4>CHECK IN:</h4> <p>20KG</p>
-                          </span>
-                        </div>
-                        <div style={{ fontSize: "12px" }}>
-                          <p>
-                            {" "}
-                            {new Date(
-                              flightResult[2][
-                                flightResultIndex
-                              ].itineraries[1].segments[0].departure.at
-                            ).toLocaleDateString("en-US", {
-                              weekday: "long",
-                              month: "long",
-                              day: "numeric",
-                            })}
-                          </p>
-                          <p>
-                            {
-                              flightResult[2][flightResultIndex].itineraries[1]
-                                .segments[0].numberOfStops
-                            }{" "}
-                            Stops.{" "}
-                            {`${
-                              parseDuration(
-                                flightResult[2][flightResultIndex]
-                                  .itineraries[1].segments[0].duration
-                              ).hours
-                            }hr ${
-                              parseDuration(
-                                flightResult[2][flightResultIndex]
-                                  .itineraries[1].segments[0].duration
-                              ).minutes
-                            }min`}
-                          </p>
-                        </div>
-                      </TripAirport>
+                      <CustomizeTripDetail>
+                        <h4>(1) {fravelDetail?.firstName}</h4>
+                        <p>ADULT</p>
+                        <span>{fravelDetail?.selectedGender}</span>
+                        <span>{fravelDetail?.email}</span>
+                      </CustomizeTripDetail>
                     </TripDetailTime>
                   </TripDetailBody>
-                </div>
-              )}
-            </FlightDetailWrapper>
+                )}
+              </FlightDetailWrapper>
+            </CustomizeContent>
 
-            {/* For flight return */}
-            <FlightDetailWrapper>
-              {/* Title */}
-              <TripDetailTile
-                onClick={() => setShowTravelDetail(!showTravelDetail)}
-              >
-                <span>
-                  <h2>Travel Detail</h2>
-                </span>
-                <span>
-                  <div>
-                    <IoIosArrowDown />
-                  </div>
-                </span>
-              </TripDetailTile>
-              {/* Body */}
-              {showTravelDetail && (
-                <TripDetailBody>
-                  <TripDetailClass>
-                    <span>
-                      <AirlineFlightLogo
-                        keyWord={
-                          flightResult[2][flightResultIndex]
-                            .validatingAirlineCodes[0]
-                        }
-                        detail={true}
-                      />
-                    </span>
-                    <span>
-                      {
-                        flightResult[2][flightResultIndex].travelerPricings[0]
-                          .fareDetailsBySegment[0].cabin
-                      }
-                    </span>
-                  </TripDetailClass>
-                  <TripDetailTime>
-                    <CustomizeTripDetail>
-                      <h4>(1) {fravelDetail?.firstName}</h4>
-                      <p>ADULT</p>
-                      <span>{fravelDetail?.selectedGender}</span>
-                      <span>{fravelDetail?.email}</span>
-                    </CustomizeTripDetail>
-                  </TripDetailTime>
-                </TripDetailBody>
-              )}
-            </FlightDetailWrapper>
-          </CustomizeContent>
+            {/* Trip Addons */}
+            <CustomizeContent>
+              <h2>Manzo Travel Addons Services</h2>
+              <p>Include manzo addon services in your trip</p>
+            </CustomizeContent>
 
-          {/* Trip Addons */}
-          <CustomizeContent>
-            <h2>Manzo Travel Addons Services</h2>
-            <p>Include manzo addon services in your trip</p>
-          </CustomizeContent>
+            {FlightAddons.map((addon, i) => (
+              <CustomizeContent key={i}>
+                <CustomizeAddonWrapper>
+                  <AddonCard>
+                    <AddonCardHeader>
+                      <AddonIcon>
+                        <FaTruckFieldUn />
+                      </AddonIcon>
+                      <span>
+                        <h2>{addon.title}</h2>
+                        <p>{addon.description}</p>
+                        <TermStyled
+                          onClick={() =>
+                            handleTermClick({
+                              title: addon.title,
+                              terms: addon.terms,
+                            })
+                          }
+                        >
+                          <p>Terms and Conditions</p> <IoIosArrowDown />
+                        </TermStyled>
+                      </span>
+                    </AddonCardHeader>
+                    <AddonCardButton>
+                      <h3>{addon.price}</h3>
+                      <p>{addon.numberOfPerson}</p>
+                      <Button text={"ADD ADDON"} />
+                    </AddonCardButton>
+                  </AddonCard>
+                </CustomizeAddonWrapper>
+              </CustomizeContent>
+            ))}
+            <div>
+              <Button
+                onClick={() => navigate("/overview-payment")}
+                text={"Continue to payment"}
+              />
+            </div>
+          </TripMinContent>
+        </CustomizeBody>
 
-          {FlightAddons.map((addon, i) => (
-            <CustomizeContent key={i}>
+        {showTerms && (
+          <TermsDetail>
+            <CustomizeContent wd={"50%"}>
               <CustomizeAddonWrapper>
-                <AddonCard>
-                  <AddonCardHeader>
-                    <AddonIcon>
-                      <FaTruckFieldUn />
-                    </AddonIcon>
-                    <span>
-                      <h2>{addon.title}</h2>
-                      <p>{addon.description}</p>
-                      <TermStyled
-                        onClick={() =>
-                          handleTermClick({
-                            title: addon.title,
-                            terms: addon.terms,
-                          })
-                        }
-                      >
-                        <p>Terms and Conditions</p> <IoIosArrowDown />
-                      </TermStyled>
+                <AddonCard flexDir="column">
+                  <TermsDetailHeader>
+                    <h2>{termsTitle}</h2>
+                    <span onClick={() => setShowTerms(false)}>
+                      <FaTimes />
                     </span>
-                  </AddonCardHeader>
-                  <AddonCardButton>
-                    <h3>{addon.price}</h3>
-                    <p>{addon.numberOfPerson}</p>
-                    <Button text={"ADD ADDON"} />
-                  </AddonCardButton>
+                  </TermsDetailHeader>
+                  <p>{termsBody}</p>
+                  <span>
+                    <button onClick={() => setShowTerms(false)}>
+                      Continue
+                    </button>
+                  </span>
                 </AddonCard>
               </CustomizeAddonWrapper>
             </CustomizeContent>
-          ))}
-          <div>
-            <Button
-              onClick={() => navigate("/overview-payment")}
-              text={"Continue to payment"}
-            />
-          </div>
-        </TripMinContent>
-      </CustomizeBody>
-
-      {showTerms && (
-        <TermsDetail>
-          <CustomizeContent wd={"50%"}>
-            <CustomizeAddonWrapper>
-              <AddonCard flexDir="column">
-                <TermsDetailHeader>
-                  <h2>{termsTitle}</h2>
-                  <span onClick={() => setShowTerms(false)}>
-                    <FaTimes />
-                  </span>
-                </TermsDetailHeader>
-                <p>{termsBody}</p>
-                <span>
-                  <button onClick={() => setShowTerms(false)}>Continue</button>
-                </span>
-              </AddonCard>
-            </CustomizeAddonWrapper>
-          </CustomizeContent>
-        </TermsDetail>
-      )}
-    </CustomizeWrapper>
-  );
+          </TermsDetail>
+        )}
+      </CustomizeWrapper>
+    );
+  }
 }

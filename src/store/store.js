@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
 export const useAuthStore = create((set) => ({
-  flightResult: [],
+  singleFlightResult: [],
   fravelDetail: {},
-  setFlightResult: (obj) => set({ flightResult: obj }),
+  setSingleFlightResult: (obj) => set({ singleFlightResult: obj }),
   setTravelDetail: (obj) => set({ fravelDetail: obj }),
 }));

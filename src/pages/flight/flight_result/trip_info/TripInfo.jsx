@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ButtonWrapper,
   FlightDetailWrapper,
@@ -47,11 +47,20 @@ import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../../store/store";
 
 export default function TripInfo() {
-  const { flightResult, setTravelDetail } = useAuthStore();
-  const { flightResultIndex } = useParams();
-  let queryParams;
   // navigation
   const navigate = useNavigate();
+
+  const { singleFlightResult, setTravelDetail } = useAuthStore();
+  const { flightResultIndex } = useParams();
+
+  useEffect(() => {
+    if (!singleFlightResult || singleFlightResult?.length === 0) {
+      navigate("/flight-booking");
+    }
+  }, [singleFlightResult, navigate]);
+
+  let queryParams;
+
   const money = new Intl.NumberFormat("en-us", {
     currency: "NGN",
     style: "currency",
@@ -227,571 +236,591 @@ export default function TripInfo() {
     email,
   };
   // console.log(queryParams);
-  return (
-    <TripInfoWrapper>
-      {/* header */}
-      <TripInfoHeader>
-        <TripInfoHeaderItems>
-          <TripInfoHeaderTitle>
-            <span>
-              <Button
-                text={"Back"}
-                onClick={() => navigate("/flight-result")}
-              />
-            </span>
-            <h2>Proceed with your booking</h2>
-          </TripInfoHeaderTitle>
-
-          {/* timeline: Trip info steps */}
-          <Timeline currentStep={2} />
-        </TripInfoHeaderItems>
-      </TripInfoHeader>
-
-      {/* body */}
-      <TripInfoBody>
-        {/* Sidebar */}
-
-        <TripInfoSideBar>
-          <TripInfoSideContent>
-            <h2>My Cart</h2>
-            <h4>Flight</h4>
-            <SideFlightAirport>
+  if (!singleFlightResult || singleFlightResult?.length === 0) {
+    navigate("/flight-booking");
+  } else {
+    return (
+      <TripInfoWrapper>
+        {/* header */}
+        <TripInfoHeader>
+          <TripInfoHeaderItems>
+            <TripInfoHeaderTitle>
               <span>
-                <FlightIcon
-                  IconSize={"14px"}
-                  rotate={"45deg"}
-                  iconColor={"#4a4a4a"}
+                <Button
+                  text={"Back"}
+                  onClick={() => navigate("/flight-result")}
                 />
-                <div>
-                  <p>
-                    <b>
-                      {flightResult[0]} ({flightResult[3]}) TO {flightResult[1]}{" "}
-                      ({flightResult[4]})
-                    </b>
-                  </p>
-                  <p>
-                    {" "}
-                    {
-                      flightResult[2][flightResultIndex].travelerPricings[0]
-                        .fareDetailsBySegment[0].cabin
-                    }{" "}
-                    Round Trip
-                  </p>
-                </div>
               </span>
+              <h2>Proceed with your booking</h2>
+            </TripInfoHeaderTitle>
 
-              <span>
-                <FlightIcon
-                  IconSize={"14px"}
-                  rotate={"45deg"}
-                  iconColor={"#4a4a4a"}
-                />
-                <div>
-                  <p>
-                    <b>
+            {/* timeline: Trip info steps */}
+            <Timeline currentStep={2} />
+          </TripInfoHeaderItems>
+        </TripInfoHeader>
+
+        {/* body */}
+        <TripInfoBody>
+          {/* Sidebar */}
+
+          <TripInfoSideBar>
+            <TripInfoSideContent>
+              <h2>My Cart</h2>
+              <h4>Flight</h4>
+              <SideFlightAirport>
+                <span>
+                  <FlightIcon
+                    IconSize={"14px"}
+                    rotate={"45deg"}
+                    iconColor={"#4a4a4a"}
+                  />
+                  <div>
+                    <p>
+                      <b>
+                        {singleFlightResult[0]} ({singleFlightResult[3]}) TO{" "}
+                        {singleFlightResult[1]} ({singleFlightResult[4]})
+                      </b>
+                    </p>
+                    <p>
                       {" "}
-                      {flightResult[1]} ({flightResult[4]}) TO {flightResult[0]}{" "}
-                      ({flightResult[3]})
-                    </b>
-                  </p>
-                  <p>
-                    {
-                      flightResult[2][flightResultIndex].travelerPricings[0]
-                        .fareDetailsBySegment[0].cabin
-                    }{" "}
-                    Round Trip
-                  </p>
-                </div>
-              </span>
-            </SideFlightAirport>
+                      {
+                        singleFlightResult[2][flightResultIndex]
+                          .travelerPricings[0].fareDetailsBySegment[0].cabin
+                      }{" "}
+                      Round Trip
+                    </p>
+                  </div>
+                </span>
 
-            <h4>Flight Fare Summary</h4>
-            <SideFlightSummary>
-              <div>
-                {/* <span>Adult X 1</span>
-              <span></span> */}
-              </div>
-              <div>
-                <span>Base Fee</span>
                 <span>
-                  {money.format(flightResult[2][flightResultIndex].price.base)}
+                  <FlightIcon
+                    IconSize={"14px"}
+                    rotate={"45deg"}
+                    iconColor={"#4a4a4a"}
+                  />
+                  <div>
+                    <p>
+                      <b>
+                        {" "}
+                        {singleFlightResult[1]} ({singleFlightResult[4]}) TO{" "}
+                        {singleFlightResult[0]} ({singleFlightResult[3]})
+                      </b>
+                    </p>
+                    <p>
+                      {
+                        singleFlightResult[2][flightResultIndex]
+                          .travelerPricings[0].fareDetailsBySegment[0].cabin
+                      }{" "}
+                      Round Trip
+                    </p>
+                  </div>
                 </span>
-              </div>
-              <div>
-                <span>Discount</span>
-                <span>0</span>
-              </div>
-              <div>
-                <span>Service Charge</span>
-                <span>0</span>
-              </div>
-              <div>
-                <span>
-                  <b>Total Fare</b>
-                </span>
-                <span>
-                  {money.format(flightResult[2][flightResultIndex].price.total)}
-                </span>
-              </div>
-            </SideFlightSummary>
-            <TotalTrip>
-              <div>
-                <span>Trip Total</span>
-                <span>
-                  {" "}
-                  {money.format(flightResult[2][flightResultIndex].price.total)}
-                </span>
-              </div>
-            </TotalTrip>
-          </TripInfoSideContent>
-          <FormWrapper>
-            <PromoWrapper>
-              <PromoHeader>PROMO CODE</PromoHeader>
-              <PromoInput>
-                <Input title={"PROMO CODE"} />
+              </SideFlightAirport>
+
+              <h4>Flight Fare Summary</h4>
+              <SideFlightSummary>
                 <div>
-                  {" "}
-                  <Button text={"Apply"} />
+                  {/* <span>Adult X 1</span>
+              <span></span> */}
                 </div>
-              </PromoInput>
-            </PromoWrapper>
-          </FormWrapper>
-        </TripInfoSideBar>
-
-        {/* Main Content */}
-        <TripMinContent>
-          {/* User info content */}
-          <TripInfoContent>
-            {/* Flight Detail section */}
-
-            {/* For Departure */}
-            <FlightDetailWrapper>
-              {/* title */}
-              <TripDetailTile
-                onClick={() => setShowtripDepart(!showtripDepart)}
-              >
-                <span>
-                  {" "}
-                  <h2>{flightResult[0]}</h2>{" "}
-                  <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />{" "}
-                  <h2>{flightResult[1]}</h2>{" "}
-                </span>
-                <span>
-                  <p>
-                    {new Date(
-                      flightResult[2][
-                        flightResultIndex
-                      ].itineraries[0].segments[0].departure.at
-                    ).toLocaleDateString("en-US", {
-                      weekday: "long",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                  <p>
-                    {
-                      flightResult[2][flightResultIndex].itineraries[0]
-                        .segments[0].numberOfStops
-                    }{" "}
-                    Stops.{" "}
-                    {`${
-                      parseDuration(
-                        flightResult[2][flightResultIndex].itineraries[0]
-                          .segments[0].duration
-                      ).hours
-                    }hr ${
-                      parseDuration(
-                        flightResult[2][flightResultIndex].itineraries[0]
-                          .segments[0].duration
-                      ).minutes
-                    }min`}
-                  </p>
+                <div>
+                  <span>Base Fee</span>
+                  <span>
+                    {money.format(
+                      singleFlightResult[2][flightResultIndex].price.base
+                    )}
+                  </span>
+                </div>
+                <div>
+                  <span>Discount</span>
+                  <span>0</span>
+                </div>
+                <div>
+                  <span>Service Charge</span>
+                  <span>0</span>
+                </div>
+                <div>
+                  <span>
+                    <b>Total Fare</b>
+                  </span>
+                  <span>
+                    {money.format(
+                      singleFlightResult[2][flightResultIndex].price.total
+                    )}
+                  </span>
+                </div>
+              </SideFlightSummary>
+              <TotalTrip>
+                <div>
+                  <span>Trip Total</span>
+                  <span>
+                    {" "}
+                    {money.format(
+                      singleFlightResult[2][flightResultIndex].price.total
+                    )}
+                  </span>
+                </div>
+              </TotalTrip>
+            </TripInfoSideContent>
+            <FormWrapper>
+              <PromoWrapper>
+                <PromoHeader>PROMO CODE</PromoHeader>
+                <PromoInput>
+                  <Input title={"PROMO CODE"} />
                   <div>
-                    <IoIosArrowDown />
+                    {" "}
+                    <Button text={"Apply"} />
                   </div>
-                </span>
-              </TripDetailTile>
-              {/* body */}
-              {showtripDepart && (
-                <TripDetailBody>
-                  <TripDetailClass>
-                    <span>
-                      <AirlineFlightLogo
-                        keyWord={
-                          flightResult[2][flightResultIndex]
-                            .validatingAirlineCodes[0]
-                        }
-                        detail={true}
-                      />
-                    </span>
-                    <span>
-                      <a href="#">
-                        {
-                          flightResult[2][flightResultIndex].travelerPricings[0]
-                            .fareDetailsBySegment[0].cabin
-                        }
-                      </a>
-                    </span>
-                  </TripDetailClass>
-                  <TripDetailTime>
-                    <TripHour>
+                </PromoInput>
+              </PromoWrapper>
+            </FormWrapper>
+          </TripInfoSideBar>
+
+          {/* Main Content */}
+          <TripMinContent>
+            {/* User info content */}
+            <TripInfoContent>
+              {/* Flight Detail section */}
+
+              {/* For Departure */}
+              <FlightDetailWrapper>
+                {/* title */}
+                <TripDetailTile
+                  onClick={() => setShowtripDepart(!showtripDepart)}
+                >
+                  <span>
+                    {" "}
+                    <h2>{singleFlightResult[0]}</h2>{" "}
+                    <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />{" "}
+                    <h2>{singleFlightResult[1]}</h2>{" "}
+                  </span>
+                  <span>
+                    <p>
+                      {new Date(
+                        singleFlightResult[2][
+                          flightResultIndex
+                        ].itineraries[0].segments[0].departure.at
+                      ).toLocaleDateString("en-US", {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                    <p>
+                      {
+                        singleFlightResult[2][flightResultIndex].itineraries[0]
+                          .segments[0].numberOfStops
+                      }{" "}
+                      Stops.{" "}
+                      {`${
+                        parseDuration(
+                          singleFlightResult[2][flightResultIndex]
+                            .itineraries[0].segments[0].duration
+                        ).hours
+                      }hr ${
+                        parseDuration(
+                          singleFlightResult[2][flightResultIndex]
+                            .itineraries[0].segments[0].duration
+                        ).minutes
+                      }min`}
+                    </p>
+                    <div>
+                      <IoIosArrowDown />
+                    </div>
+                  </span>
+                </TripDetailTile>
+                {/* body */}
+                {showtripDepart && (
+                  <TripDetailBody>
+                    <TripDetailClass>
                       <span>
-                        <div>
-                          <h4>
-                            {new Date(
-                              flightResult[2][
-                                flightResultIndex
-                              ].itineraries[0].segments[0].departure.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </h4>
-                          <h4>
-                            {" "}
-                            {new Date(
-                              flightResult[2][
-                                flightResultIndex
-                              ].itineraries[0].segments[0].arrival.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </h4>
-                        </div>
-                        <div>
-                          <hr />
-                          <FlightIcon rotate={"180deg"} iconColor={"#0D3984"} />
-                          <hr />
-                        </div>
+                        <AirlineFlightLogo
+                          keyWord={
+                            singleFlightResult[2][flightResultIndex]
+                              .validatingAirlineCodes[0]
+                          }
+                          detail={true}
+                        />
                       </span>
-                    </TripHour>
-                    <TripAirport>
-                      <div>
-                        <p>
-                          {flightResult[0]} <b>({flightResult[3]})</b>
-                        </p>
-                        <p>{`${
-                          parseDuration(
-                            flightResult[2][flightResultIndex].itineraries[0]
-                              .segments[0].duration
-                          ).hours
-                        }hr ${
-                          parseDuration(
-                            flightResult[2][flightResultIndex].itineraries[0]
-                              .segments[0].duration
-                          ).minutes
-                        }min`}</p>
-                        <p>
-                          {flightResult[1]} <b>({flightResult[4]})</b>
-                        </p>
-                      </div>
-                      <div>
+                      <span>
+                        <a href="#">
+                          {
+                            singleFlightResult[2][flightResultIndex]
+                              .travelerPricings[0].fareDetailsBySegment[0].cabin
+                          }
+                        </a>
+                      </span>
+                    </TripDetailClass>
+                    <TripDetailTime>
+                      <TripHour>
                         <span>
-                          <h4>CHECK IN:</h4>{" "}
+                          <div>
+                            <h4>
+                              {new Date(
+                                singleFlightResult[2][
+                                  flightResultIndex
+                                ].itineraries[0].segments[0].departure.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </h4>
+                            <h4>
+                              {" "}
+                              {new Date(
+                                singleFlightResult[2][
+                                  flightResultIndex
+                                ].itineraries[0].segments[0].arrival.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </h4>
+                          </div>
+                          <div>
+                            <hr />
+                            <FlightIcon
+                              rotate={"180deg"}
+                              iconColor={"#0D3984"}
+                            />
+                            <hr />
+                          </div>
+                        </span>
+                      </TripHour>
+                      <TripAirport>
+                        <div>
                           <p>
-                            {
-                              flightResult[2][flightResultIndex]
-                                .travelerPricings[0].travelerType
-                            }
-                          </p>{" "}
-                        </span>
-                        <span>
-                          <h4>BAGGAGE:</h4> <p>1</p>
-                        </span>
-                      </div>
-                    </TripAirport>
-                  </TripDetailTime>
-                </TripDetailBody>
-              )}
-            </FlightDetailWrapper>
-
-            {/* for flight Return */}
-            {/* Flight Detail section */}
-            <FlightDetailWrapper>
-              {/* title */}
-              <TripDetailTile
-                onClick={() => setShowtripReturn(!showtripReturn)}
-              >
-                <span>
-                  {" "}
-                  <h2>{flightResult[1]}</h2>{" "}
-                  <FlightIcon rotate={"270deg"} iconColor={"#FF6805"} />{" "}
-                  <h2>{flightResult[0]}</h2>{" "}
-                </span>
-                <span>
-                  <p>
-                    {new Date(
-                      flightResult[2][
-                        flightResultIndex
-                      ].itineraries[1].segments[0].departure.at
-                    ).toLocaleDateString("en-US", {
-                      weekday: "long",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                  <p>
-                    {
-                      flightResult[2][flightResultIndex].itineraries[1]
-                        .segments[0].numberOfStops
-                    }{" "}
-                    Stops.{" "}
-                    {`${
-                      parseDuration(
-                        flightResult[2][flightResultIndex].itineraries[1]
-                          .segments[0].duration
-                      ).hours
-                    }hr ${
-                      parseDuration(
-                        flightResult[2][flightResultIndex].itineraries[1]
-                          .segments[0].duration
-                      ).minutes
-                    }min`}
-                  </p>
-                  <div>
-                    <IoIosArrowDown />
-                  </div>
-                </span>
-              </TripDetailTile>
-              {/* body */}
-              {showtripReturn && (
-                <TripDetailBody>
-                  <TripDetailClass>
-                    <span>
-                      <AirlineFlightLogo
-                        keyWord={
-                          flightResult[2][flightResultIndex]
-                            .validatingAirlineCodes[0]
-                        }
-                        detail={true}
-                      />
-                    </span>
-                    <span>
-                      <a href="#">
-                        {
-                          flightResult[2][flightResultIndex].travelerPricings[0]
-                            .fareDetailsBySegment[0].cabin
-                        }
-                      </a>
-                    </span>
-                  </TripDetailClass>
-                  <TripDetailTime>
-                    <TripHour>
-                      <span>
-                        <div>
-                          <h4>
-                            {new Date(
-                              flightResult[2][
-                                flightResultIndex
-                              ].itineraries[1].segments[0].departure.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </h4>
-                          <h4>
-                            {" "}
-                            {new Date(
-                              flightResult[2][
-                                flightResultIndex
-                              ].itineraries[1].segments[0].arrival.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </h4>
-                        </div>
-                        <div>
-                          <hr />
-                          <FlightIcon rotate={"360deg"} iconColor={"#FF6805"} />
-                          <hr />
-                        </div>
-                      </span>
-                    </TripHour>
-                    <TripAirport>
-                      <div>
-                        <p>
-                          {flightResult[1]} <b>({flightResult[4]})</b>
-                        </p>
-                        <p>
-                          {" "}
-                          {`${
+                            {singleFlightResult[0]}{" "}
+                            <b>({singleFlightResult[3]})</b>
+                          </p>
+                          <p>{`${
                             parseDuration(
-                              flightResult[2][flightResultIndex].itineraries[1]
-                                .segments[0].duration
+                              singleFlightResult[2][flightResultIndex]
+                                .itineraries[0].segments[0].duration
                             ).hours
                           }hr ${
                             parseDuration(
-                              flightResult[2][flightResultIndex].itineraries[1]
-                                .segments[0].duration
+                              singleFlightResult[2][flightResultIndex]
+                                .itineraries[0].segments[0].duration
                             ).minutes
-                          }min`}
-                        </p>
-                        <p>
-                          {flightResult[0]} <b>({flightResult[3]})</b>
-                        </p>
-                      </div>
-                      <div>
+                          }min`}</p>
+                          <p>
+                            {singleFlightResult[1]}{" "}
+                            <b>({singleFlightResult[4]})</b>
+                          </p>
+                        </div>
+                        <div>
+                          <span>
+                            <h4>CHECK IN:</h4>{" "}
+                            <p>
+                              {
+                                singleFlightResult[2][flightResultIndex]
+                                  .travelerPricings[0].travelerType
+                              }
+                            </p>{" "}
+                          </span>
+                          <span>
+                            <h4>BAGGAGE:</h4> <p>1</p>
+                          </span>
+                        </div>
+                      </TripAirport>
+                    </TripDetailTime>
+                  </TripDetailBody>
+                )}
+              </FlightDetailWrapper>
+
+              {/* for flight Return */}
+              {/* Flight Detail section */}
+              <FlightDetailWrapper>
+                {/* title */}
+                <TripDetailTile
+                  onClick={() => setShowtripReturn(!showtripReturn)}
+                >
+                  <span>
+                    {" "}
+                    <h2>{singleFlightResult[1]}</h2>{" "}
+                    <FlightIcon rotate={"270deg"} iconColor={"#FF6805"} />{" "}
+                    <h2>{singleFlightResult[0]}</h2>{" "}
+                  </span>
+                  <span>
+                    <p>
+                      {new Date(
+                        singleFlightResult[2][
+                          flightResultIndex
+                        ].itineraries[1].segments[0].departure.at
+                      ).toLocaleDateString("en-US", {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                    <p>
+                      {
+                        singleFlightResult[2][flightResultIndex].itineraries[1]
+                          .segments[0].numberOfStops
+                      }{" "}
+                      Stops.{" "}
+                      {`${
+                        parseDuration(
+                          singleFlightResult[2][flightResultIndex]
+                            .itineraries[1].segments[0].duration
+                        ).hours
+                      }hr ${
+                        parseDuration(
+                          singleFlightResult[2][flightResultIndex]
+                            .itineraries[1].segments[0].duration
+                        ).minutes
+                      }min`}
+                    </p>
+                    <div>
+                      <IoIosArrowDown />
+                    </div>
+                  </span>
+                </TripDetailTile>
+                {/* body */}
+                {showtripReturn && (
+                  <TripDetailBody>
+                    <TripDetailClass>
+                      <span>
+                        <AirlineFlightLogo
+                          keyWord={
+                            singleFlightResult[2][flightResultIndex]
+                              .validatingAirlineCodes[0]
+                          }
+                          detail={true}
+                        />
+                      </span>
+                      <span>
+                        <a href="#">
+                          {
+                            singleFlightResult[2][flightResultIndex]
+                              .travelerPricings[0].fareDetailsBySegment[0].cabin
+                          }
+                        </a>
+                      </span>
+                    </TripDetailClass>
+                    <TripDetailTime>
+                      <TripHour>
                         <span>
-                          <h4>CHECK IN:</h4>{" "}
+                          <div>
+                            <h4>
+                              {new Date(
+                                singleFlightResult[2][
+                                  flightResultIndex
+                                ].itineraries[1].segments[0].departure.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </h4>
+                            <h4>
+                              {" "}
+                              {new Date(
+                                singleFlightResult[2][
+                                  flightResultIndex
+                                ].itineraries[1].segments[0].arrival.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </h4>
+                          </div>
+                          <div>
+                            <hr />
+                            <FlightIcon
+                              rotate={"360deg"}
+                              iconColor={"#FF6805"}
+                            />
+                            <hr />
+                          </div>
+                        </span>
+                      </TripHour>
+                      <TripAirport>
+                        <div>
+                          <p>
+                            {singleFlightResult[1]}{" "}
+                            <b>({singleFlightResult[4]})</b>
+                          </p>
                           <p>
                             {" "}
-                            {
-                              flightResult[2][flightResultIndex]
-                                .travelerPricings[0].travelerType
-                            }
-                          </p>{" "}
-                        </span>
-                        <span>
-                          <h4>BAGGAGE:</h4> <p>1</p>
-                        </span>
-                      </div>
-                    </TripAirport>
-                  </TripDetailTime>
-                </TripDetailBody>
-              )}
-            </FlightDetailWrapper>
-          </TripInfoContent>
+                            {`${
+                              parseDuration(
+                                singleFlightResult[2][flightResultIndex]
+                                  .itineraries[1].segments[0].duration
+                              ).hours
+                            }hr ${
+                              parseDuration(
+                                singleFlightResult[2][flightResultIndex]
+                                  .itineraries[1].segments[0].duration
+                              ).minutes
+                            }min`}
+                          </p>
+                          <p>
+                            {singleFlightResult[0]}{" "}
+                            <b>({singleFlightResult[3]})</b>
+                          </p>
+                        </div>
+                        <div>
+                          <span>
+                            <h4>CHECK IN:</h4>{" "}
+                            <p>
+                              {" "}
+                              {
+                                singleFlightResult[2][flightResultIndex]
+                                  .travelerPricings[0].travelerType
+                              }
+                            </p>{" "}
+                          </span>
+                          <span>
+                            <h4>BAGGAGE:</h4> <p>1</p>
+                          </span>
+                        </div>
+                      </TripAirport>
+                    </TripDetailTime>
+                  </TripDetailBody>
+                )}
+              </FlightDetailWrapper>
+            </TripInfoContent>
 
-          {/*user trip data  */}
-          <TripInfoContent>
-            <h2>Travel Detail</h2>
+            {/*user trip data  */}
+            <TripInfoContent>
+              <h2>Travel Detail</h2>
 
-            {/* Passenger */}
-            <TripPassenger>
-              <div>
-                <span>
-                  <FaUser />
-                </span>
-                <h3>Adult (40yrs+)</h3>
-              </div>
-              <div>
-                <p>0/1 added</p>
-              </div>
-            </TripPassenger>
-
-            {/* Form */}
-            <FormWrapper onSubmit={handledSubmit}>
-              <FormContent>
-                {/* Title  */}
-                <SelectInput
-                  label={"Title"}
-                  options={userTitle}
-                  title={"Title"}
-                  error={titleError}
-                  onChange={handleSelectTitleChange}
-                />
-
-                {/* Last name */}
-                <Input
-                  title={"Last Name"}
-                  label={"Last Name"}
-                  type={"text"}
-                  value={lastName}
-                  onChange={lastNameOnchangeHandler}
-                  error={lastNameError}
-                  requiredSymbol={"*"}
-                />
-
-                {/* First name */}
-                <Input
-                  type={"text"}
-                  title={"First Name"}
-                  label={"First Name"}
-                  value={firstName}
-                  onChange={firstNameOnchangeHandler}
-                  error={firstNameError}
-                  requiredSymbol={"*"}
-                />
-              </FormContent>
-
-              <FormContent>
-                {/* Middle name */}
-                <Input
-                  type={"text"}
-                  title={"Middle Name"}
-                  label={"Middle Name"}
-                  value={middleName}
-                  onChange={middleNameOnchangeHandler}
-                  error={middleNameError}
-                  requiredSymbol={"*"}
-                />
-
-                {/* DOB */}
-                <Input
-                  title={"Date of Birth"}
-                  label={"Date of Birth"}
-                  type={"date"}
-                  value={dob}
-                  onChange={dobOnchangeHandler}
-                  error={dobError}
-                  requiredSymbol={"*"}
-                />
-
-                {/* Country  */}
-                <SelectInput
-                  options={Countries}
-                  title={"Nationality"}
-                  error={countryError}
-                  onChange={handleSelectCountryChange}
-                />
-              </FormContent>
-
-              <FormContent>
-                {/* Gender */}
-                <RadioInput
-                  options={gender}
-                  defaultValue={selectedGender}
-                  onChange={handleGenderChange}
-                  error={genderError}
-                />
-
-                {/* Phone Number */}
-                <Input
-                  title={"Phone Number "}
-                  label={"Phone Number "}
-                  type={"text"}
-                  value={phone}
-                  onChange={phonOnchangeHandler}
-                  error={phoneError}
-                  requiredSymbol={"*"}
-                  maxLength={12}
-                />
-
-                {/* email address */}
-                <Input
-                  title={"Email Address"}
-                  label={"Email Address"}
-                  type={"email"}
-                  value={email}
-                  onChange={emailOnchangeHandler}
-                  error={emailError}
-                  requiredSymbol={"*"}
-                />
-              </FormContent>
-
-              {/* Continue Button */}
-              <ButtonWrapper>
+              {/* Passenger */}
+              <TripPassenger>
                 <div>
-                  <input type="checkbox" name="terms" id="terms" />
-                  <p>
-                    By proceeding you agree have read and accept our{" "}
-                    <a href="#">Terms and Conditions</a>
-                  </p>
+                  <span>
+                    <FaUser />
+                  </span>
+                  <h3>Adult (40yrs+)</h3>
                 </div>
-                <Button
-                  text={"Continue"}
-                  onClick={() => {
-                    setTravelDetail(queryParams);
-                    navigate(`/flight-customization/${flightResultIndex}`);
-                  }}
-                />
-              </ButtonWrapper>
-            </FormWrapper>
-          </TripInfoContent>
-        </TripMinContent>
-      </TripInfoBody>
-    </TripInfoWrapper>
-  );
+                <div>
+                  <p>0/1 added</p>
+                </div>
+              </TripPassenger>
+
+              {/* Form */}
+              <FormWrapper onSubmit={handledSubmit}>
+                <FormContent>
+                  {/* Title  */}
+                  <SelectInput
+                    label={"Title"}
+                    options={userTitle}
+                    title={"Title"}
+                    error={titleError}
+                    onChange={handleSelectTitleChange}
+                  />
+
+                  {/* Last name */}
+                  <Input
+                    title={"Last Name"}
+                    label={"Last Name"}
+                    type={"text"}
+                    value={lastName}
+                    onChange={lastNameOnchangeHandler}
+                    error={lastNameError}
+                    requiredSymbol={"*"}
+                  />
+
+                  {/* First name */}
+                  <Input
+                    type={"text"}
+                    title={"First Name"}
+                    label={"First Name"}
+                    value={firstName}
+                    onChange={firstNameOnchangeHandler}
+                    error={firstNameError}
+                    requiredSymbol={"*"}
+                  />
+                </FormContent>
+
+                <FormContent>
+                  {/* Middle name */}
+                  <Input
+                    type={"text"}
+                    title={"Middle Name"}
+                    label={"Middle Name"}
+                    value={middleName}
+                    onChange={middleNameOnchangeHandler}
+                    error={middleNameError}
+                    requiredSymbol={"*"}
+                  />
+
+                  {/* DOB */}
+                  <Input
+                    title={"Date of Birth"}
+                    label={"Date of Birth"}
+                    type={"date"}
+                    value={dob}
+                    onChange={dobOnchangeHandler}
+                    error={dobError}
+                    requiredSymbol={"*"}
+                  />
+
+                  {/* Country  */}
+                  <SelectInput
+                    options={Countries}
+                    title={"Nationality"}
+                    error={countryError}
+                    onChange={handleSelectCountryChange}
+                  />
+                </FormContent>
+
+                <FormContent>
+                  {/* Gender */}
+                  <RadioInput
+                    options={gender}
+                    defaultValue={selectedGender}
+                    onChange={handleGenderChange}
+                    error={genderError}
+                  />
+
+                  {/* Phone Number */}
+                  <Input
+                    title={"Phone Number "}
+                    label={"Phone Number "}
+                    type={"text"}
+                    value={phone}
+                    onChange={phonOnchangeHandler}
+                    error={phoneError}
+                    requiredSymbol={"*"}
+                    maxLength={12}
+                  />
+
+                  {/* email address */}
+                  <Input
+                    title={"Email Address"}
+                    label={"Email Address"}
+                    type={"email"}
+                    value={email}
+                    onChange={emailOnchangeHandler}
+                    error={emailError}
+                    requiredSymbol={"*"}
+                  />
+                </FormContent>
+
+                {/* Continue Button */}
+                <ButtonWrapper>
+                  <div>
+                    <input type="checkbox" name="terms" id="terms" />
+                    <p>
+                      By proceeding you agree have read and accept our{" "}
+                      <a href="#">Terms and Conditions</a>
+                    </p>
+                  </div>
+                  <Button
+                    text={"Continue"}
+                    onClick={() => {
+                      setTravelDetail(queryParams);
+                      navigate(`/flight-customization/${flightResultIndex}`);
+                    }}
+                  />
+                </ButtonWrapper>
+              </FormWrapper>
+            </TripInfoContent>
+          </TripMinContent>
+        </TripInfoBody>
+      </TripInfoWrapper>
+    );
+  }
 }

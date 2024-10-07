@@ -8,13 +8,12 @@ import {
   MdFlightStyled,
 } from "../../pages/flight/flight_result/FlightResult.style";
 import { MdFlight } from "react-icons/md";
-import flightLogo from "../../images/aire-peace.png";
-import AirlineFlightLogo from "./AirlineFlightLogo";
 import AirlineCodeLookup from "./AirlineCodeLookup";
-const FlightResultForDepartandReturn = ({
+import AirlineFlightLogo from "./AirlineFlightLogo";
+
+const FlightResultForDepart = ({
   flightSearchResultData,
   setIndex,
-  locationName,
   showViewDetail,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -23,13 +22,13 @@ const FlightResultForDepartandReturn = ({
     style: "currency",
   });
   useEffect(() => {
-    if (currentIndex < flightSearchResultData?.length) {
+    if (currentIndex < flightSearchResultData.length) {
       const timer = setTimeout(() => {
         setCurrentIndex(currentIndex + 1);
       }, 2000); // Delay of 1 second for each item
       return () => clearTimeout(timer);
     }
-  }, [currentIndex, flightSearchResultData?.length]);
+  }, [currentIndex, flightSearchResultData.length]);
 
   // Cacula for duration
   function parseDuration(duration) {
@@ -48,13 +47,11 @@ const FlightResultForDepartandReturn = ({
 
     return { hours, minutes };
   }
-
   return (
     <>
       {flightSearchResultData?.slice(0, currentIndex).map((data, index) => (
-        <FlightCard key={index}>
+        <FlightCard>
           {/* flight logo */}
-
           <AirlineFlightLogo
             keyWord={data.validatingAirlineCodes[0]}
             index={index}
@@ -72,7 +69,7 @@ const FlightResultForDepartandReturn = ({
                     data.itineraries[0].segments[0].departure.at
                   ).toLocaleString()}
                 </p>{" "}
-                {/* <p>Arik Air</p> */}
+                <p>Arik Air</p>
               </DnRHeader>
               <div>
                 <span>
@@ -85,12 +82,9 @@ const FlightResultForDepartandReturn = ({
                       minute: "2-digit",
                     })}
                   </h3>
-                  <p style={{ width: 150, fontSize: 10 }}>{locationName[0]}</p>
-
-                  {/*                   
                   <AirlineCodeLookup
                     keyWord={data.itineraries[0].segments[0].departure.iataCode}
-                  /> */}
+                  />
                 </span>
                 <span>
                   {data.itineraries[0].segments[0].numberOfStops}-Stop
@@ -115,68 +109,9 @@ const FlightResultForDepartandReturn = ({
                       minute: "2-digit",
                     })}
                   </h3>
-                  <p style={{ width: 150, fontSize: 10 }}>{locationName[1]}</p>
-                  {/* <AirlineCodeLookup
+                  <AirlineCodeLookup
                     keyWord={data.itineraries[0].segments[0].arrival.iataCode}
-                  /> */}
-                </span>
-              </div>
-            </DnRWrapper>
-
-            <DnRWrapper>
-              <DnRHeader>
-                <h5>Return</h5>{" "}
-                <p style={{ width: 150, fontSize: 10 }}>
-                  {" "}
-                  {new Date(
-                    data.itineraries[1].segments[0].departure.at
-                  ).toLocaleString()}
-                </p>{" "}
-                {/* <p>Arik Air</p> */}
-              </DnRHeader>
-              <div>
-                <span>
-                  <h3>
-                    {" "}
-                    {new Date(
-                      data.itineraries[1].segments[0].departure.at
-                    ).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </h3>
-                  <p style={{ width: 150, fontSize: 10 }}>{locationName[1]}</p>
-                  {/* <AirlineCodeLookup
-                    keyWord={data.itineraries[1].segments[0].departure.iataCode}
-                  /> */}
-                </span>
-                <span>
-                  {data.itineraries[1].segments[0].numberOfStops}-Stop
-                  <MdFlightStyled rotateIcon={"270deg"} IconColor={"#FF6805"}>
-                    <MdFlight />
-                  </MdFlightStyled>
-                  {`${
-                    parseDuration(data.itineraries[1].segments[0].duration)
-                      .hours
-                  }hr ${
-                    parseDuration(data.itineraries[1].segments[0].duration)
-                      .minutes
-                  }min`}
-                </span>
-                <span>
-                  <h3>
-                    {" "}
-                    {new Date(
-                      data.itineraries[1].segments[0].arrival.at
-                    ).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </h3>
-                  <p style={{ width: 150, fontSize: 10 }}>{locationName[0]}</p>
-                  {/* <AirlineCodeLookup
-                    keyWord={data.itineraries[1].segments[0].arrival.iataCode}
-                  /> */}
+                  />
                 </span>
               </div>
             </DnRWrapper>
@@ -196,4 +131,4 @@ const FlightResultForDepartandReturn = ({
   );
 };
 
-export default FlightResultForDepartandReturn;
+export default FlightResultForDepart;
