@@ -82,7 +82,7 @@ export default function HotelBooking() {
    const [room, setRoom] = useState(1);
   const [takeOff, setTakeOff] = useState('');
   
-   const [showHotelInputs, setShowHotelInputs] = useState(false)
+   const [showHotelInputs, setShowHotelInputs] = useState(true)
 
 
 
@@ -138,15 +138,30 @@ export default function HotelBooking() {
 
    const destinationAirportList= [
      {
-       airportAddress: 'Lagos, Nigeria',
-       airportName: 'Murtala Muhammad Internatinal Airport',
-       airportAbbreviation: 'LOS'   
+       airportAddress: 'Lagos',
+       airportCountry: 'Nigeria'
+ 
    },
      {
-         airportAddress: 'Abuja, Nigeria',
-         airportName: 'Nnamdi Azikwe Internatinal Airport',
-         airportAbbreviation: 'ABV'   
+         airportAddress: 'Abuja',
+         airportCountry: 'Nigeria'
+        
      },
+     {
+      airportAddress: 'Ikeja',
+      airportCountry: 'Nigeria'
+     
+  },
+    {
+      airportAddress: 'Kano',
+      airportCountry: 'Nigeria'
+    
+  },
+  {
+    airportAddress: 'Port-Hacourt',
+    airportCountry: 'Nigeria'
+  
+  },
      
    ]
 

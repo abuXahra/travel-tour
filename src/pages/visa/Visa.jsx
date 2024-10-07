@@ -16,6 +16,7 @@ import { FaTimes, FaWhatsapp } from "react-icons/fa";
 import SaudiVisaForm from "./visa_component/SaudiVisaForm";
 import UserVisaData from '../../components/visa/UserVisaData';
 import { FaBullseye } from 'react-icons/fa6';
+import Content from '../../components/homepage_content/Content';
 
 export default function Visa() {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ export default function Visa() {
 
     {/* Visa Body */}
       <VisaBody>
-        
+        <Content />
       </VisaBody>
 
 

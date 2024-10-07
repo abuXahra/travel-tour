@@ -6,6 +6,8 @@ import { HotelRoom } from '../../../../../../pages/hotel/hotel_booking/HotelBook
 import PassengerData from '../../../../../booking_icons/passenger_data/PassengerData'
 import LocationDropdown from '../../../../../booking_icons/location_dropdow/LocationDropdown'
 import { MdFlightLand, MdFlightTakeoff, MdHotel, MdLocalHotel } from 'react-icons/md'
+import { FaLocationDot } from 'react-icons/fa6'
+import { FaTimes } from 'react-icons/fa'
 
 
 export default function HotelForm({
@@ -45,13 +47,24 @@ export default function HotelForm({
     <div>  
       <form> 
       <FormWrapper rounderBorder={rounderBorder} pd={pd}>
-        <HotelInputContainer>
+       
+                
+  {/* <!-- Depature and destination container --> */}
+ 
+             
+             <FlightDepartWrapper>
+                  
+                  <FlightDepatWrapContent>
+                  <HotelInputContainer>
           
           {/* takeoff input */}
           <HotelInputAndDropDown>
-               <HotelInputWrapper  onClick={handleShowHotelInputs}>
-                <input type="text" placeholder="Search Location, city" value={takeOff} onChange={handleDestination} />
-               <span><MdLocalHotel/></span>                  
+               <HotelInputWrapper>
+                <div onClick={handleShowHotelInputs}>
+                  <input type="text" placeholder="Where to?" value={takeOff} onChange={handleDestination} />
+                </div>
+                
+               <span><FaTimes/></span>                  
               </HotelInputWrapper>
     
                  {/* Hotel Destination Airport Dropdown*/}
@@ -59,21 +72,19 @@ export default function HotelForm({
                showDestinationAirports  && 
                 <TakeOffWrapper>
                     <LocationDropdown
+                      title='Popular destinations nearby'
                       onChange={onChangeDestinationHandler}
                       items={destinationAirportList} 
                       searchInputValue={searchDestinationInputValue}  
                       setAirportSelected={setTakeOff}
                       onCloseDropdwon={onCloseDestinationDropdwon }
-                      Icon={<MdLocalHotel/>}
+                      Icon={<FaLocationDot/>}
                     />
                   </TakeOffWrapper>}
           </HotelInputAndDropDown>
           </HotelInputContainer>
-                
-  {/* <!-- Depature and destination container --> */}
-  {showHotelInputs &&
-             
-             <FlightDepartWrapper>
+                   </FlightDepatWrapContent>
+
                     <FlightDepatWrapContent>
                               <Label for="depart">Check In</Label>
                               <input type="date" id="depart" onChange={handleCheckInDate} value={checkInDate} />
@@ -149,7 +160,7 @@ export default function HotelForm({
                       </div>
 
                     
-                </FlightDepartWrapper>}
+                </FlightDepartWrapper>
      
           </FormWrapper>
           </form>
