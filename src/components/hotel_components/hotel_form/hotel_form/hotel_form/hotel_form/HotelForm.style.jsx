@@ -57,7 +57,7 @@ export const HotelInputWrapper = styled.div`
 
     input{
         width: 100%;
-        padding: 25px;
+        padding: 21px;
         border-radius: 10px;
         font-size: 15px;
         font-weight: bold;
@@ -73,9 +73,10 @@ export const HotelInputWrapper = styled.div`
 
     span{
         position: absolute;
+        top: 20px;
         right: 20px;
         bottom: 10px;
-        font-size: 30px;
+        font-size: 18px;
         color: #292929;
 
     }

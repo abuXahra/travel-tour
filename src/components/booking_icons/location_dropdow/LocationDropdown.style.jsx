@@ -57,7 +57,7 @@ export const LocationDropdownSearchResult = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
 
     h3{
         color: #454545

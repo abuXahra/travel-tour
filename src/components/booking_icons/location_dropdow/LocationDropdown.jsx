@@ -5,7 +5,7 @@ import { FaSearch } from 'react-icons/fa'
 import { MdFlightTakeoff } from 'react-icons/md'
 import { FaSearchStyled, LocationDropdownAbrreviate, LocationDropdownInput, LocationDropdownLocation, LocationDropdownSearchResult, LocationDropdownTakeoff, LocationDropdownWrapper, MdFlightTakeoffStyled } from './LocationDropdown.style'
 
-export default function LocationDropdown({onChange, items, searchInputValue, setAirportSelected, onCloseDropdwon, Icon}) {
+export default function LocationDropdown({onChange, items, searchInputValue, setAirportSelected, onCloseDropdwon, Icon, title, airportCountry}) {
   
     
   
@@ -19,7 +19,7 @@ export default function LocationDropdown({onChange, items, searchInputValue, set
         </LocationDropdownInput>
 
         <LocationDropdownSearchResult>
-            <h3>Recent Search</h3>
+            <p>{title != null ? title : 'Recent Search'}</p>
 
     {
         items?.map((item, i)=>(
@@ -29,6 +29,7 @@ export default function LocationDropdown({onChange, items, searchInputValue, set
                 <MdFlightTakeoffStyled>{Icon}</MdFlightTakeoffStyled>
                 <div>
                     <p><b>{item.airportAddress}</b></p>
+                    <p>{item.airportCountry != null ? item.airportCountry : ''}</p>
                     <p>{item.airportName}</p>
                 </div>
                 </LocationDropdownTakeoff>
