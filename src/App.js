@@ -46,6 +46,11 @@ import HideNavbar from "./components/hidenavbar/HideNavbar";
 import Register from "./pages/auth/register/Register";
 import PasswordReset from "./pages/auth/password_reset/PasswordReset";
 import Contact from "./pages/contact/Contact";
+import MuliticityTripInfo from "./pages/flight/flight_result/trip_info/muliticity_trip_info/MuliticityTripInfo";
+import MulticityCustomization from "./pages/flight/flight_customization/multicity_customization/MulticityCustomization";
+import MulticityEdit from "./pages/flight/flight_edit/multicity_edit/MulticityEdit";
+import MulticityOverview from "./pages/flight/flight_overview/multi_Overview/MulticityOverview";
+import MulticitySuccess from "./pages/flight/flight_success_page/muticity_sucess/MulticitySuccess";
 
 function App() {
   return (
@@ -76,11 +81,22 @@ function App() {
               element={<TripInfo />}
             />
             <Route
+              path="/multicity-trip-info"
+              element={<MuliticityTripInfo />}
+            />
+            <Route
               path="/flight-customization/:flightResultIndex"
               element={<FlightCustomization />}
             />
+            <Route
+              path="/multicity-customization"
+              element={<MulticityCustomization />}
+            />
+            <Route path="/multicity-edit" element={<MulticityEdit />} />
             <Route path="/overview-payment" element={<FlightOverview />} />
+            <Route path="/multicity-overview" element={<MulticityOverview />} />
             <Route path="/flight-success" element={<FlightSuccess />} />
+            <Route path="/multicity-success" element={<MulticitySuccess />} />
 
             {/* Hotel Routes */}
             <Route path="/hotel-reservation" element={<HotelBooking />} />

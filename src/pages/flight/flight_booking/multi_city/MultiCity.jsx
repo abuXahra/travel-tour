@@ -369,7 +369,7 @@ export default function MultiCity() {
                        
                           </FlightDepartWrapper>
                             <div>
-                                 <Button onClick={()=>navigate('/flight-result')} text={'Search Flight'} />
+                                 <Button onClick={()=>navigate('/multi-city-result')} text={'Search Flight'} />
                                </div>
                              </>  
                           }

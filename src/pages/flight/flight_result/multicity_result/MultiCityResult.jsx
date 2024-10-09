@@ -31,7 +31,7 @@ const closeViewDetail = () =>{
 
 // continue Booking Handler
 const continueBooking = () =>{
-  navigate('/trip-info');
+  navigate('/multicity-trip-info');
   setShowViewDetailCard(false);
 }
 
@@ -108,7 +108,7 @@ const [showReturnDate, setShowReturnDte] = useState(false);
 
 return (
     <FlightResultWrapper>
-
+dklfj;ldfjkv n;kld;jjfldfjslk
       {/* flight header section */}
       <FlightResultHeader>
         <DateFlight>Mon, 9 Sep 2024</DateFlight>
