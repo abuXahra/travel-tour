@@ -14,6 +14,7 @@ import AirlineFlightLogo from "./AirlineFlightLogo";
 const FlightResultForDepart = ({
   flightSearchResultData,
   setIndex,
+  locationName,
   showViewDetail,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -82,9 +83,10 @@ const FlightResultForDepart = ({
                       minute: "2-digit",
                     })}
                   </h3>
-                  <AirlineCodeLookup
+                  <p style={{ width: 150, fontSize: 10 }}>{locationName[0]}</p>
+                  {/* <AirlineCodeLookup
                     keyWord={data.itineraries[0].segments[0].departure.iataCode}
-                  />
+                  /> */}
                 </span>
                 <span>
                   {data.itineraries[0].segments[0].numberOfStops}-Stop
@@ -109,9 +111,10 @@ const FlightResultForDepart = ({
                       minute: "2-digit",
                     })}
                   </h3>
-                  <AirlineCodeLookup
+                  <p style={{ width: 150, fontSize: 10 }}>{locationName[1]}</p>
+                  {/* <AirlineCodeLookup
                     keyWord={data.itineraries[0].segments[0].arrival.iataCode}
-                  />
+                  /> */}
                 </span>
               </div>
             </DnRWrapper>

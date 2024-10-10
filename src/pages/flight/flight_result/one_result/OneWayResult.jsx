@@ -49,16 +49,16 @@ import { useAuthStore } from "../../../../store/store";
 import FlightResultForDepart from "../../../../components/Flight/FlightResultForDepart";
 
 export default function OneWayResult() {
-  const { flightResult } = useAuthStore();
+  const { oneWayFlightResult } = useAuthStore();
   // const flightData = JSON.parse(myObject);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!flightResult || flightResult?.length === 0) {
+    if (!oneWayFlightResult || oneWayFlightResult?.length === 0) {
       navigate("/flight-booking");
     }
-  }, [flightResult, navigate]);
+  }, [oneWayFlightResult, navigate]);
 
   // Show View Detail Variable
   const [showViewDetailCard, setShowViewDetailCard] = useState(false);
@@ -169,8 +169,8 @@ export default function OneWayResult() {
       <FlightResultHeader>
         <DateFlight>Mon, 9 Sep 2024</DateFlight>
         <p>
-          Select your departure flight from <span>{flightResult[0]}</span> to{" "}
-          <span>{flightResult[1]}</span>
+          Select your departure flight from <span>{oneWayFlightResult[0]}</span>{" "}
+          to <span>{oneWayFlightResult[1]}</span>
         </p>
       </FlightResultHeader>
 
@@ -211,7 +211,7 @@ export default function OneWayResult() {
           {/* Counter Summary */}
           <ResultCounter>
             <ResultCounterLeft>
-              <h3>{flightResult[2]?.length} results</h3>
+              <h3>{oneWayFlightResult[2]?.length} results</h3>
               <p>Fares displayed are for all passengers.</p>
             </ResultCounterLeft>
 
@@ -224,7 +224,8 @@ export default function OneWayResult() {
 
           {/* Flight Result Card  1*/}
           <FlightResultForDepart
-            flightSearchResultData={flightResult[2]}
+            flightSearchResultData={oneWayFlightResult[2]}
+            locationName={[oneWayFlightResult[0], oneWayFlightResult[1]]}
             setIndex={setIndex}
             showViewDetail={showViewDetail}
           />
@@ -246,15 +247,15 @@ export default function OneWayResult() {
               <span>
                 <div>
                   <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
-                  <h3>{`Flight From ${flightResult[0]} - ${flightResult[1]}`}</h3>
+                  <h3>{`Flight From ${oneWayFlightResult[0]} - ${oneWayFlightResult[1]}`}</h3>
                 </div>
                 <b>Outbound</b>
               </span>
               <DNRDetail>
                 <DNRDetailFlightImage>
                   <img
-                    src={`https://wakanow-images.azureedge.net/Images/flight-logos/${flightResult[2][index].validatingAirlineCodes[0]}.gif`}
-                    alt={flightResult[2][index].validatingAirlineCodes[0]}
+                    src={`https://wakanow-images.azureedge.net/Images/flight-logos/${oneWayFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
+                    alt={oneWayFlightResult[2][index].validatingAirlineCodes[0]}
                   />
                 </DNRDetailFlightImage>
 
@@ -262,7 +263,7 @@ export default function OneWayResult() {
                   <span>
                     <h3>
                       {new Date(
-                        flightResult[2][
+                        oneWayFlightResult[2][
                           index
                         ].itineraries[0].segments[0].departure.at
                       ).toLocaleTimeString("en-US", {
@@ -270,28 +271,31 @@ export default function OneWayResult() {
                         minute: "2-digit",
                       })}
                     </h3>
-                    <AirlineCodeLookup
+                    <p style={{ width: 150, fontSize: 10 }}>
+                      {oneWayFlightResult[0]}
+                    </p>
+                    {/* <AirlineCodeLookup
                       keyWord={
-                        flightResult[2][index].itineraries[0].segments[0]
+                        oneWayFlightResult[2][index].itineraries[0].segments[0]
                           .departure.iataCode
                       }
-                    />
+                    /> */}
                   </span>
                   <span>
                     {`${
                       parseDuration(
-                        flightResult[2][index].itineraries[0].segments[0]
+                        oneWayFlightResult[2][index].itineraries[0].segments[0]
                           .duration
                       ).hours
                     }hr ${
                       parseDuration(
-                        flightResult[2][index].itineraries[0].segments[0]
+                        oneWayFlightResult[2][index].itineraries[0].segments[0]
                           .duration
                       ).minutes
                     }min`}
                     <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
                     {
-                      flightResult[2][index].itineraries[0].segments[0]
+                      oneWayFlightResult[2][index].itineraries[0].segments[0]
                         .numberOfStops
                     }
                     -Stop
@@ -300,7 +304,7 @@ export default function OneWayResult() {
                     <h3>
                       {" "}
                       {new Date(
-                        flightResult[2][
+                        oneWayFlightResult[2][
                           index
                         ].itineraries[0].segments[0].arrival.at
                       ).toLocaleTimeString("en-US", {
@@ -308,25 +312,30 @@ export default function OneWayResult() {
                         minute: "2-digit",
                       })}
                     </h3>
-                    <AirlineCodeLookup
+                    <p style={{ width: 150, fontSize: 10 }}>
+                      {oneWayFlightResult[1]}
+                    </p>
+                    {/* <AirlineCodeLookup
                       keyWord={
-                        flightResult[2][index].itineraries[0].segments[0]
+                        oneWayFlightResult[2][index].itineraries[0].segments[0]
                           .arrival.iataCode
                       }
-                    />
+                    /> */}
                   </span>
                 </DNRDetailTime>
 
                 <DNRDetailAirport>
-                  <div>Airport ({flightResult[3]})</div>
-                  <div>Airport ({flightResult[4]})</div>
+                  <div>Airport ({oneWayFlightResult[3]})</div>
+                  <div>Airport ({oneWayFlightResult[4]})</div>
                 </DNRDetailAirport>
                 <DNRDetailBaggage>
                   <span>
                     <h3>Airline</h3>
 
                     <AirlineFlightLogo
-                      keyWord={flightResult[2][index].validatingAirlineCodes[0]}
+                      keyWord={
+                        oneWayFlightResult[2][index].validatingAirlineCodes[0]
+                      }
                       only={true}
                     />
                   </span>

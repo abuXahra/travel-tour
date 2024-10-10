@@ -117,7 +117,7 @@ export default function SingleSearchCityForm({
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
   // Mr Bobai - >
-  const { setSingleFlightResult } = useAuthStore();
+  const { setSingleFlightResult, setOneWayFlightResult } = useAuthStore();
 
   const [originLocationCode, setOriginLocationCode] = useState("");
   const [destinationLocationCode, setDestinationLocationCode] = useState("");
@@ -223,20 +223,21 @@ export default function SingleSearchCityForm({
     if (originLocation !== "") {
       // airports(originLocation, 0);
       const newFilterData = cityList.filter((item) => {
-        if (item.name.toLowerCase().includes(originLocation.toLowerCase())) {
-          // if (item.city.toLowerCase().includes(originLocation.toLowerCase())) {
-          //   if (
-          //     item.state.toLowerCase().includes(originLocation.toLowerCase())
-          //   ) {
-          //     if (
-          //       item.country
-          //         .toLowerCase()
-          //         .includes(originLocation.toLowerCase())
-          //     ) {
+        if (
+          (item.name &&
+            item.name.toLowerCase().includes(originLocation.toLowerCase())) ||
+          (item.city &&
+            item.city.toLowerCase().includes(originLocation.toLowerCase())) ||
+          (item.state &&
+            item.state.toLowerCase().includes(originLocation.toLowerCase())) ||
+          (item.country &&
+            item.country
+              .toLowerCase()
+              .includes(originLocation.toLowerCase())) ||
+          (item.code &&
+            item.code.toLowerCase().includes(originLocation.toLowerCase()))
+        ) {
           return item;
-          //     }
-          //   }
-          // }
         }
       });
       setTakeOffAportList(newFilterData);
@@ -246,7 +247,24 @@ export default function SingleSearchCityForm({
     if (destinationLocation !== "") {
       const newFilterData = cityList.filter((item) => {
         if (
-          item.name.toLowerCase().includes(destinationLocation.toLowerCase())
+          (item.name &&
+            item.name
+              .toLowerCase()
+              .includes(destinationLocation.toLowerCase())) ||
+          (item.city &&
+            item.city
+              .toLowerCase()
+              .includes(destinationLocation.toLowerCase())) ||
+          (item.state &&
+            item.state
+              .toLowerCase()
+              .includes(destinationLocation.toLowerCase())) ||
+          (item.country &&
+            item.country
+              .toLowerCase()
+              .includes(destinationLocation.toLowerCase())) ||
+          (item.code &&
+            item.code.toLowerCase().includes(destinationLocation.toLowerCase()))
         ) {
           // airports(destinationLocation, 1);
           return item;
@@ -363,6 +381,14 @@ export default function SingleSearchCityForm({
       if (showReturnDate) {
         navigate("/flight-result");
       } else if (!showReturnDate) {
+        setOneWayFlightResult([
+          takeOffAirport,
+          destinationAirport,
+          res.data.data,
+          queryParams.originLocationCode,
+          queryParams.destinationLocationCode,
+          queryParams,
+        ]);
         navigate("/oneway-result");
       }
     }
