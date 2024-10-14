@@ -4,12 +4,15 @@ import { FlightForm, FlightWrapper } from "../FlightBooking.style";
 import Button from "../../../../components/button/Button";
 import PassengerCard from "./components/PassengerCard";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../../../store/store";
+import axios from "axios";
 
 const MulticitySearchForm = () => {
-  const maxCities = 3; // Maximum number of city inputs
+  const maxCities = 4; // Maximum number of city inputs
+  const { setMultiCityFlightResult } = useAuthStore();
   const [cities, setCities] = useState([
     { id: 1, from: "", to: "", departureDate: "" },
-    { id: 1, from: "", to: "", departureDate: "" },
+    { id: 2, from: "", to: "", departureDate: "" },
   ]);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
@@ -65,6 +68,25 @@ const MulticitySearchForm = () => {
 
   const [showFlightButton, setShowFlightButton] = useState(false);
 
+  const flightSearch = async () => {
+    const res = await axios
+      .post("http://localhost:5000/multiCityFlightSearches", {
+        flightSearch: cities,
+      })
+      .catch((err) => {
+        console.log(err?.response?.data);
+      });
+
+    if (res) {
+      console.log(res.data.data);
+      setMultiCityFlightResult([cities, res.data.data]);
+
+      navigate("/multi-city-result");
+
+      // setHotelResult([queryParams, res.data.data]);
+    }
+  };
+
   return (
     <FlightForm>
       {/* Passenger component */}
@@ -107,7 +129,7 @@ const MulticitySearchForm = () => {
           {" "}
           <Button
             onClick={() => {
-              navigate("/multi-city-result");
+              flightSearch();
             }}
             text={"Search Flight"}
           />

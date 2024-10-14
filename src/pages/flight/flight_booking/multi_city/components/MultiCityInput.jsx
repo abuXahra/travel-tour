@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import LocationDropdown from "./LocationDropdown";
 import { MdFlightLand, MdFlightTakeoff } from "react-icons/md";
@@ -23,7 +23,9 @@ import {
   MultiFlightClassTitle,
 } from "./MultiCityInput.style";
 import { IoMdArrowDropdown, IoMdArrowDropright } from "react-icons/io";
+import { useDebounce } from "../../../../../components/dalay";
 import { FaTimes } from "react-icons/fa";
+import cityList from "../../../../../flightDB/airports.json";
 
 const defaultCityList = [
   {
@@ -82,11 +84,72 @@ const MultiCityInput = ({
 
   const [originLocationCode, setOriginLocationCode] = useState("");
   const [destinationLocationCode, setDestinationLocationCode] = useState("");
-
+  const [searchTakeOffInputValue, setSearchTakeOffInputValue] = useState("");
+  const [searchDestinationInputValue, setSearchDestinationInputValue] =
+    useState("");
+  const originLocation = useDebounce(searchTakeOffInputValue);
+  const destinationLocation = useDebounce(searchDestinationInputValue);
+  useEffect(() => {
+    if (originLocation !== "") {
+      // airports(originLocation, 0);
+      const newFilterData = cityList.filter((item) => {
+        if (
+          (item.name &&
+            item.name.toLowerCase().includes(originLocation.toLowerCase())) ||
+          (item.city &&
+            item.city.toLowerCase().includes(originLocation.toLowerCase())) ||
+          (item.state &&
+            item.state.toLowerCase().includes(originLocation.toLowerCase())) ||
+          (item.country &&
+            item.country
+              .toLowerCase()
+              .includes(originLocation.toLowerCase())) ||
+          (item.code &&
+            item.code.toLowerCase().includes(originLocation.toLowerCase()))
+        ) {
+          return item;
+        }
+      });
+      setTakeOffAportList(newFilterData);
+    }
+  }, [originLocation]);
+  useEffect(() => {
+    if (destinationLocation !== "") {
+      const newFilterData = cityList.filter((item) => {
+        if (
+          (item.name &&
+            item.name
+              .toLowerCase()
+              .includes(destinationLocation.toLowerCase())) ||
+          (item.city &&
+            item.city
+              .toLowerCase()
+              .includes(destinationLocation.toLowerCase())) ||
+          (item.state &&
+            item.state
+              .toLowerCase()
+              .includes(destinationLocation.toLowerCase())) ||
+          (item.country &&
+            item.country
+              .toLowerCase()
+              .includes(destinationLocation.toLowerCase())) ||
+          (item.code &&
+            item.code.toLowerCase().includes(destinationLocation.toLowerCase()))
+        ) {
+          // airports(destinationLocation, 1);
+          return item;
+        }
+      });
+      setDestinationAriporList(newFilterData);
+    }
+  }, [destinationLocation]);
   const handleInputChange = (key, value) => {
     onCityChange(index, key, value);
   };
-
+  useEffect(() => {
+    handleInputChange("originLocationCode", originLocationCode);
+    handleInputChange("destinationLocationCode", destinationLocationCode);
+  }, [originLocationCode, destinationLocationCode]);
   const toggleFromDropdown = () => {
     setShowFromDropdown(!showFromDropdown);
     setShowToDropdown(false); // Close 'To' dropdown if open
@@ -103,12 +166,12 @@ const MultiCityInput = ({
 
   const handleFromSelect = (value) => {
     handleInputChange("from", value);
-    setShowFromDropdown(false);
+    // setShowFromDropdown(false);
   };
 
   const handleToSelect = (value) => {
     handleInputChange("to", value);
-    setShowToDropdown(false);
+    // setShowToDropdown(false);
   };
 
   const handleDepartureDateChange = (e) => {
@@ -166,9 +229,12 @@ const MultiCityInput = ({
           {showFromDropdown && (
             <TakeOffWrapper>
               <LocationDropdown
-                onChange={(e) => handleFromSelect(e.target.value)}
+                onChange={(e) => {
+                  handleFromSelect(e.target.value);
+                  setSearchTakeOffInputValue(e.target.value);
+                }}
                 items={takeOffAportList} //{/* Pass items for 'From' location dropdown */}
-                searchInputValue={""} //{/* Manage search input state */}
+                searchInputValue={searchTakeOffInputValue} //{/* Manage search input state */}
                 setAirportSelected={(airport) => handleFromSelect(airport)}
                 setCityCode={setOriginLocationCode}
                 onCloseDropdown={() => setShowFromDropdown(false)}
@@ -205,10 +271,13 @@ const MultiCityInput = ({
           {showToDropdown && (
             <DestinationWrapper>
               <LocationDropdown
-                onChange={(e) => handleToSelect(e.target.value)}
+                onChange={(e) => {
+                  handleToSelect(e.target.value);
+                  setSearchDestinationInputValue(e.target.value);
+                }}
                 items={destinationAriporList} //{/* Pass items for 'To' location dropdown */}
-                searchInputValue={""} // {/* Manage search input state */}
-                setCityCode={setOriginLocationCode}
+                searchInputValue={searchDestinationInputValue} // {/* Manage search input state */}
+                setCityCode={setDestinationLocationCode}
                 setAirportSelected={(airport) => handleToSelect(airport)}
                 onCloseDropdown={() => setShowToDropdown(false)}
                 Icon={MdFlightLand} //{/* Example icon */}

@@ -81,7 +81,7 @@ function App() {
               element={<TripInfo />}
             />
             <Route
-              path="/multicity-trip-info"
+              path="/multicity-trip-info/:multiCityFlightResultIndex"
               element={<MuliticityTripInfo />}
             />
             <Route
@@ -89,7 +89,7 @@ function App() {
               element={<FlightCustomization />}
             />
             <Route
-              path="/multicity-customization"
+              path="/multicity-customization/:multiCityFlightResultIndex"
               element={<MulticityCustomization />}
             />
             <Route path="/multicity-edit" element={<MulticityEdit />} />
