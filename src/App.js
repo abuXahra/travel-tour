@@ -51,6 +51,12 @@ import MulticityCustomization from "./pages/flight/flight_customization/multicit
 import MulticityEdit from "./pages/flight/flight_edit/multicity_edit/MulticityEdit";
 import MulticityOverview from "./pages/flight/flight_overview/multi_Overview/MulticityOverview";
 import MulticitySuccess from "./pages/flight/flight_success_page/muticity_sucess/MulticitySuccess";
+import OnewayTripinfo from "./pages/flight/flight_result/trip_info/one_way_tripinfo/OnewayTripinfo";
+import OnewayCustomization from "./pages/flight/flight_customization/oneway_customization/OnewayCustomization";
+import OnewayEdit from "./pages/flight/flight_edit/oneway_edit/OnewayEdit";
+import OnewayOverview from "./pages/flight/flight_overview/oneway_overview/OnewayOverview";
+import OnewaySucess from "./pages/flight/flight_success_page/oneway_sucess/OnewaySucess";
+import FlightEdit from "./pages/flight/flight_edit/roundtrip_edit/FlightEdit";
 
 function App() {
   return (
@@ -73,29 +79,50 @@ function App() {
 
             {/* Flight Routes */}
             <Route path="/flight-booking" element={<FlightBooking />} />
+
+            {/* Flight Results */}
             <Route path="/flight-result" element={<FlightResult />} />
             <Route path="/oneway-result" element={<OneWayResult />} />
             <Route path="/multi-city-result" element={<MultiCityResult />} />
+
+            {/* Trip info*/}
             <Route
               path="/trip-info/:flightResultIndex"
               element={<TripInfo />}
             />
+            <Route path="/oneway-trip-info" element={<OnewayTripinfo />} />
             <Route
               path="/multicity-trip-info/:multiCityFlightResultIndex"
               element={<MuliticityTripInfo />}
             />
+
+            {/* Flight Customization */}
             <Route
               path="/flight-customization/:flightResultIndex"
               element={<FlightCustomization />}
             />
             <Route
+              path="/oneway-customization"
+              element={<OnewayCustomization />}
+            />
+            <Route
               path="/multicity-customization/:multiCityFlightResultIndex"
               element={<MulticityCustomization />}
             />
+
+            {/* Flight Edit */}
+            <Route path="/flight-edit" element={<FlightEdit />} />
+            <Route path="/oneway-edit" element={<OnewayEdit />} />
             <Route path="/multicity-edit" element={<MulticityEdit />} />
+
+            {/* Flight Overview */}
             <Route path="/overview-payment" element={<FlightOverview />} />
+            <Route path="/oneway-overview" element={<OnewayOverview />} />
             <Route path="/multicity-overview" element={<MulticityOverview />} />
+
+            {/* Flight success */}
             <Route path="/flight-success" element={<FlightSuccess />} />
+            <Route path="/oneway-success" element={<OnewaySucess />} />
             <Route path="/multicity-success" element={<MulticitySuccess />} />
 
             {/* Hotel Routes */}

@@ -42,6 +42,8 @@ import AirlineCodeLookup from "../../../components/Flight/AirlineCodeLookup";
 import AirlineFlightLogo from "../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../store/store";
 import axios from "axios";
+import { EditIcon } from "./multicity_customization/MulticityCustomization.style";
+import { FiEdit } from "react-icons/fi";
 
 export default function FlightCustomization() {
   const { singleFlightResult, travelDetail } = useAuthStore();
@@ -508,6 +510,9 @@ export default function FlightCustomization() {
                         <p>ADULT</p>
                         <span>{travelDetail?.selectedGender}</span>
                         <span>{travelDetail?.email}</span>
+                        <EditIcon onClick={() => navigate("/flight-edit")}>
+                          <FiEdit />
+                        </EditIcon>
                       </CustomizeTripDetail>
                     </TripDetailTime>
                   </TripDetailBody>
