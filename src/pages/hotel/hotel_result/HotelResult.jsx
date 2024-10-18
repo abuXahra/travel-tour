@@ -337,6 +337,7 @@ export default function HotelResult() {
           {/* HOTEL RESULTS */}
           {HotelResultList.map((item, i) => (
             <HotelResultCard
+              data={hotelResult}
               picture={item.picture}
               title={item.title}
               location={item.location}

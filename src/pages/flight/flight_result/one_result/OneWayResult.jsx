@@ -75,7 +75,7 @@ export default function OneWayResult() {
 
   // continue Booking Handler
   const continueBooking = () => {
-    navigate(`/trip-info/${index}`);
+    navigate(`/oneway-trip-info/${index}`);
     setShowViewDetailCard(false);
   };
 

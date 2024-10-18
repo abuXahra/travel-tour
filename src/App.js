@@ -90,7 +90,10 @@ function App() {
               path="/trip-info/:flightResultIndex"
               element={<TripInfo />}
             />
-            <Route path="/oneway-trip-info" element={<OnewayTripinfo />} />
+            <Route
+              path="/oneway-trip-info/:oneWayFlightResultIndex"
+              element={<OnewayTripinfo />}
+            />
             <Route
               path="/multicity-trip-info/:multiCityFlightResultIndex"
               element={<MuliticityTripInfo />}
@@ -102,7 +105,7 @@ function App() {
               element={<FlightCustomization />}
             />
             <Route
-              path="/oneway-customization"
+              path="/oneway-customization/:oneWayFlightResultIndex"
               element={<OnewayCustomization />}
             />
             <Route
