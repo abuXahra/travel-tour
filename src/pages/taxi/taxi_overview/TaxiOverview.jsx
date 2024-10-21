@@ -505,8 +505,7 @@ const handleSubmit = (event) => {
                 {/* Total Payable amount */}
                 <ButtonWrapper>
                     <span>Payable Amount: <b>N31,000.00</b></span>
-                  <Button text={'Continue to payment'} onClick={()=>navigate('/taxi-success')}/>  
-                    <Button text={'Cofirm pay'} onClick={()=>setConfirmPayPopup(true)}/> 
+                  <Button text={'Continue to payment'} onClick={()=>setConfirmPayPopup(true)}/>  
                 </ButtonWrapper> 
                 </form>
             </OverviewContent>
