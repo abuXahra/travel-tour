@@ -45,6 +45,7 @@ import flightLogo from '../../../images/aire-peace.png';
 import { FaCheckCircle, FaCircle, FaPaypal, FaTimes } from 'react-icons/fa';
 import { IoIosArrowDown } from 'react-icons/io';
 import { RadioCheck, RadioItem, RadioItemWrapper } from '../flight_booking/FlightBooking.style';
+import Overlay from '../../../components/overlay/Overlay';
 
 
 export default function FlightOverview() {
@@ -54,6 +55,7 @@ export default function FlightOverview() {
   const [showTerms, setShowTerms] = useState(false);
   const [termsTitle, setTermsTitle] = useState('');
   const [termsBody, setTermsBody] = useState('');
+
 
   // Terms and Condition click handler
   const handleTermClick = ({ title, terms }) => {
@@ -779,6 +781,7 @@ const handleSubmit = (event) => {
                 </form>
             </OverviewContent>
         </TripMinContent>
+
 </OverviewWrapper>
   );
 }

@@ -8,7 +8,7 @@ color: ${({textColor})=> textColor || 'white' };
 border: ${({btnBorder})=> btnBorder || 'none'};
 border-top-left-radius: 10px;
 border-bottom-right-radius: 10px;
-padding: 14px 25px;
+padding: ${({pd})=>pd || "14px 25px"};
 display: flex;
 gap: 10px;
 cursor: pointer;
