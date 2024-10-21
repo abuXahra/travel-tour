@@ -57,6 +57,8 @@ import OnewayEdit from "./pages/flight/flight_edit/oneway_edit/OnewayEdit";
 import OnewayOverview from "./pages/flight/flight_overview/oneway_overview/OnewayOverview";
 import OnewaySucess from "./pages/flight/flight_success_page/oneway_sucess/OnewaySucess";
 import FlightEdit from "./pages/flight/flight_edit/roundtrip_edit/FlightEdit";
+import Loader from "./components/loader/Loader";
+import NoResult from "./components/no_result/NoResult";
 
 function App() {
   return (
@@ -167,6 +169,10 @@ function App() {
               path="/travel-requirements"
               element={<TravelRequirement />}
             />
+
+            {/* Loader */}
+            <Route path="/loader" element={<Loader />} />
+            <Route path="/no-result" element={<NoResult />} />
           </Routes>
           {/*hide header for login page */}
           <HideNavbar>
