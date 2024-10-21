@@ -46,7 +46,7 @@ import { EditIcon } from "./multicity_customization/MulticityCustomization.style
 import { FiEdit } from "react-icons/fi";
 
 export default function FlightCustomization() {
-  const { singleFlightResult, fravelDetail } = useAuthStore();
+  const { singleFlightResult, travelDetail } = useAuthStore();
   //let FResult;
   const { flightResultIndex } = useParams();
   const money = new Intl.NumberFormat("en-us", {
@@ -506,11 +506,13 @@ export default function FlightCustomization() {
                     </TripDetailClass>
                     <TripDetailTime>
                       <CustomizeTripDetail>
-                        <h4>(1) {fravelDetail?.firstName}</h4>
+                        <h4>(1) {travelDetail?.firstName}</h4>
                         <p>ADULT</p>
-                        <span>{fravelDetail?.selectedGender}</span>
-                        <span>{fravelDetail?.email}</span>
-                        <EditIcon onClick={()=>navigate('/flight-edit')}><FiEdit/></EditIcon>
+                        <span>{travelDetail?.selectedGender}</span>
+                        <span>{travelDetail?.email}</span>
+                        <EditIcon onClick={() => navigate("/flight-edit")}>
+                          <FiEdit />
+                        </EditIcon>
                       </CustomizeTripDetail>
                     </TripDetailTime>
                   </TripDetailBody>
