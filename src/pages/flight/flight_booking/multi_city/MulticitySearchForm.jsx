@@ -5,11 +5,11 @@ import Button from "../../../../components/button/Button";
 import PassengerCard from "./components/PassengerCard";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../../store/store";
-import axios from "axios";
 
 const MulticitySearchForm = () => {
   const maxCities = 4; // Maximum number of city inputs
-  const { setMultiCityFlightResult } = useAuthStore();
+  const { setMultiCityFlightResult, flightOffersSearchMultiCity } =
+    useAuthStore();
   const [cities, setCities] = useState([
     { id: 1, from: "", to: "", departureDate: "" },
     { id: 2, from: "", to: "", departureDate: "" },
@@ -69,17 +69,11 @@ const MulticitySearchForm = () => {
   const [showFlightButton, setShowFlightButton] = useState(false);
 
   const flightSearch = async () => {
-    const res = await axios
-      .post("http://localhost:5000/multiCityFlightSearches", {
-        flightSearch: cities,
-      })
-      .catch((err) => {
-        console.log(err?.response?.data);
-      });
+    const res = await flightOffersSearchMultiCity(cities);
 
     if (res) {
-      console.log(res.data.data);
-      setMultiCityFlightResult([cities, res.data.data]);
+      console.log(res);
+      setMultiCityFlightResult([cities, res]);
 
       navigate("/multi-city-result");
 

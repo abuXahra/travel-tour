@@ -120,13 +120,22 @@ function App() {
 
             {/* Flight Overview */}
             <Route path="/overview-payment" element={<FlightOverview />} />
-            <Route path="/oneway-overview" element={<OnewayOverview />} />
+            <Route
+              path="/oneway-overview/:oneWayFlightResultIndex"
+              element={<OnewayOverview />}
+            />
             <Route path="/multicity-overview" element={<MulticityOverview />} />
 
             {/* Flight success */}
-            <Route path="/flight-success" element={<FlightSuccess />} />
-            <Route path="/oneway-success" element={<OnewaySucess />} />
-            <Route path="/multicity-success" element={<MulticitySuccess />} />
+            <Route
+              path="/flight-success/:orderID"
+              element={<FlightSuccess />}
+            />
+            <Route path="/oneway-success/:orderID" element={<OnewaySucess />} />
+            <Route
+              path="/multicity-success/:orderID"
+              element={<MulticitySuccess />}
+            />
 
             {/* Hotel Routes */}
             <Route path="/hotel-reservation" element={<HotelBooking />} />

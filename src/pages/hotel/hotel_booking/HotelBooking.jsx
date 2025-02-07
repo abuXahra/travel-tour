@@ -267,6 +267,103 @@ export default function HotelBooking() {
       setHotelResult([queryParams, res.data.data]);
     }
   };
+
+  const axiosRequest = async () => {
+    try {
+      const response = await axios.post(
+        "https://booking.kayak.com/mvm/smartyv2/search?f=j&s=airportonly&where=lon&lc_cc=GB&lc=en&sv=5&cv=undefined&c=undefined&searchId=undefined&v=undefined",
+        {}, // Empty body since Content-Length is 0
+        {
+          headers: {
+            Host: "booking.kayak.com",
+            Cookie:
+              "Apache=ZlsEwg-AAABkrkLLuU-a4-bbuMHA; cluster=5; p1.med.token=rIyVn_Ypv_JOce$3IPZlp8; p1.med.sid=R-5ogdEloLezvJf$W6v4zh6-iZZqdAaKzB7U7v9nwupa8Rj_WvrR6GdjB2EFJ3FLZ; kayak=I2t$2T1kwUMJyMxxvmc0; kayak.mc=AbexCt-Vs3p7-asdATBH2vVrxtUCD6PSj3djndXhpbMcUgdQtI_Wn31B9hoD9_WjyTogXQdG2Hci6FDf4Q_teSiWr3Qzvq8eLYiSTomTaFWddiW0cnDhb6PX3f0gA6cdMuPJK20PO_5n_E-kLUgDbyDT3b3W5EAwiew_tFDEytGqicGD5XSZYqnrlwGcGe9s0ctGmQeapz4BdWtcgj85s6TeGl3ZXDKSjCPNz69ZVDdhTxa1CFwynD5As5ijiBGC7A",
+            "Content-Length": "0",
+            "Sec-Ch-Ua": '"Not-A.Brand";v="99", "Chromium";v="124"',
+            "X-Requested-With": "XMLHttpRequest",
+            "Sec-Ch-Ua-Mobile": "?0",
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.6367.60 Safari/537.36",
+            "Sec-Ch-Ua-Platform": '"Windows"',
+            Accept: "*/*",
+            Origin: "https://booking.kayak.com",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Dest": "empty",
+            Referer:
+              "https://booking.kayak.com/?sid=e09acdd9fc4d7917b1646b8e5b2faf20&aid=304142&label=gen173nr-1BCAEoggI46AdIM1gEaKcBiAEBmAEJuAEXyAEM2AEB6AEBiAIBqAIDuAK5r-O4BsACAdICJGQ5YmNhZWIzLTFlNmEtNGNhYy05ODQwLTVkYTU3MmFhNTRiONgCBeACAQ",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "en-US,en;q=0.9",
+            Priority: "u=1, i",
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error with the request:", error);
+    }
+  };
+  const AxiosRequest = async () => {
+    try {
+      const requestBody = {
+        tripDetails: [
+          {
+            originAirportCode: "LON",
+            destinationAirportCode: "LOS",
+            departureDate: "2024-10-24 00:00:00.0",
+            returnDate: "2024-10-30 00:00:00.0",
+            departureCity: "Abuja",
+            arrivalCity: "Lagos",
+            cabinType: "ECONOMY",
+          },
+        ],
+        flightType: "ROUND",
+        numberOfAdult: 1,
+        numberOfChildren: 0,
+        numberOfInfant: 0,
+        uniqueSession: "kluoMsOH30LVFpP",
+        directFlight: true,
+        refundable: false,
+        isDayFlight: true,
+        prefferedAirlineCodes: [],
+        departureCity: "London",
+        arrivalCity: "Lagos",
+      };
+
+      const response = await axios.post(
+        "https://api.travelbeta.com/v1/api/flight",
+        requestBody, // Request body in JSON format
+        {
+          headers: {
+            Host: "api.travelbeta.com",
+            "Content-Length": "466", // It will automatically compute content length
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Sec-Ch-Ua": '"Not-A.Brand";v="99", "Chromium";v="124"',
+            "Sec-Ch-Ua-Mobile": "?0",
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.6367.60 Safari/537.36",
+            "X-Api-Key": "24c9mti53ykc31z1t5u5", // Your API key
+            "Sec-Ch-Ua-Platform": '"Windows"',
+            Origin: "https://www.travelbeta.com",
+            "Sec-Fetch-Site": "same-site",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Dest": "empty",
+            Referer: "https://www.travelbeta.com/",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "en-US,en;q=0.9",
+            Priority: "u=1, i",
+          },
+        }
+      );
+
+      console.log(response.data); // Handle the response from the API
+    } catch (error) {
+      console.error("Error with the request:", error);
+    }
+  };
+
+  // axiosRequest();
   return (
     <HotelWrapper>
       {/* hero section with form */}
@@ -278,6 +375,8 @@ export default function HotelBooking() {
             <h4>Need hotel accommodation?</h4>
             <h1>Begin your reservation here and enjoy your stay</h1>
           </HotelFormSectionTitle>
+          <button onClick={AxiosRequest}>F Click me</button>
+          <button onClick={axiosRequest}>Click me</button>
 
           {/* flight form section content */}
           <HotelFormSectionContent>

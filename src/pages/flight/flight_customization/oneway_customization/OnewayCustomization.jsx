@@ -45,11 +45,11 @@ import { FlightAddons } from "../../../../data/object/flightAddons";
 import { FiEdit } from "react-icons/fi";
 import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../../store/store";
-import axios from "axios";
 
 export default function OnewayCustomization() {
   const navigate = useNavigate();
-  const { oneWayFlightResult, travelDetail } = useAuthStore();
+  const { oneWayFlightResult, travelDetail, flightPriceLookup } =
+    useAuthStore();
   const [FResult, setFResult] = useState("");
   //let FResult;
   const { oneWayFlightResultIndex } = useParams();
@@ -77,12 +77,13 @@ export default function OnewayCustomization() {
   useEffect(() => {
     const bookflights = async () => {
       try {
-        const res = await axios.post("http://localhost:5000/pricelookup", {
-          flight: oneWayFlightResult[2][oneWayFlightResultIndex],
-        });
+        const res = await flightPriceLookup(
+          oneWayFlightResult[2][oneWayFlightResultIndex]
+        );
+
         if (res) {
-          console.log(res?.data?.data);
-          setFResult(res?.data?.data?.flightOffers[0]);
+          console.log(res);
+          setFResult(res?.flightOffers[0]);
         }
       } catch (err) {
         console.log(err?.response?.data);
@@ -418,7 +419,9 @@ export default function OnewayCustomization() {
           ))}
           <div>
             <Button
-              onClick={() => navigate("/oneway-overview")}
+              onClick={() =>
+                navigate(`/oneway-overview/${oneWayFlightResultIndex}`)
+              }
               text={"Continue to payment"}
             />
           </div>

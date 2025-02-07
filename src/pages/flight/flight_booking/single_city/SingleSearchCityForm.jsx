@@ -35,12 +35,12 @@ import { useDebounce } from "../../../../components/dalay";
 import roundtrip from "../../../../images/svg-icon/flight-return-round-svgrepo-com.svg";
 import PassengerData from "../../../../components/booking_icons/passenger_data/PassengerData";
 import { FaCircle } from "react-icons/fa";
-import axios from "axios";
 import { useAuthStore } from "../../../../store/store";
 import MulticitySearchForm from "../multi_city/MulticitySearchForm";
 import cityList from "../../../../flightDB/airports.json";
 import { SingleAndMulticityWrapper } from "./SingleSearchCityForm.style";
 import FlightRadioHeader from "../../../../components/booking_icons/flight_radio_header/FlightRadioHeader";
+import FlightSlide from "../../../../components/Flight/flight_packages/flight_slider/FlightSlider";
 
 const defaultCityList = [
   {
@@ -106,6 +106,7 @@ export default function SingleSearchCityForm({
 
   //  query parameters
   let queryParams;
+  let searchParams;
 
   // roundTrip is selected by default
   const [kickOff, setKickOff] = useState("");
@@ -117,7 +118,12 @@ export default function SingleSearchCityForm({
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
   // Mr Bobai - >
-  const { setSingleFlightResult, setOneWayFlightResult } = useAuthStore();
+  const {
+    setSingleFlightResult,
+    setOneWayFlightResult,
+    flightOffersSearch,
+    airportAndCitySearch,
+  } = useAuthStore();
 
   const [originLocationCode, setOriginLocationCode] = useState("");
   const [destinationLocationCode, setDestinationLocationCode] = useState("");
@@ -274,21 +280,17 @@ export default function SingleSearchCityForm({
     }
   }, [destinationLocation]);
   const airports = async (keyWord, num) => {
-    const res = await axios
-      .post("http://localhost:5000/airport", { word: keyWord })
-      .catch((err) => {
-        console.log(err?.response?.data);
-      });
+    const res = await airportAndCitySearch(keyWord);
 
     if (res) {
-      console.log(res.data.data);
+      console.log(res);
 
       // setOptions(res.data.data);
       // console.log(num);
       if (num === 0) {
-        setTakeOffAportList(res?.data?.data);
+        setTakeOffAportList(res);
       } else {
-        setDestinationAriporList(res?.data?.data);
+        setDestinationAriporList(res);
       }
 
       //navigate("/verification");
@@ -334,6 +336,29 @@ export default function SingleSearchCityForm({
     setShowFlightType(true);
   };
   if (showReturnDate) {
+    searchParams = {
+      passenger: {
+        adults: adults,
+        children: children,
+        infants: infants,
+        travelClass: flightClass,
+      },
+      flightSearch: [
+        {
+          id: 1,
+          originLocationCode: originLocationCode,
+          destinationLocationCode: destinationLocationCode,
+          departureDateTimeRange: departDate,
+        },
+        {
+          id: 2,
+          originLocationCode: destinationLocationCode,
+          destinationLocationCode: originLocationCode,
+          departureDateTimeRange: returnDate,
+        },
+      ],
+    };
+
     queryParams = {
       originLocationCode,
       destinationLocationCode,
@@ -347,6 +372,23 @@ export default function SingleSearchCityForm({
       currencyCode,
     };
   } else {
+    searchParams = {
+      passenger: {
+        adults: adults,
+        children: children,
+        infants: infants,
+        travelClass: flightClass,
+      },
+      flightSearch: [
+        {
+          id: 1,
+          originLocationCode: originLocationCode,
+          destinationLocationCode: destinationLocationCode,
+          departureDateTimeRange: departDate,
+        },
+      ],
+    };
+
     queryParams = {
       originLocationCode,
       destinationLocationCode,
@@ -361,21 +403,19 @@ export default function SingleSearchCityForm({
     };
   }
   const bookflights = async () => {
-    const res = await axios
-      .post("http://localhost:5000/bookflights", queryParams)
-      .catch((err) => {
-        console.log(err?.response?.data);
-      });
+    const res = await flightOffersSearch(searchParams);
 
     if (res) {
-      console.log(res.data.data);
       setSingleFlightResult([
         takeOffAirport,
         destinationAirport,
-        res.data.data,
+        res,
         queryParams.originLocationCode,
         queryParams.destinationLocationCode,
         queryParams,
+        adults,
+        children,
+        infants,
       ]);
       // setFlightSearch(res.data.data);
       if (showReturnDate) {
@@ -384,10 +424,13 @@ export default function SingleSearchCityForm({
         setOneWayFlightResult([
           takeOffAirport,
           destinationAirport,
-          res.data.data,
+          res,
           queryParams.originLocationCode,
           queryParams.destinationLocationCode,
           queryParams,
+          adults,
+          children,
+          infants,
         ]);
         navigate("/oneway-result");
       }

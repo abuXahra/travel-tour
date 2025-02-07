@@ -41,12 +41,12 @@ import { IoIosArrowDown } from "react-icons/io";
 import AirlineCodeLookup from "../../../components/Flight/AirlineCodeLookup";
 import AirlineFlightLogo from "../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../store/store";
-import axios from "axios";
 import { EditIcon } from "./multicity_customization/MulticityCustomization.style";
 import { FiEdit } from "react-icons/fi";
 
 export default function FlightCustomization() {
-  const { singleFlightResult, travelDetail } = useAuthStore();
+  const { singleFlightResult, travelDetail, flightPriceLookup } =
+    useAuthStore();
   //let FResult;
   const { flightResultIndex } = useParams();
   const money = new Intl.NumberFormat("en-us", {
@@ -79,12 +79,12 @@ export default function FlightCustomization() {
   useEffect(() => {
     const bookflights = async () => {
       try {
-        const res = await axios.post("http://localhost:5000/pricelookup", {
-          flight: singleFlightResult[2][flightResultIndex],
-        });
+        const res = await flightPriceLookup(
+          singleFlightResult[2][flightResultIndex]
+        );
         if (res) {
-          console.log(res?.data?.data);
-          setFResult(res?.data?.data?.flightOffers[0]);
+          console.log(res);
+          setFResult(res?.flightOffers[0]);
         }
       } catch (err) {
         console.log(err?.response?.data);

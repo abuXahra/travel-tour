@@ -1,22 +1,15 @@
-
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-
   OverviewContent,
   OverviewHeader,
   OverviewHeaderItems,
   OverviewHeaderTitle,
-
   OverviewWrapper,
-
   TripMinContent,
-
   FlightContainer,
   FlightIconWrapper,
-
   FlightHeader,
   FlightTimeContainer,
-
   ContainerWrapper,
   ContainerHeader,
   Containerbody,
@@ -24,7 +17,6 @@ import {
   HorizontalLine,
   PDetailWrapper,
   RemoveService,
-
   RulesAndCondStyled,
   RulesAndCondContent,
   RulesAndCondHeader,
@@ -36,26 +28,48 @@ import {
   PaymentModeContent,
   AgreeWrapper,
   ButtonWrapper,
-  ErrorMessage
-} from './OnewayOverview.style';
-import Button from '../../../../components/button/Button';
-import Timeline from '../../../../components/timeline/Timeline';
-import { useNavigate } from 'react-router-dom';
-import FlightIcon from '../../../../components/flight_icon/FlightIcon';
-import flightLogo from '../../../../images/aire-peace.png';
-import { FaCheckCircle, FaCircle, FaPaypal, FaTimes } from 'react-icons/fa';
-import { IoIosArrowDown } from 'react-icons/io';
-import { RadioCheck, RadioItem, RadioItemWrapper } from '../../flight_booking/FlightBooking.style';
-import PaymentModes from '../../../../components/payment_mode/PaymentModes';
-
+  ErrorMessage,
+} from "./OnewayOverview.style";
+import Button from "../../../../components/button/Button";
+import Timeline from "../../../../components/timeline/Timeline";
+import { useNavigate, useParams } from "react-router-dom";
+import FlightIcon from "../../../../components/flight_icon/FlightIcon";
+import flightLogo from "../../../../images/aire-peace.png";
+import { FaCheckCircle, FaCircle, FaPaypal, FaTimes } from "react-icons/fa";
+import { IoIosArrowDown } from "react-icons/io";
+import {
+  RadioCheck,
+  RadioItem,
+  RadioItemWrapper,
+} from "../../flight_booking/FlightBooking.style";
+import PaymentModes from "../../../../components/payment_mode/PaymentModes";
+import { useAuthStore } from "../../../../store/store";
+import PayStack from "@paystack/inline-js";
+import axios from "axios";
 
 export default function OnewayOverview() {
+  const popup = new PayStack();
   const navigate = useNavigate();
+  const {
+    oneWayFlightResult,
+    travelDetail,
+    setOneWayFlightOrder,
+    flightPriceLookup,
+    flightCreateOrders,
+  } = useAuthStore();
   const [showTripSummary, setShowTripSummary] = useState(false);
   const [showTravelDetail, setShowTravelDetail] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
-  const [termsTitle, setTermsTitle] = useState('');
-  const [termsBody, setTermsBody] = useState('');
+  const [termsTitle, setTermsTitle] = useState("");
+  const [termsBody, setTermsBody] = useState("");
+  const [FResult, setFResult] = useState("");
+  const [showIframe, setShowIframe] = useState(false);
+  const [authorizationUrl, setAuthorizationUrl] = useState("");
+  const [transactionReference, setTransactionReference] = useState("");
+  const [mainFlight, setMainFlight] = useState("");
+  const { oneWayFlightResultIndex } = useParams();
+
+  let Price;
 
   // Terms and Condition click handler
   const handleTermClick = ({ title, terms }) => {
@@ -64,176 +78,397 @@ export default function OnewayOverview() {
     setTermsBody(terms);
   };
 
+  const money = new Intl.NumberFormat("en-us", {
+    currency: "NGN",
+    style: "currency",
+  });
 
   // Remove manzo outbout services
-  const [showOutboundService, setShowOutboundService] =useState(true);
-
-
+  const [showOutboundService, setShowOutboundService] = useState(true);
 
   // show puchase condition
-  const [rotateIcon, setRotateIcon] = useState('360deg')
-  const [rotateIcon2, setRotateIcon2] = useState('360deg')
-  const [showPurchase, setShowPurchase] =useState(false);
-  const [showFareRules, setShowFareRules] =useState(false);
+  const [rotateIcon, setRotateIcon] = useState("360deg");
+  const [rotateIcon2, setRotateIcon2] = useState("360deg");
+  const [showPurchase, setShowPurchase] = useState(false);
+  const [showFareRules, setShowFareRules] = useState(false);
 
   // show/hide dropdown handler
-  const handleOpenAndClose = (type) =>{
-    if(type === "purchase condition"){
-      setRotateIcon(!rotateIcon)
-      setShowPurchase(!showPurchase)
-    }else if(type === "fare rule"){
-      setRotateIcon2(!rotateIcon2)
-        setShowFareRules(!showFareRules)
+  const handleOpenAndClose = (type) => {
+    if (type === "purchase condition") {
+      setRotateIcon(!rotateIcon);
+      setShowPurchase(!showPurchase);
+    } else if (type === "fare rule") {
+      setRotateIcon2(!rotateIcon2);
+      setShowFareRules(!showFareRules);
+    }
+  };
+
+  // show/hide refund rules
+  const [showAdultBody, setShowAdultBody] = useState(true);
+  const [showChild, setShowChild] = useState(false);
+  const [showInfant, setShowInfant] = useState(false);
+  const [showAdultIcon, setShowAdultIcon] = useState(true);
+  const [showChildIcon, setShowChildIcon] = useState(false);
+  const [showInfantIcon, setShowInfantIcon] = useState(false);
+
+  // show/hide refund rules
+  const refundHandler = (type) => {
+    if (type === "adult") {
+      setShowAdultBody(true);
+      setShowAdultIcon(true);
+      setShowChild(false);
+      setShowChildIcon(false);
+      setShowInfant(false);
+      setShowInfantIcon(false);
+    } else if (type === "child") {
+      setShowAdultBody(false);
+      setShowAdultIcon(false);
+      setShowChild(true);
+      setShowChildIcon(true);
+      setShowInfant(false);
+      setShowInfantIcon(false);
+    } else if (type === "infant") {
+      setShowAdultBody(false);
+      setShowAdultIcon(false);
+      setShowChild(false);
+      setShowChildIcon(false);
+      setShowInfant(true);
+      setShowInfantIcon(true);
+    }
+  };
+
+  //=============== Payment Modes =================
+
+  // Paystack
+  const [paystack, setPaystack] = useState("Paystack");
+  const [paystackBrColor, setPaystackBrColor] = useState("#2563eb");
+  const [paystackCheckColor, setPaystackCheckColor] = useState("#2563eb");
+
+  // Barter (Flutter wave)
+  const [barter, setBarter] = useState("Barter");
+  const [barterBrColor, setBarterBrColor] = useState("grey");
+  const [barterCheckColor, setBarterCheckColor] = useState("white");
+
+  // Paypal
+  const [paypal, setPaypal] = useState("Paypal");
+  const [paypalBrColor, setPaypalBrColor] = useState("grey");
+  const [paypalCheckColor, setPaypalCheckColor] = useState("white");
+
+  // Pay Small
+  const [paySmall, setPaySmall] = useState("Pay Small");
+  const [paySmallBrColor, setPaySmallBrColor] = useState("grey");
+  const [paySmallCheckColor, setPaySmallCheckColor] = useState("white");
+
+  const [paymentMode, setPaymentMode] = useState(paystack);
+
+  const handlePaymentMode = (type) => {
+    if (type === paystack) {
+      setPaymentMode(paystack);
+      setPaystackBrColor("#2563eb");
+      setPaystackCheckColor("#2563eb");
+      setBarterBrColor("grey");
+      setBarterCheckColor("white");
+      setPaypalBrColor("grey");
+      setPaypalCheckColor("white");
+      setPaySmallBrColor("grey");
+      setPaySmallCheckColor("white");
+    } else if (type === barter) {
+      setPaymentMode(barter);
+      setPaystackBrColor("grey");
+      setPaystackCheckColor("white");
+      setBarterBrColor("#2563eb");
+      setBarterCheckColor("#2563eb");
+      setPaypalBrColor("grey");
+      setPaypalCheckColor("white");
+      setPaySmallBrColor("grey");
+      setPaySmallCheckColor("white");
+    } else if (type === paypal) {
+      setPaymentMode(paypal);
+      setPaystackBrColor("grey");
+      setPaystackCheckColor("white");
+      setBarterBrColor("grey");
+      setBarterCheckColor("white");
+      setPaypalBrColor("#2563eb");
+      setPaypalCheckColor("#2563eb");
+      setPaySmallBrColor("grey");
+      setPaySmallCheckColor("white");
+    } else if (type === paySmall) {
+      setPaymentMode(paySmall);
+      setPaystackBrColor("grey");
+      setPaystackCheckColor("white");
+      setBarterBrColor("grey");
+      setBarterCheckColor("white");
+      setPaypalBrColor("grey");
+      setPaypalCheckColor("white");
+      setPaySmallBrColor("#2563eb");
+      setPaySmallCheckColor("#2563eb");
+    }
+  };
+
+  // Checkbox Validation: Terms and Agreement
+  // State for form values
+  const [isChecked, setIsChecked] = useState(false);
+  const [isValid, setIsValid] = useState(true);
+
+  // Handler for checkbox change
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
+
+  // Form submit handler
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    let priceChecked;
+    // Check if checkbox is checked
+    if (!isChecked) {
+      setIsValid(false);
+      return;
+    }
+
+    // Proceed with form submission or further logic
+    setIsValid(true);
+    const resPriceLookup = await flightPriceLookup(
+      oneWayFlightResult[2][oneWayFlightResultIndex]
+    );
+
+    if (resPriceLookup) {
+      console.log(resPriceLookup);
+      // setFResult(res?.data?.data?.flightOffers[0]);
+
+      if (resPriceLookup?.flightOffers[0]?.price?.total) {
+        Price = resPriceLookup.flightOffers[0]?.price?.total;
+        priceChecked = resPriceLookup?.flightOffers[0];
+        if (paymentMode === paystack) {
+          await Paystack();
+        }
       }
     }
-  
-// show/hide refund rules
-const [showAdultBody, setShowAdultBody] = useState(true);
-const [showChild, setShowChild] = useState(false);
-const [showInfant, setShowInfant] = useState(false);
-const [showAdultIcon, setShowAdultIcon] = useState(true)
-const [showChildIcon, setShowChildIcon] = useState(false)
-const [showInfantIcon, setShowInfantIcon] = useState(false)
+    if (priceChecked) {
+      popup.newTransaction({
+        // key: "pk_test_eb4cdcb0e9bd59a140958352025d6f25edc89db7",
+        key: "pk_test_4d7c8fea9dc4783cdc375f4d268de759e8537ab5",
+        email: travelDetail.email,
+        amount: Number(parseInt(Price) + "00"),
+        onSuccess: async (transaction) => {
+          let res = await flightCreateOrders(
+            priceChecked,
+            travelDetail,
+            transaction.reference,
+            [
+              {
+                departureDate: oneWayFlightResult[5].departureDate,
+                destinationLocationCode: oneWayFlightResult[4],
+                from: oneWayFlightResult[0],
+                id: 1,
+                originLocationCode: oneWayFlightResult[3],
+                to: oneWayFlightResult[1],
+                adults: oneWayFlightResult[6],
+                children: oneWayFlightResult[7],
+                infants: oneWayFlightResult[8],
+              },
+            ]
+          );
+          if (res) {
+            console.log(res);
+            setOneWayFlightOrder(res);
+            navigate(`/oneway-success/${res?.id}`);
+          }
+          // bookflights(priceChecked, transaction.reference, [
+          //   {
+          //     departureDate: oneWayFlightResult[5].departureDate,
+          //     destinationLocationCode: oneWayFlightResult[4],
+          //     from: oneWayFlightResult[0],
+          //     id: 1,
+          //     originLocationCode: oneWayFlightResult[3],
+          //     to: oneWayFlightResult[1],
+          //     adults: oneWayFlightResult[6],
+          //     children: oneWayFlightResult[7],
+          //     infants: oneWayFlightResult[8],
+          //   },
+          // ]);
 
-// show/hide refund rules
-const refundHandler = (type) =>{
-  if(type === 'adult'){
-    setShowAdultBody(true);
-    setShowAdultIcon(true)
-    setShowChild(false)
-    setShowChildIcon(false);
-    setShowInfant(false)
-    setShowInfantIcon(false)
-  }else if(type === 'child'){
-    setShowAdultBody(false);
-    setShowAdultIcon(false)
-    setShowChild(true)
-    setShowChildIcon(true);
-    setShowInfant(false)
-    setShowInfantIcon(false)
-  }else if(type === 'infant'){
-    setShowAdultBody(false);
-    setShowAdultIcon(false)
-    setShowChild(false)
-    setShowChildIcon(false);
-    setShowInfant(true)
-    setShowInfantIcon(true)
-  }
-}
+          // setTransactionReference(transaction.reference);
+          // PaystackVerifyTransaction();
+          // console.log("goood", transaction);
+        },
+        onLoad: (response) => {
+          console.log("onLoad: ", response);
+        },
+        onCancel: () => {
+          console.log("onCancel");
+        },
+        onError: (error) => {
+          console.log("Error: ", error.message);
+        },
+      });
+    }
 
+    // navigate("/oneway-success");
+    // You can also reset form or perform other actions here
+  };
 
+  function parseDuration(duration) {
+    const regex = /PT(\d+H)?(\d+M)?/;
+    const matches = duration.match(regex);
 
+    let hours = 0;
+    let minutes = 0;
 
-//=============== Payment Modes =================
+    if (matches[1]) {
+      hours = parseInt(matches[1].replace("H", ""));
+    }
+    if (matches[2]) {
+      minutes = parseInt(matches[2].replace("M", ""));
+    }
 
-// Paystack
-const[paystack, setPaystack] = useState('Paystack');
-const[paystackBrColor, setPaystackBrColor] = useState('#2563eb');
-const[paystackCheckColor, setPaystackCheckColor] = useState('#2563eb');
-
-
-// Barter (Flutter wave)
-const[barter, setBarter] = useState('Barter');
-const[barterBrColor, setBarterBrColor] = useState('grey');
-const[barterCheckColor, setBarterCheckColor] = useState('white');
-
-
-// Paypal
-const[paypal, setPaypal] = useState('Paypal');
-const[paypalBrColor, setPaypalBrColor] = useState('grey');
-const[paypalCheckColor, setPaypalCheckColor] = useState('white')
-
-
-
-// Pay Small
-const[paySmall, setPaySmall] = useState('Pay Small');
-const[paySmallBrColor, setPaySmallBrColor] = useState('grey');
-const[paySmallCheckColor, setPaySmallCheckColor] = useState('white')
-
-
-
-const[paymentMode, setPaymentMode] = useState(paystack);
-
-
-const handlePaymentMode = (type) =>{
-  if(type === paystack){
-    setPaymentMode(paystack);
-    setPaystackBrColor('#2563eb');
-    setPaystackCheckColor('#2563eb');
-    setBarterBrColor('grey')
-    setBarterCheckColor('white')
-    setPaypalBrColor('grey')
-    setPaypalCheckColor('white')
-    setPaySmallBrColor('grey')
-    setPaySmallCheckColor('white')
-  }
-  else if(type === barter){
-    setPaymentMode(barter);
-    setPaystackBrColor('grey')
-    setPaystackCheckColor('white')
-    setBarterBrColor('#2563eb')
-    setBarterCheckColor('#2563eb')
-    setPaypalBrColor('grey')
-    setPaypalCheckColor('white')
-    setPaySmallBrColor('grey')
-    setPaySmallCheckColor('white')
-  }
-  else if(type === paypal){
-    setPaymentMode(paypal);
-    setPaystackBrColor('grey')
-    setPaystackCheckColor('white')
-    setBarterBrColor('grey')
-    setBarterCheckColor('white')
-    setPaypalBrColor('#2563eb')
-    setPaypalCheckColor('#2563eb')
-    setPaySmallBrColor('grey')
-    setPaySmallCheckColor('white')
-  } else if(type === paySmall){
-    setPaymentMode(paySmall);
-    setPaystackBrColor('grey')
-    setPaystackCheckColor('white')
-    setBarterBrColor('grey')
-    setBarterCheckColor('white')
-    setPaypalBrColor('grey')
-    setPaypalCheckColor('white')
-    setPaySmallBrColor('#2563eb')
-    setPaySmallCheckColor('#2563eb')
-  }
-}
-
-
-// Checkbox Validation: Terms and Agreement 
-// State for form values
-const [isChecked, setIsChecked] = useState(false);
-const [isValid, setIsValid] = useState(true);
-
-// Handler for checkbox change
-const handleCheckboxChange = (event) => {
-  setIsChecked(event.target.checked);
-};
-
-// Form submit handler
-const handleSubmit = (event) => {
-  event.preventDefault();
-  
-  // Check if checkbox is checked
-  if (!isChecked) {
-    setIsValid(false);
-    return;
+    return { hours, minutes };
   }
 
-  // Proceed with form submission or further logic
-  setIsValid(true);
-  navigate('/oneway-success')
-  // You can also reset form or perform other actions here
-};
+  const pricelookup = async () => {
+    try {
+      setMainFlight([]);
+      const res = await flightPriceLookup(
+        oneWayFlightResult[2][oneWayFlightResultIndex]
+      );
+
+      if (res) {
+        console.log(res);
+        setFResult(res.flightOffers[0]);
+
+        if (res.flightOffers[0]?.price?.total) {
+          Price = res?.flightOffers[0]?.price?.total;
+          await setMainFlight(res.flightOffers[0]);
+          if (paymentMode === paystack) {
+            await Paystack();
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err?.response?.data);
+    }
+  };
+
+  const Paystack = async () => {
+    try {
+      popup.newTransaction({
+        key: "pk_test_eb4cdcb0e9bd59a140958352025d6f25edc89db7",
+        email: travelDetail.email,
+        amount: Number(parseInt(Price) + "00"),
+        onSuccess: (transaction) => {
+          bookflights();
+          // setTransactionReference(transaction.reference);
+          // PaystackVerifyTransaction();
+          // console.log("goood", transaction);
+        },
+        onLoad: (response) => {
+          console.log("onLoad: ", response);
+        },
+        onCancel: () => {
+          console.log("onCancel");
+        },
+        onError: (error) => {
+          console.log("Error: ", error.message);
+        },
+      });
+    } catch (err) {
+      console.log(err?.response?.data);
+    }
+  };
+
+  const PaystackVerifyTransaction = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/paystackVerifyTransaction",
+        {
+          reference: transactionReference,
+        }
+      );
+      if (res) {
+        console.log(res?.data?.data);
+        if (res?.data?.data?.gateway_response === "Successful") {
+          bookflights();
+        } else {
+          alert(res?.data?.data?.gateway_response);
+        }
+      }
+    } catch (err) {
+      console.log(err?.response?.data);
+    }
+  };
+
+  const bookflights = async (
+    Flight,
+    transactionReference,
+    littelFlightInfo
+  ) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/v1/flights/flightCreateOrders",
+        {
+          flight: Flight,
+          travelers: travelDetail,
+          transactionReference,
+          littelFlightInfo,
+        }
+      );
+      if (res) {
+        console.log(res?.data?.data);
+        setOneWayFlightOrder(res?.data?.data);
+        navigate(`/oneway-success/${res?.data?.data?.id}`);
+      }
+    } catch (err) {
+      console.log(err?.response?.data);
+    }
+  };
+
   return (
     <OverviewWrapper>
+      {showIframe && (
+        <div
+          style={{
+            position: "fixed",
+            top: "0",
+            left: "0",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            zIndex: "1000",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <button
+            onClick={() => {
+              setShowIframe(false);
+            }}
+            style={{ fontSize: 100 }}
+          >
+            X
+          </button>
+          <div>
+            <button
+              onClick={async () => {
+                // await pricelookup();
+                await PaystackVerifyTransaction();
+              }}
+            >
+              I've made the payment
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <OverviewHeader>
         <OverviewHeaderItems>
           <OverviewHeaderTitle>
-            <span><Button text={'Back'} onClick={() => navigate('/oneway-customization')} /></span>
+            <span>
+              <Button
+                text={"Back"}
+                onClick={() => navigate("/oneway-customization")}
+              />
+            </span>
             <h2>Proceed with your booking</h2>
           </OverviewHeaderTitle>
           {/* Timeline: Trip info steps */}
@@ -242,373 +477,625 @@ const handleSubmit = (event) => {
       </OverviewHeader>
 
       {/* Body */}
-        {/* Main Content */}
-        <TripMinContent>
-          {/* User info content */}
-          <OverviewContent>
-            <h3 style={{marginBottom:"-10px"}}>Trip Summary</h3>
-            <HorizontalLine />
+      {/* Main Content */}
+      <TripMinContent>
+        {/* User info content */}
+        <OverviewContent>
+          <h3 style={{ marginBottom: "-10px" }}>Trip Summary</h3>
+          <HorizontalLine />
 
-            {/* OUTBOUND FLIGHT */}
-            <FlightContainer>
-              <FlightIconWrapper>
+          {/* OUTBOUND FLIGHT */}
+          <FlightContainer>
+            <FlightIconWrapper>
               {/* <FlightIcon rotate={'270deg'} iconColor={'#FF6805'}/>  */}
-              <FlightIcon IconSize={'13px'} rotate={'90deg'} iconColor={'#0D3984'}/> 
+              <FlightIcon
+                IconSize={"13px"}
+                rotate={"90deg"}
+                iconColor={"#0D3984"}
+              />
               <p>Outbound Flight</p>
-              </FlightIconWrapper>
-             
+            </FlightIconWrapper>
+
+            <FlightHeader>
+              <h2> {oneWayFlightResult[0]}</h2>
+              <FlightIcon
+                IconSize={"13px"}
+                rotate={"90deg"}
+                iconColor={"black"}
+              />
+              <h2> {oneWayFlightResult[1]}</h2>
+              <p>
+                {" "}
+                {new Date(
+                  oneWayFlightResult[2][
+                    oneWayFlightResultIndex
+                  ].itineraries[0].segments[0].departure.at
+                ).toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            </FlightHeader>
+
+            <FlightTimeContainer>
+              {/* Departure */}
+              <ContainerWrapper>
+                <ContainerHeader>
+                  <b>Departure</b>
+                </ContainerHeader>
+                <Containerbody>
+                  <div>
+                    <ContainerTime>
+                      <b>
+                        {" "}
+                        {new Date(
+                          oneWayFlightResult[2][
+                            oneWayFlightResultIndex
+                          ].itineraries[0].segments[0].departure.at
+                        ).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </b>{" "}
+                      {oneWayFlightResult[3]}
+                    </ContainerTime>
+                    <span>{oneWayFlightResult[0]}</span>
+                  </div>
+                  <div>
+                    <span>
+                      <FaCheckCircle />
+                    </span>
+                    <span>{`${
+                      parseDuration(
+                        oneWayFlightResult[2][oneWayFlightResultIndex]
+                          .itineraries[0].segments[0].duration
+                      ).hours
+                    }hr ${
+                      parseDuration(
+                        oneWayFlightResult[2][oneWayFlightResultIndex]
+                          .itineraries[0].segments[0].duration
+                      ).minutes
+                    }min`}</span>
+                    <span>
+                      {" "}
+                      {
+                        oneWayFlightResult[2][oneWayFlightResultIndex]
+                          .itineraries[0].segments[0].numberOfStops
+                      }
+                      -stop
+                    </span>
+                  </div>
+                </Containerbody>
+              </ContainerWrapper>
+
+              {/* Arrival */}
+              <ContainerWrapper>
+                <ContainerHeader>
+                  <b>Arrival</b>
+                </ContainerHeader>
+                <Containerbody>
+                  <div>
+                    <ContainerTime>
+                      <b>
+                        {" "}
+                        {new Date(
+                          oneWayFlightResult[2][
+                            oneWayFlightResultIndex
+                          ].itineraries[0].segments[0].arrival.at
+                        ).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </b>{" "}
+                      {oneWayFlightResult[4]}
+                    </ContainerTime>
+                    <span>{oneWayFlightResult[1]}</span>
+                  </div>
+                  <div>
+                    <span
+                      style={{
+                        color: "red",
+                        fontStyle: "italic",
+                        fontWeight: "bold",
+                        fontSize: "9px",
+                      }}
+                    >
+                      AIR PEACE
+                    </span>
+                    <img
+                      src={flightLogo}
+                      height={20}
+                      width={40}
+                      alt=""
+                      srcset=""
+                    />
+                    <img
+                      src={flightLogo}
+                      height={20}
+                      width={40}
+                      alt=""
+                      srcset=""
+                    />
+                  </div>
+                </Containerbody>
+              </ContainerWrapper>
+
+              {/* Class/ Baggage */}
+              <ContainerWrapper>
+                <ContainerHeader>
+                  <b>Class/Checked Baggage Allowance </b>
+                </ContainerHeader>
+                <Containerbody>
+                  <div>
+                    <ContainerTime>Economy (F)</ContainerTime>
+                    <span>
+                      Adult: {oneWayFlightResult[6]} piece(s), upto 23kg each
+                    </span>
+                    <span>
+                      Child: {oneWayFlightResult[7]} piece(s), upto 23kg each
+                    </span>
+                    <span>
+                      Infant: {oneWayFlightResult[8]} piece(s), upto 23kg
+                    </span>
+                  </div>
+                  <div></div>
+                </Containerbody>
+              </ContainerWrapper>
+            </FlightTimeContainer>
+          </FlightContainer>
+
+          {/* Passengers Detail */}
+          <h3>Passenger Detail</h3>
+          <PDetailWrapper>
+            <ContainerWrapper>
+              <ContainerHeader>
+                <div>
+                  <b>Passenger Name </b>
+                </div>
+                <div>
+                  <b>Passport </b>
+                </div>
+              </ContainerHeader>
+              <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
+                <div>
+                  <span>
+                    {travelDetail?.selectedTitleValue}.{" "}
+                    {travelDetail?.firstName} {travelDetail?.lastName}
+                  </span>
+                  {/* <span>Najib Abdulmin</span>
+                  <span>Amjad Abdulmumin</span> */}
+                </div>
+                <div>
+                  <span>-</span>
+                  <span>-</span>
+                  <span>-</span>
+                </div>
+              </Containerbody>
+            </ContainerWrapper>
+
+            <ContainerWrapper>
+              <ContainerHeader>
+                <div>
+                  <b>Date of Birth </b>
+                </div>
+                <div>
+                  <b>Type </b>
+                </div>
+              </ContainerHeader>
+              <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
+                <div>
+                  <span>{travelDetail?.dob}</span>
+                  {/* <span>08 April 2023</span>
+                  <span>01 March 2013</span> */}
+                </div>
+                <div>
+                  <span>Adult</span>
+                  {/* <span>Infant</span>
+                  <span>Child</span> */}
+                </div>
+              </Containerbody>
+            </ContainerWrapper>
+          </PDetailWrapper>
+
+          {/* Contant Detail */}
+          <HorizontalLine />
+          <h3>Contact Detail</h3>
+          <PDetailWrapper>
+            <ContainerWrapper>
+              <ContainerHeader>
+                <div>
+                  <b>Passenger Name </b>
+                </div>
+                <div>
+                  <b>Type </b>
+                </div>
+              </ContainerHeader>
+              <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
+                <div>
+                  <span>
+                    {" "}
+                    {travelDetail?.selectedTitleValue}.{" "}
+                    {travelDetail?.firstName} {travelDetail?.middleName}{" "}
+                    {travelDetail?.lastName}
+                  </span>
+                </div>
+                <div>
+                  <span>Primary Passenger</span>
+                </div>
+              </Containerbody>
+            </ContainerWrapper>
+
+            <ContainerWrapper>
+              <ContainerHeader>
+                <div>
+                  <b>Email</b>
+                </div>
+                <div>
+                  <b>Number </b>
+                </div>
+              </ContainerHeader>
+              <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
+                <div>
+                  <span>{travelDetail?.email}</span>
+                </div>
+                <div>
+                  <span>{travelDetail?.phone}</span>
+                </div>
+              </Containerbody>
+            </ContainerWrapper>
+          </PDetailWrapper>
+
+          {/* Manzo Travel Services For OutBound */}
+          {showOutboundService && (
+            <>
+              <HorizontalLine />
+              <h3>Manzo Travel Services Outbound</h3>
               <FlightHeader>
-                <h2>Lagos</h2>
-                <FlightIcon IconSize={'13px'} rotate={'90deg'} iconColor={'black'}/>
-                <h2>Abuja</h2>
-                <p>Fri, 26 Jul 2024</p>
+                <h4>{oneWayFlightResult[0]}</h4>
+                <FlightIcon
+                  IconSize={"13px"}
+                  rotate={"90deg"}
+                  iconColor={"black"}
+                />
+                <h4>{oneWayFlightResult[1]}</h4>
+                <p>
+                  {" "}
+                  {new Date(
+                    oneWayFlightResult[2][
+                      oneWayFlightResultIndex
+                    ].itineraries[0].segments[0].departure.at
+                  ).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
               </FlightHeader>
 
-              <FlightTimeContainer>
-               {/* Departure */}
-                <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Departure</b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                          <ContainerTime><b>13:09</b> LOS</ContainerTime> 
-                          <span>Naamdi Azikiwe International Airport, Lagos, Nigeria</span>
-                      </div>
-                      <div>
-                          <span><FaCheckCircle/></span> 
-                          <span>1hr : 30min</span> 
-                          <span>0-stop</span>  
-                      </div>
-                    </Containerbody>
-                </ContainerWrapper>
-
-               {/* Arrival */}
-               <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Arrival</b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                          <ContainerTime><b>14:50</b> ABV</ContainerTime> 
-                          <span>Murtala Muammed International Airport, Abuja, Nigeria</span>
-                      </div>
-                      <div>
-                          <span style={{color: 'red', fontStyle: "italic", fontWeight: "bold", fontSize: '9px' }}>AIR PEACE</span>  
-                          <img src={flightLogo} height={20} width={40} alt="" srcset="" /> 
-                          <img src={flightLogo} height={20} width={40} alt="" srcset="" /> 
-                      </div>
-                    </Containerbody>
-                </ContainerWrapper>
-
-
-
-               {/* Class/ Baggage */}
-               <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Class/Checked Baggage Allowance </b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                          <ContainerTime>Economy (F)</ContainerTime> 
-                          <span>Adult: 2 piece(s), upto 23kg each</span>
-                          <span>Child: 2 piece(s), upto 23kg each</span>
-                          <span>Infant: 2 piece(s), upto 23kg</span>
-                      </div>
-                      <div>
-                      </div>
-                    </Containerbody>
-                </ContainerWrapper>
-              </FlightTimeContainer>
-            </FlightContainer>
-          
-
-
-            {/* Passengers Detail */}
-            <h3>Passenger Detail</h3>
-            <PDetailWrapper>
-              <ContainerWrapper>
-                      <ContainerHeader>
-                        <div><b>Passenger Name </b></div>
-                        <div><b>Passport </b></div>
-                      </ContainerHeader>
-                      <Containerbody bb={'1px solid #48484810' } pb={'5px'}>
-                        <div>
-                            <span>Mr. Isah Abdulmumin</span>
-                            <span>Najib Abdulmin</span>
-                            <span>Amjad Abdulmumin</span>
-                        </div>
-                        <div>
-                            <span>-</span>
-                            <span>-</span>
-                            <span>-</span>
-                        </div>
-                      </Containerbody>
-                  </ContainerWrapper>
-
-                  <ContainerWrapper>
-                      <ContainerHeader>
-                        <div><b>Date of Birth </b></div>
-                       <div><b>Type </b></div> 
-                      </ContainerHeader>
-                      <Containerbody bb={'1px solid #48484810' } pb={'5px'}>
-         
-                        <div>
-                            <span>02 March 1972</span>
-                            <span>08 April 2023</span>
-                            <span>01 March 2013</span>
-                        </div>
-                        <div>
-                            <span>Adult</span>
-                            <span>Infant</span>
-                            <span>Child</span>
-                        </div>
-                      </Containerbody>
-                  </ContainerWrapper>
-             
-            </PDetailWrapper>
-            
-        {/* Contant Detail */}
-            <HorizontalLine />
-            <h3>Contact Detail</h3>
-            <PDetailWrapper>
-            <ContainerWrapper>
-                      <ContainerHeader>
-                        <div><b>Passenger Name </b></div>
-                        <div><b>Type </b></div>
-                      </ContainerHeader>
-                      <Containerbody bb={'1px solid #48484810' } pb={'5px'}>
-                        <div>
-                            <span>Mr. Isah Abdulmumin</span>
-
-                        </div>
-                        <div>
-                        <span>Primary Passenger</span>
-                        </div>
-                      </Containerbody>
-                  </ContainerWrapper>
-
-                  <ContainerWrapper>
-                      <ContainerHeader>
-                        <div><b>Email</b></div>
-                        <div><b>Number </b></div>
-                      </ContainerHeader>
-                      <Containerbody bb={'1px solid #48484810' } pb={'5px'}>
-                        <div>
-                            <span>abdulmuminisah79@gmail.com</span>
-                        </div>
-                        <div>
-                        <span>+234-9055001663</span>
-                        </div>
-                      </Containerbody>
-                  </ContainerWrapper>
-             
-            </PDetailWrapper>
-
-
-              
-        {/* Manzo Travel Services For OutBound */}
-       {showOutboundService &&
-       <>
-       <HorizontalLine />
-        <h3>Manzo Travel Services Outbound</h3>
-            <FlightHeader>
-                <h4>Lagos</h4>
-                <FlightIcon IconSize={'13px'} rotate={'90deg'} iconColor={'black'}/>
-                <h4>Abuja</h4>
-                <p>Fri, 26 Jul 2024</p>
-              </FlightHeader>        
-             
               <PDetailWrapper>
                 {/* Remove service Icon */}
-                  <RemoveService onClick={()=>setShowOutboundService(false)}/>     
-              <ContainerWrapper>
-                      <ContainerHeader>
-                        <div><b>Passenger</b></div>
-                        <div><b>Service </b></div>
-                      </ContainerHeader>
-                      <Containerbody>
-                        <div>
-                            <span>Mr. Abdulmumin Isah, +2</span>
-                        </div>
-                        <div>
-                        <span>Airport lounge (Lagos & Abuja only), Abuja</span>
-                        </div>
-                      </Containerbody>
-                  </ContainerWrapper>
-
-                  <ContainerWrapper>
-                      <ContainerHeader>
-                        <div><b>Lounge Type</b></div>
-                        <div><b>Price </b></div>
-                      </ContainerHeader>
-                      <Containerbody >
-                        <div>
-                            <span>Transit</span>
-                        </div>
-                        <div>
-                        <span>₦20,000</span>
-                        </div>
-                      </Containerbody>
-                  </ContainerWrapper>
-              </PDetailWrapper>
-              </>}
-
-
-       
-                     {/* Purchase Condition */}
-               
-                     <ContainerWrapper>
-                        <RulesAndCondStyled>
-                          <RulesAndCondHeader onClick={()=>handleOpenAndClose('purchase condition')}>
-                            <span>
-                            <h2 style={{color:"black"}}>Purchase Condition</h2>
-                            </span>
-                            <span>
-                              <h2><IconWrapper rotateIcon={rotateIcon}><IoIosArrowDown/></IconWrapper></h2>
-                            </span>
-                          </RulesAndCondHeader>
-
-                    {  showPurchase &&    <RulesAndCondContent>
-                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque quis voluptas officia odit dignissimos quae corrupti dolor fugit incidunt dicta tempore cupiditate sapiente esse beatae error reiciendis consectetur, assumenda, dolorem vel ducimus excepturi, architecto eaque ut debitis. Exercitationem, amet, esse expedita minus natus, tempora enim odio facere corporis reprehenderit eius. Voluptates expedita officia temporibus eius! Laudantium nulla provident dolor ullam iste sapiente consequuntur voluptates accusamus quam repudiandae ipsam blanditiis quia non ab laborum voluptate eum facilis, perspiciatis nobis unde doloribus commodi! Ipsum tempora reprehenderit porro magnam voluptate officia totam natus dolor. Unde culpa voluptas quasi illum debitis officia soluta dignissimos.
-                          </RulesAndCondContent>
-                          }
-                        </RulesAndCondStyled>
-                  </ContainerWrapper>  
-
-
-                  {/*  */}
-                  <ContainerWrapper>
-                        <RulesAndCondStyled>
-                          <RulesAndCondHeader bt={'none'} onClick={()=>handleOpenAndClose('fare rule')}>
-                            <span>
-                            <h2 style={{color:"black"}}>Refund Fare Rules</h2>
-                            </span>
-                            <span>
-                              <h2><IconWrapper rotateIcon={rotateIcon2}><IoIosArrowDown/></IconWrapper></h2>
-                            </span>
-                          </RulesAndCondHeader>
-
-                    {  showFareRules &&    
-                        <RulesAndCondContent>
-    
-                            <RulesSubHeader > 
-                              <div onClick={()=>refundHandler('adult')}>
-                                <span><b>Adult</b></span>
-                                {showAdultIcon && <ActiveIcon />}
-                              </div>
-                              <div onClick={()=>refundHandler('child')}>
-                                <span><b>Child</b></span>
-                                {showChildIcon && <ActiveIcon />}
-                              </div>
-                              <div onClick={()=>refundHandler('infant')}>
-                                <span><b>Infant</b></span>
-                                {showInfantIcon && <ActiveIcon />}
-                              </div>
-                            </RulesSubHeader>
-                            
-                            <RulesSubBody>
-                            {/* Adult Body */}
-                        { showAdultBody &&
-                            <div>
-                                <h4>Adult Refunds Rules</h4>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque quis voluptas officia odit dignissimos quae corrupti dolor fugit incidunt dicta tempore cupiditate sapiente esse beatae error reiciendis consectetur, assumenda, dolorem vel ducimus excepturi, architecto eaque ut debitis. Exercitationem, amet, esse expedita minus natus, tempora enim odio facere corporis reprehenderit eius. Voluptates expedita officia temporibus eius! Laudantium nulla provident dolor ullam iste sapiente consequuntur voluptates accusamus quam repudiandae ipsam blanditiis quia non ab laborum voluptate eum facilis, perspiciatis nobis unde doloribus commodi! Ipsum tempora reprehenderit porro magnam voluptate officia totam natus dolor. Unde culpa voluptas quasi illum debitis officia soluta dignissimos.</p>
-                              </div>}
-                             
-                                 {/* Child Body */}
-                          {showChild &&    <div>
-                              <h4>Child Refunds Rules</h4>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque quis voluptas officia odit dignissimos quae corrupti dolor fugit incidunt dicta tempore cupiditate sapiente esse beatae error reiciendis consectetur, assumenda, dolorem vel ducimus excepturi, architecto eaque ut debitis. Exercitationem, amet, esse expedita minus natus, tempora enim odio facere corporis reprehenderit eius. Voluptates expedita officia temporibus eius! Laudantium nulla provident dolor ullam iste sapiente consequuntur voluptates accusamus quam repudiandae ipsam blanditiis quia non ab laborum voluptate eum facilis, perspiciatis nobis unde doloribus commodi! Ipsum tempora reprehenderit porro magnam voluptate officia totam natus dolor. Unde culpa voluptas quasi illum debitis officia soluta dignissimos.</p>
-                              
-                                </div>}
-                              
-                               {/* Infant Body */}
-                              {showInfant &&  <div>
-                                  <h4>Infant Refunds Rules</h4>
-                                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque quis voluptas officia odit dignissimos quae corrupti dolor fugit incidunt dicta tempore cupiditate sapiente esse beatae error reiciendis consectetur, assumenda, dolorem vel ducimus excepturi, architecto eaque ut debitis. Exercitationem, amet, esse expedita minus natus, tempora enim odio facere corporis reprehenderit eius. Voluptates expedita officia temporibus eius! Laudantium nulla provident dolor ullam iste sapiente consequuntur voluptates accusamus quam repudiandae ipsam blanditiis quia non ab laborum voluptate eum facilis, perspiciatis nobis unde doloribus commodi! Ipsum tempora reprehenderit porro magnam voluptate officia totam natus dolor. Unde culpa voluptas quasi illum debitis officia soluta dignissimos.</p>
-                              
-                                </div>}
-                            </RulesSubBody>
-                        </RulesAndCondContent>
-                          }
-                        </RulesAndCondStyled>
-                  </ContainerWrapper>  
-        
-                               
-            {/* Total Price */}
-         
-            <h3>Total Price</h3>
-            <HorizontalLine />
-            <PDetailWrapper>
+                <RemoveService onClick={() => setShowOutboundService(false)} />
                 <ContainerWrapper>
-                      <ContainerHeader hBt={'none'}>
-                        <span><b>Trip Price</b><br/>(1 Adult + 1 Child + 1 infant)</span>
-                        <span><b>N270,000 </b></span>
-                      </ContainerHeader>
-                      <ContainerHeader hBt={'none'}>
-                        <span>Airport lounge (Lagos & Abuja only), Abuja</span>
-                        <span> N20,000</span>
-                      </ContainerHeader>
-                      <ContainerHeader hBt={'none'}>
-                        <span> Manzo Protocol Service (Lagos & Abuja Only), Lagos</span>
-                        <span>N20,000</span>
-                      </ContainerHeader>
-                      <ContainerHeader hBt={'none'}>
-                        <span> <h2>Payable Amount</h2></span>
-                        <span><h2>N310,000</h2></span>
-                      </ContainerHeader>
-                  </ContainerWrapper>
-            </PDetailWrapper>               
-            </OverviewContent>
+                  <ContainerHeader>
+                    <div>
+                      <b>Passenger</b>
+                    </div>
+                    <div>
+                      <b>Service </b>
+                    </div>
+                  </ContainerHeader>
+                  <Containerbody>
+                    <div>
+                      <span>
+                        {travelDetail?.selectedTitleValue}.{" "}
+                        {travelDetail?.firstName} {travelDetail?.middleName}{" "}
+                        {travelDetail?.lastName},{" "}
+                      </span>
+                    </div>
+                    <div>
+                      <span>
+                        Airport lounge ({oneWayFlightResult[0]} &{" "}
+                        {oneWayFlightResult[1]}), Abuja
+                      </span>
+                    </div>
+                  </Containerbody>
+                </ContainerWrapper>
 
-     {/* Mode of Payment */}
-            <OverviewContent>         
-                <h3>Choose your payment mode</h3>  
-                <form onSubmit={handleSubmit}>
-                <PaymentModes
-                        paystack={paystack}
-                        paystackBrColor={paystackBrColor}
-                        paystackCheckColor={paystackCheckColor}
+                <ContainerWrapper>
+                  <ContainerHeader>
+                    <div>
+                      <b>Lounge Type</b>
+                    </div>
+                    <div>
+                      <b>Price </b>
+                    </div>
+                  </ContainerHeader>
+                  <Containerbody>
+                    <div>
+                      <span>Transit</span>
+                    </div>
+                    <div>
+                      <span>₦20,000</span>
+                    </div>
+                  </Containerbody>
+                </ContainerWrapper>
+              </PDetailWrapper>
+            </>
+          )}
 
-                        barter={barter}
-                        barterBrColor={barterBrColor}
-                        barterCheckColor={barterCheckColor}
+          {/* Purchase Condition */}
 
-                        paypal={paypal}
-                        paypalBrColor={paypalBrColor}
-                        paypalCheckColor={paypalCheckColor}
+          <ContainerWrapper>
+            <RulesAndCondStyled>
+              <RulesAndCondHeader
+                onClick={() => handleOpenAndClose("purchase condition")}
+              >
+                <span>
+                  <h2 style={{ color: "black" }}>Purchase Condition</h2>
+                </span>
+                <span>
+                  <h2>
+                    <IconWrapper rotateIcon={rotateIcon}>
+                      <IoIosArrowDown />
+                    </IconWrapper>
+                  </h2>
+                </span>
+              </RulesAndCondHeader>
 
-                        paySmall={paySmall}
-                        paySmallBrColor={paySmallBrColor}
-                        paySmallCheckColor={paySmallCheckColor}
+              {showPurchase && (
+                <RulesAndCondContent>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque
+                  quis voluptas officia odit dignissimos quae corrupti dolor
+                  fugit incidunt dicta tempore cupiditate sapiente esse beatae
+                  error reiciendis consectetur, assumenda, dolorem vel ducimus
+                  excepturi, architecto eaque ut debitis. Exercitationem, amet,
+                  esse expedita minus natus, tempora enim odio facere corporis
+                  reprehenderit eius. Voluptates expedita officia temporibus
+                  eius! Laudantium nulla provident dolor ullam iste sapiente
+                  consequuntur voluptates accusamus quam repudiandae ipsam
+                  blanditiis quia non ab laborum voluptate eum facilis,
+                  perspiciatis nobis unde doloribus commodi! Ipsum tempora
+                  reprehenderit porro magnam voluptate officia totam natus
+                  dolor. Unde culpa voluptas quasi illum debitis officia soluta
+                  dignissimos.
+                </RulesAndCondContent>
+              )}
+            </RulesAndCondStyled>
+          </ContainerWrapper>
 
-                        handlePaymentMode={handlePaymentMode}
-                />
-                {/* Agreement */}
-                <AgreeWrapper>
-                  <input
-                    type="checkbox"
-                    id="terms"
-                    checked={isChecked}
-                    onChange={handleCheckboxChange}
-                  />
-                  <span>*</span>
-                  <p>I have read and accept the <span>terms and conditions</span> as stated above and <a href='#'>General of conditions of carriage </a> applicable to my flight.</p>
-                </AgreeWrapper>
-                
-                  {!isValid && (
-                    <ErrorMessage>You must agree to the terms and conditions.</ErrorMessage>
+          {/*  */}
+          <ContainerWrapper>
+            <RulesAndCondStyled>
+              <RulesAndCondHeader
+                bt={"none"}
+                onClick={() => handleOpenAndClose("fare rule")}
+              >
+                <span>
+                  <h2 style={{ color: "black" }}>Refund Fare Rules</h2>
+                </span>
+                <span>
+                  <h2>
+                    <IconWrapper rotateIcon={rotateIcon2}>
+                      <IoIosArrowDown />
+                    </IconWrapper>
+                  </h2>
+                </span>
+              </RulesAndCondHeader>
+
+              {showFareRules && (
+                <RulesAndCondContent>
+                  <RulesSubHeader>
+                    <div onClick={() => refundHandler("adult")}>
+                      <span>
+                        <b>Adult</b>
+                      </span>
+                      {showAdultIcon && <ActiveIcon />}
+                    </div>
+                    <div onClick={() => refundHandler("child")}>
+                      <span>
+                        <b>Child</b>
+                      </span>
+                      {showChildIcon && <ActiveIcon />}
+                    </div>
+                    <div onClick={() => refundHandler("infant")}>
+                      <span>
+                        <b>Infant</b>
+                      </span>
+                      {showInfantIcon && <ActiveIcon />}
+                    </div>
+                  </RulesSubHeader>
+
+                  <RulesSubBody>
+                    {/* Adult Body */}
+                    {showAdultBody && (
+                      <div>
+                        <h4>Adult Refunds Rules</h4>
+                        <p>
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. Atque quis voluptas officia odit dignissimos
+                          quae corrupti dolor fugit incidunt dicta tempore
+                          cupiditate sapiente esse beatae error reiciendis
+                          consectetur, assumenda, dolorem vel ducimus excepturi,
+                          architecto eaque ut debitis. Exercitationem, amet,
+                          esse expedita minus natus, tempora enim odio facere
+                          corporis reprehenderit eius. Voluptates expedita
+                          officia temporibus eius! Laudantium nulla provident
+                          dolor ullam iste sapiente consequuntur voluptates
+                          accusamus quam repudiandae ipsam blanditiis quia non
+                          ab laborum voluptate eum facilis, perspiciatis nobis
+                          unde doloribus commodi! Ipsum tempora reprehenderit
+                          porro magnam voluptate officia totam natus dolor. Unde
+                          culpa voluptas quasi illum debitis officia soluta
+                          dignissimos.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Child Body */}
+                    {showChild && (
+                      <div>
+                        <h4>Child Refunds Rules</h4>
+                        <p>
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. Atque quis voluptas officia odit dignissimos
+                          quae corrupti dolor fugit incidunt dicta tempore
+                          cupiditate sapiente esse beatae error reiciendis
+                          consectetur, assumenda, dolorem vel ducimus excepturi,
+                          architecto eaque ut debitis. Exercitationem, amet,
+                          esse expedita minus natus, tempora enim odio facere
+                          corporis reprehenderit eius. Voluptates expedita
+                          officia temporibus eius! Laudantium nulla provident
+                          dolor ullam iste sapiente consequuntur voluptates
+                          accusamus quam repudiandae ipsam blanditiis quia non
+                          ab laborum voluptate eum facilis, perspiciatis nobis
+                          unde doloribus commodi! Ipsum tempora reprehenderit
+                          porro magnam voluptate officia totam natus dolor. Unde
+                          culpa voluptas quasi illum debitis officia soluta
+                          dignissimos.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Infant Body */}
+                    {showInfant && (
+                      <div>
+                        <h4>Infant Refunds Rules</h4>
+                        <p>
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. Atque quis voluptas officia odit dignissimos
+                          quae corrupti dolor fugit incidunt dicta tempore
+                          cupiditate sapiente esse beatae error reiciendis
+                          consectetur, assumenda, dolorem vel ducimus excepturi,
+                          architecto eaque ut debitis. Exercitationem, amet,
+                          esse expedita minus natus, tempora enim odio facere
+                          corporis reprehenderit eius. Voluptates expedita
+                          officia temporibus eius! Laudantium nulla provident
+                          dolor ullam iste sapiente consequuntur voluptates
+                          accusamus quam repudiandae ipsam blanditiis quia non
+                          ab laborum voluptate eum facilis, perspiciatis nobis
+                          unde doloribus commodi! Ipsum tempora reprehenderit
+                          porro magnam voluptate officia totam natus dolor. Unde
+                          culpa voluptas quasi illum debitis officia soluta
+                          dignissimos.
+                        </p>
+                      </div>
+                    )}
+                  </RulesSubBody>
+                </RulesAndCondContent>
+              )}
+            </RulesAndCondStyled>
+          </ContainerWrapper>
+
+          {/* Total Price */}
+
+          <h3>Total Price</h3>
+          <HorizontalLine />
+          <PDetailWrapper>
+            <ContainerWrapper>
+              <ContainerHeader hBt={"none"}>
+                <span>
+                  <b>Trip Price</b>
+                  <br />({oneWayFlightResult[6]} Adult + {oneWayFlightResult[7]}{" "}
+                  Child + {oneWayFlightResult[8]} infant)
+                </span>
+                <span>
+                  <b>N270,000 </b>
+                </span>
+              </ContainerHeader>
+              <ContainerHeader hBt={"none"}>
+                <span>Airport lounge (Lagos & Abuja only), Abuja</span>
+                <span>
+                  {money.format(
+                    oneWayFlightResult[2][oneWayFlightResultIndex].price.total
                   )}
+                </span>
+              </ContainerHeader>
+              <ContainerHeader hBt={"none"}>
+                <span> Manzo Protocol Service (Lagos & Abuja Only), Lagos</span>
+                <span>
+                  {money.format(
+                    oneWayFlightResult[2][oneWayFlightResultIndex].price.total
+                  )}
+                </span>
+              </ContainerHeader>
+              <ContainerHeader hBt={"none"}>
+                <span>
+                  {" "}
+                  <h2>Payable Amount</h2>
+                </span>
+                <span>
+                  <h2>
+                    {money.format(
+                      oneWayFlightResult[2][oneWayFlightResultIndex].price.total
+                    )}
+                  </h2>
+                </span>
+              </ContainerHeader>
+            </ContainerWrapper>
+          </PDetailWrapper>
+        </OverviewContent>
 
-                {/* Total Payable amount */}
-                <ButtonWrapper>
-                    <span>Payable Amount: <b>N31,000.00</b></span>
-                  <Button text={'Continue to payment'} /> 
-                </ButtonWrapper> 
-                </form>
-            </OverviewContent>
-        </TripMinContent>
-</OverviewWrapper>
+        {/* Mode of Payment */}
+        <OverviewContent>
+          <h3>Choose your payment mode</h3>
+          <form onSubmit={handleSubmit}>
+            <PaymentModes
+              paystack={paystack}
+              paystackBrColor={paystackBrColor}
+              paystackCheckColor={paystackCheckColor}
+              barter={barter}
+              barterBrColor={barterBrColor}
+              barterCheckColor={barterCheckColor}
+              paypal={paypal}
+              paypalBrColor={paypalBrColor}
+              paypalCheckColor={paypalCheckColor}
+              paySmall={paySmall}
+              paySmallBrColor={paySmallBrColor}
+              paySmallCheckColor={paySmallCheckColor}
+              handlePaymentMode={handlePaymentMode}
+            />
+            {/* Agreement */}
+            <AgreeWrapper>
+              <input
+                type="checkbox"
+                id="terms"
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+              />
+              <span>*</span>
+              <p>
+                I have read and accept the <span>terms and conditions</span> as
+                stated above and{" "}
+                <a href="#">General of conditions of carriage </a> applicable to
+                my flight.
+              </p>
+            </AgreeWrapper>
+
+            {!isValid && (
+              <ErrorMessage>
+                You must agree to the terms and conditions.
+              </ErrorMessage>
+            )}
+
+            {/* Total Payable amount */}
+            <ButtonWrapper>
+              <span>
+                Payable Amount:{" "}
+                <b>
+                  {money.format(
+                    oneWayFlightResult[2][oneWayFlightResultIndex].price.total
+                  )}
+                </b>
+              </span>
+              <Button
+                text={"Continue to payment"}
+                // onClick={() => console.log(paymentMode)}
+              />
+            </ButtonWrapper>
+          </form>
+        </OverviewContent>
+      </TripMinContent>
+    </OverviewWrapper>
   );
 }
-
