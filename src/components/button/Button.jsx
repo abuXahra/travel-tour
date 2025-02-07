@@ -9,6 +9,8 @@ export default function Button({
   btnBorder,
   Icon,
   rightIcon,
+  pd,
+  
 }) {
   return (
     <ButtonStyle
@@ -17,6 +19,7 @@ export default function Button({
       btnBorder={btnBorder}
       type="submit"
       onClick={onClick}
+      pd={pd}
     >
       {Icon} {text} {rightIcon && rightIcon}
     </ButtonStyle>

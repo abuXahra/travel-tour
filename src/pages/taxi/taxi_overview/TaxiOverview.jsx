@@ -50,6 +50,7 @@ import { FaLocationDot } from 'react-icons/fa6';
 import { MdFlightLand, MdLocalHotel } from 'react-icons/md';
 import TaxiTimeline from '../../../components/timeline/TaxiTimline';
 import PaymentModes from '../../../components/payment_mode/PaymentModes';
+import Overlay from '../../../components/overlay/Overlay';
 
 
 
@@ -60,6 +61,8 @@ export default function TaxiOverview() {
   const [showTerms, setShowTerms] = useState(false);
   const [termsTitle, setTermsTitle] = useState('');
   const [termsBody, setTermsBody] = useState('');
+  const [confirmPayPopup, setConfirmPayPopup] = useState(false);
+
 
   // Terms and Condition click handler
   const handleTermClick = ({ title, terms }) => {
@@ -502,11 +505,32 @@ const handleSubmit = (event) => {
                 {/* Total Payable amount */}
                 <ButtonWrapper>
                     <span>Payable Amount: <b>N31,000.00</b></span>
-                  <Button text={'Continue to payment'} onClick={()=>navigate('/taxi-success')}/> 
+                  <Button text={'Continue to payment'} onClick={()=>setConfirmPayPopup(true)}/>  
                 </ButtonWrapper> 
                 </form>
             </OverviewContent>
         </TripMinContent>
+
+      
+      
+      {/* Overlay: Popup to confirm payments */}
+     {  
+      confirmPayPopup &&
+      <Overlay
+           contentHight={""}
+              contentWidth   ={""}
+              overlayButtonClick={()=>navigate('/taxi-success')}
+              closeOverlayOnClick={()=> setConfirmPayPopup(false)}
+              text1={'Continue'}
+              text2={'No'}
+          >
+          <div style={{display: "flex", gap:"10px", width:"100%", alignItems: "center", justifyContent:"center"}}>
+            <span>I Have make the payment</span>
+          </div>
+           
+        </Overlay>
+      }
+
 </OverviewWrapper>
   );
 }
