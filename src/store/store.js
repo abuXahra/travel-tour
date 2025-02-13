@@ -5,12 +5,14 @@ const domain = "http://localhost:5000";
 //const domain = "https://backend.lillybeautyfashion.com";
 
 export const useAuthStore = create((set) => ({
+  loader: false,
   singleFlightResult: [],
   oneWayFlightResult: [],
   multiCityFlightResult: [],
   oneWayFlightOrder: false,
   travelDetail: {},
   hotelResult: [],
+  setLoader: (loader) => set({ loader }),
   setOneWayFlightOrder: (obj) => set({ oneWayFlightOrder: obj }),
   setMultiCityFlightResult: (obj) => set({ multiCityFlightResult: obj }),
   setSingleFlightResult: (obj) => set({ singleFlightResult: obj }),
@@ -36,7 +38,7 @@ export const useAuthStore = create((set) => ({
         queryParams
       );
       console.log(res);
-      return res?.data?.data;
+      return res?.data;
     } catch (err) {
       console.log(err, err?.response?.data);
     }

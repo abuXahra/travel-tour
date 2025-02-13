@@ -41,7 +41,7 @@ import cityList from "../../../../flightDB/airports.json";
 import { SingleAndMulticityWrapper } from "./SingleSearchCityForm.style";
 import FlightRadioHeader from "../../../../components/booking_icons/flight_radio_header/FlightRadioHeader";
 import FlightSlide from "../../../../components/Flight/flight_packages/flight_slider/FlightSlider";
-
+import Loader from "../../../../components/loader/Loader";
 const defaultCityList = [
   {
     code: "LOS",
@@ -123,6 +123,7 @@ export default function SingleSearchCityForm({
     setOneWayFlightResult,
     flightOffersSearch,
     airportAndCitySearch,
+    setLoader,
   } = useAuthStore();
 
   const [originLocationCode, setOriginLocationCode] = useState("");
@@ -403,19 +404,22 @@ export default function SingleSearchCityForm({
     };
   }
   const bookflights = async () => {
+    setLoader(true);
     const res = await flightOffersSearch(searchParams);
-
+    console.log(res);
     if (res) {
+      setLoader(false);
       setSingleFlightResult([
         takeOffAirport,
         destinationAirport,
-        res,
+        res.flightRights,
         queryParams.originLocationCode,
         queryParams.destinationLocationCode,
         queryParams,
         adults,
         children,
         infants,
+        res.flightRightsDictionaries,
       ]);
       // setFlightSearch(res.data.data);
       if (showReturnDate) {
@@ -424,16 +428,19 @@ export default function SingleSearchCityForm({
         setOneWayFlightResult([
           takeOffAirport,
           destinationAirport,
-          res,
+          res.flightRights,
           queryParams.originLocationCode,
           queryParams.destinationLocationCode,
           queryParams,
           adults,
           children,
           infants,
+          res.flightRightsDictionaries,
         ]);
         navigate("/oneway-result");
       }
+    } else {
+      setLoader(false);
     }
   };
   return (

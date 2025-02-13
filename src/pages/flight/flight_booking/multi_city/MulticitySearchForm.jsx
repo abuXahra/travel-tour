@@ -8,7 +8,7 @@ import { useAuthStore } from "../../../../store/store";
 
 const MulticitySearchForm = () => {
   const maxCities = 4; // Maximum number of city inputs
-  const { setMultiCityFlightResult, flightOffersSearchMultiCity } =
+  const { setMultiCityFlightResult, flightOffersSearchMultiCity, setLoader } =
     useAuthStore();
   const [cities, setCities] = useState([
     { id: 1, from: "", to: "", departureDate: "" },
@@ -69,15 +69,19 @@ const MulticitySearchForm = () => {
   const [showFlightButton, setShowFlightButton] = useState(false);
 
   const flightSearch = async () => {
+    setLoader(true);
     const res = await flightOffersSearchMultiCity(cities);
 
     if (res) {
       console.log(res);
+
       setMultiCityFlightResult([cities, res]);
 
       navigate("/multi-city-result");
 
       // setHotelResult([queryParams, res.data.data]);
+    } else {
+      setLoader(false);
     }
   };
 

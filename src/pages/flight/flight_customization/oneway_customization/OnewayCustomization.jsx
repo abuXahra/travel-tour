@@ -223,6 +223,8 @@ export default function OnewayCustomization() {
                     <TripDetailClass>
                       <span>
                         <AirlineFlightLogo
+                          dictionaries={oneWayFlightResult[9]}
+                          data={oneWayFlightResult[2][oneWayFlightResultIndex]}
                           keyWord={
                             oneWayFlightResult[2][oneWayFlightResultIndex]
                               .validatingAirlineCodes[0]
@@ -356,20 +358,26 @@ export default function OnewayCustomization() {
               {/* Body */}
               {showTravelDetail && (
                 <TripDetailBody>
-                  <TripDetailClass>
+                  {/* <TripDetailClass>
                     <span>
                       <img src={flightLogo} alt="" /> <h4>Air Peace</h4>{" "}
                       <p>73G</p>
                     </span>
                     <span>Economy</span>
-                  </TripDetailClass>
+                  </TripDetailClass> */}
                   <TripDetailTime>
                     <CustomizeTripDetail>
                       <h4>(1) {travelDetail?.firstName}</h4>
                       <p>ADULT</p>
                       <span>{travelDetail?.selectedGender}</span>
                       <span>{travelDetail?.email}</span>
-                      <EditIcon onClick={() => navigate("/oneway-edit")}>
+                      <EditIcon
+                        onClick={() =>
+                          navigate(
+                            `/oneway-trip-info/${oneWayFlightResultIndex}`
+                          )
+                        }
+                      >
                         <FiEdit />
                       </EditIcon>
                     </CustomizeTripDetail>

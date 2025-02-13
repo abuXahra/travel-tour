@@ -45,10 +45,12 @@ import AirlineFlightLogo from "../../../../../components/Flight/AirlineFlightLog
 import { useAuthStore } from "../../../../../store/store";
 
 export default function OnewayTripinfo() {
+  const [data, setData] = useState({});
   // navigation
   const navigate = useNavigate();
 
-  const { oneWayFlightResult, setTravelDetail } = useAuthStore();
+  const { oneWayFlightResult, setTravelDetail, flightPriceLookup } =
+    useAuthStore();
   const { oneWayFlightResultIndex } = useParams();
 
   useEffect(() => {
@@ -56,6 +58,19 @@ export default function OnewayTripinfo() {
       navigate("/flight-booking");
     }
   }, [oneWayFlightResult, navigate]);
+  useEffect(() => {
+    const flightPrice = async () => {
+      let flightPrice = await flightPriceLookup(
+        oneWayFlightResult[2][oneWayFlightResultIndex]
+      );
+
+      if (flightPrice) {
+        console.log(flightPrice);
+        setData(flightPrice.flightOffers[0]);
+      }
+    };
+    flightPrice();
+  }, [oneWayFlightResult]);
 
   let queryParams;
 
@@ -291,12 +306,7 @@ export default function OnewayTripinfo() {
               </div>
               <div>
                 <span>Base Fee</span>
-                <span>
-                  {" "}
-                  {money.format(
-                    oneWayFlightResult[2][oneWayFlightResultIndex].price.base
-                  )}
-                </span>
+                <span> {money.format(data?.price?.base)}</span>
               </div>
               <div>
                 <span>Discount</span>
@@ -310,23 +320,13 @@ export default function OnewayTripinfo() {
                 <span>
                   <b>Total Fare</b>
                 </span>
-                <span>
-                  {" "}
-                  {money.format(
-                    oneWayFlightResult[2][oneWayFlightResultIndex].price.total
-                  )}
-                </span>
+                <span> {money.format(data?.price?.total)}</span>
               </div>
             </SideFlightSummary>
             <TotalTrip>
               <div>
                 <span>Trip Total</span>
-                <span>
-                  {" "}
-                  {money.format(
-                    oneWayFlightResult[2][oneWayFlightResultIndex].price.total
-                  )}
-                </span>
+                <span> {money.format(data?.price?.total)}</span>
               </div>
             </TotalTrip>
           </TripInfoSideContent>
@@ -403,6 +403,8 @@ export default function OnewayTripinfo() {
                   <TripDetailClass>
                     <span>
                       <AirlineFlightLogo
+                        dictionaries={oneWayFlightResult[9]}
+                        data={oneWayFlightResult[2][oneWayFlightResultIndex]}
                         keyWord={
                           oneWayFlightResult[2][oneWayFlightResultIndex]
                             .validatingAirlineCodes[0]

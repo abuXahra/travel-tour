@@ -248,6 +248,8 @@ export default function FlightCustomization() {
                       <TripDetailClass>
                         <span>
                           <AirlineFlightLogo
+                            dictionaries={singleFlightResult[9]}
+                            data={singleFlightResult[2][flightResultIndex]}
                             keyWord={
                               singleFlightResult[2][flightResultIndex]
                                 .validatingAirlineCodes[0]
@@ -359,6 +361,8 @@ export default function FlightCustomization() {
                       <TripDetailClass>
                         <span>
                           <AirlineFlightLogo
+                            dictionaries={singleFlightResult[9]}
+                            data={singleFlightResult[2][flightResultIndex]}
                             keyWord={
                               singleFlightResult[2][flightResultIndex]
                                 .validatingAirlineCodes[0]
@@ -490,6 +494,8 @@ export default function FlightCustomization() {
                     <TripDetailClass>
                       <span>
                         <AirlineFlightLogo
+                          dictionaries={singleFlightResult[9]}
+                          data={singleFlightResult[2][flightResultIndex]}
                           keyWord={
                             singleFlightResult[2][flightResultIndex]
                               .validatingAirlineCodes[0]
@@ -510,7 +516,11 @@ export default function FlightCustomization() {
                         <p>ADULT</p>
                         <span>{travelDetail?.selectedGender}</span>
                         <span>{travelDetail?.email}</span>
-                        <EditIcon onClick={() => navigate("/flight-edit")}>
+                        <EditIcon
+                          onClick={() =>
+                            navigate(`/trip-info/${flightResultIndex}`)
+                          }
+                        >
                           <FiEdit />
                         </EditIcon>
                       </CustomizeTripDetail>

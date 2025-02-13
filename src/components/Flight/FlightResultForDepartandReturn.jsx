@@ -13,6 +13,7 @@ import AirlineFlightLogo from "./AirlineFlightLogo";
 import AirlineCodeLookup from "./AirlineCodeLookup";
 const FlightResultForDepartandReturn = ({
   flightSearchResultData,
+  dictionaries,
   setIndex,
   locationName,
   showViewDetail,
@@ -56,6 +57,8 @@ const FlightResultForDepartandReturn = ({
           {/* flight logo */}
 
           <AirlineFlightLogo
+            dictionaries={dictionaries}
+            data={data}
             keyWord={data.validatingAirlineCodes[0]}
             index={index}
             setIndex={setIndex}
@@ -72,7 +75,13 @@ const FlightResultForDepartandReturn = ({
                     data.itineraries[0].segments[0].departure.at
                   ).toLocaleString()}
                 </p>{" "}
-                {/* <p>Arik Air</p> */}
+                <p>
+                  {data.itineraries[0].segments[0].operating
+                    ? dictionaries.carriers[
+                        data.itineraries[0].segments[0].operating.carrierCode
+                      ]
+                    : ""}
+                </p>
               </DnRHeader>
               <div>
                 <span>
@@ -132,7 +141,13 @@ const FlightResultForDepartandReturn = ({
                     data.itineraries[1].segments[0].departure.at
                   ).toLocaleString()}
                 </p>{" "}
-                {/* <p>Arik Air</p> */}
+                <p>
+                  {data.itineraries[1].segments[0].operating
+                    ? dictionaries.carriers[
+                        data.itineraries[1].segments[0].operating.carrierCode
+                      ]
+                    : ""}
+                </p>
               </DnRHeader>
               <div>
                 <span>
