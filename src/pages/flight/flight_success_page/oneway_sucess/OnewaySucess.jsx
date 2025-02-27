@@ -16,7 +16,7 @@ import {
   ContactDetail,
 } from "./OnewaySucess.style";
 import Button from "../../../../components/button/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FlightIcon from "../../../../components/flight_icon/FlightIcon";
 import flightLogo from "../../../../images/aire-peace.png";
 import {
@@ -55,27 +55,18 @@ import { useAuthStore } from "../../../../store/store";
 import axios from "axios";
 
 export default function OnewaySucess() {
-  const { oneWayFlightResult, travelDetail, oneWayFlightOrder } =
-    useAuthStore();
+  const {
+    getCreatedIssuanceBooked,
+    // , calculateAgeCategory
+  } = useAuthStore();
   const navigate = useNavigate();
+  const { orderID } = useParams();
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   // Click to copy text
   const [bookId, setBookId] = useState("240727041354");
-
-  let FlightOrder;
-  let travels;
-  let FlightResult;
-
-  if (oneWayFlightOrder) {
-    FlightOrder = oneWayFlightOrder?.flightOffers[0];
-    travels = travelDetail;
-    FlightResult = oneWayFlightResult;
-  }
-  useEffect(() => {
-    console.log(oneWayFlightOrder);
-
-    setBookId(oneWayFlightOrder?.id);
-  }, [oneWayFlightOrder]);
 
   const copyToClipboard = () => {
     navigator.clipboard
@@ -87,16 +78,9 @@ export default function OnewaySucess() {
         console.error("Failed to copy text: ", err);
       });
   };
-
-  const handlePrint = () => {
-    const printContent = document.getElementById("printable-div");
-    const originalContent = document.body.innerHTML;
-
-    document.body.innerHTML = printContent.innerHTML;
-    window.print();
-    document.body.innerHTML = originalContent;
-  };
+  // Cacula for duration
   function parseDuration(duration) {
+    if (!duration) return { hours: 0, minutes: 0 };
     const regex = /PT(\d+H)?(\d+M)?/;
     const matches = duration.match(regex);
 
@@ -112,6 +96,138 @@ export default function OnewaySucess() {
 
     return { hours, minutes };
   }
+
+  const calculateAgeCategory = (birthdate) => {
+    const birthDate = new Date(birthdate + "T00:00:00"); // Ensures UTC parsing
+    const today = new Date();
+
+    if (birthDate > today) return "Invalid birthdate"; // Handles future birthdates
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+
+    // Adjust age if birthday hasn't occurred yet this year
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--;
+    }
+
+    if (age <= 1) return `Infant`;
+    if (age <= 12) return `Child`;
+    return `Adult`;
+  };
+
+  const handlePrint = () => {
+    const printContent = document.getElementById("printable-div");
+    const originalContent = document.body.innerHTML;
+
+    document.body.innerHTML = printContent.innerHTML;
+    window.print();
+    document.body.innerHTML = originalContent;
+  };
+
+  useEffect(() => {
+    const fetchIssuance = async () => {
+      try {
+        const bookingId = "your-booking-id"; // Replace with dynamic ID if needed
+        // console.log(orderID);
+        const response = await getCreatedIssuanceBooked(orderID);
+
+        if (response?.error) {
+          throw new Error(`Error: ${response.error}`);
+        }
+
+        const result = response;
+        console.log(result);
+        setBookId(result?.FlightBooked?.id);
+        setData(result);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchIssuance();
+  }, [orderID]);
+
+  let getTNum = data?.FlightBooked?.tickets;
+  let flight = data?.FlightBooked?.flightOffers[0];
+  let bookingDate = new Date(data?.createdAt).toLocaleString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  console.log(flight);
+
+  let DepartName;
+  let DepartCode;
+  let DepartFullTimeAndDate;
+  let CCode;
+  let DepartCarrierName;
+  let DepartStartTime;
+  let DepartEndTime;
+  let DepartPeriodOfHours;
+  let DepartStops;
+
+  // // Return
+  let cCode;
+  let ReturnCarrierName;
+  let ReturnFullTimeAndDate;
+  let ReturnCode;
+  let ReturnName;
+  let ReturnStartTime;
+  let ReturnEndTime;
+  let ReturnPeriodOfHours;
+  let ReturnStops;
+
+  if (data?.FlightBooked) {
+    // Depart
+    DepartName = data?.littelFlightInfo?.[0].from;
+    DepartCode = data?.littelFlightInfo?.[0].originLocationCode;
+    DepartFullTimeAndDate = new Date(
+      flight?.itineraries?.[0]?.segments?.[0]?.departure?.at
+    ).toLocaleString("en-US", {
+      weekday: "long",
+      month: "long",
+
+      day: "numeric",
+      year: "numeric",
+    });
+    CCode = flight?.itineraries?.[0]?.segments?.[0]?.operating?.carrierCode
+      ? flight?.itineraries?.[0]?.segments?.[0]?.operating?.carrierCode
+      : flight?.itineraries?.[0]?.segments?.[0]?.carrierCode;
+    DepartCarrierName =
+      flight?.itineraries?.[0]?.segments?.[0] &&
+      data?.littelFlightInfo?.[0].dictionaries.carriers[CCode];
+    DepartStartTime = new Date(
+      flight?.itineraries?.[0]?.segments?.[0]?.departure?.at
+    ).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    DepartEndTime = new Date(
+      flight?.itineraries?.[0]?.segments?.[0]?.arrival.at
+    ).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    DepartPeriodOfHours = `${
+      parseDuration(flight?.itineraries?.[0]?.segments?.[0]?.duration).hours
+    }hr ${
+      parseDuration(flight?.itineraries?.[0]?.segments?.[0]?.duration).minutes
+    }min`;
+    DepartStops = flight?.itineraries?.[0]?.segments?.[0]?.numberOfStops;
+
+    // // Return
+    console.log(data);
+    ReturnCode = data?.littelFlightInfo?.[0].destinationLocationCode;
+    ReturnName = data?.littelFlightInfo?.[0].to;
+  }
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   return (
     <FlightSuccessWrapper>
       {/* Header */}
@@ -139,6 +255,14 @@ export default function OnewaySucess() {
               </span>{" "}
               <div onClick={copyToClipboard}>Copy</div>
             </BookingId>
+            {/* {data?.FlightBooked?.tickets.map((data, index) => ( */}
+            <BookingId>
+              <span>
+                Order ID: <b>{data?._id}</b>{" "}
+              </span>{" "}
+              <div onClick={copyToClipboard}>Copy</div>
+            </BookingId>
+            {/* ))} */}
 
             <PaymentStatusContent>
               <div>
@@ -147,11 +271,11 @@ export default function OnewaySucess() {
               </div>
               <div>
                 <span>BOOKING REFERENCE:</span>
-                <b>{oneWayFlightOrder?.associatedRecords[0]?.reference}</b>
+                <b>{data?.FlightBooked?.associatedRecords?.[0]?.reference}</b>
               </div>
               <div>
                 <span>BOOKING DATE:</span>
-                <b>{Date()}</b>
+                <b>{bookingDate}</b>
               </div>
             </PaymentStatusContent>
           </SuccessWrapper>
@@ -162,90 +286,41 @@ export default function OnewaySucess() {
           <h3>Passenger Detail</h3>
           <HRStyled />
           {/* Adult */}
-          <SuccessPassengerDetail
-            title={"Adult"}
-            passengerName={"Isah Yusuf"}
-            passportName={"Isah Yusuf"}
-            tickets={""}
-            airlinePNR={""}
-            nationality={"Nigeria"}
-            gender={"male"}
-            dob={"08/18/1989"}
-            passportNumber={"jdjd47474994uc"}
-            phoneNumber={"+234 8135701458"}
-            emailAddress={"isahyusuf@gmail.com"}
-          />
-          <HRStyled />
-
-          {/* child */}
-          <SuccessPassengerDetail
-            title={"Child"}
-            passengerName={"Amjad Yusuf"}
-            passportName={"Amjad Yusuf"}
-            tickets={""}
-            airlinePNR={""}
-            nationality={"Nigeria"}
-            gender={"male"}
-            dob={"08/18/1989"}
-            passportNumber={"jdjd47474994uc"}
-            phoneNumber={"+234 8135701458"}
-            emailAddress={"isahyusuf@gmail.com"}
-          />
-
-          <HRStyled />
-          {/* infant */}
-          <SuccessPassengerDetail
-            title={"Infant"}
-            passengerName={"Muiz Yusuf"}
-            passportName={"Muiz Yusuf"}
-            tickets={""}
-            airlinePNR={""}
-            nationality={"Nigeria"}
-            gender={"male"}
-            dob={"08/18/1989"}
-            passportNumber={"jdjd47474994uc"}
-            phoneNumber={"+234 8135701458"}
-            emailAddress={"isahyusuf79@gmail.com"}
-          />
-
-          <HRStyled />
+          {data?.travelers?.map((data, index) => (
+            <>
+              <SuccessPassengerDetail
+                key={index}
+                title={`${calculateAgeCategory(data?.dateOfBirth)}`}
+                passengerName={`${data?.name?.firstName}`}
+                passportName={data?.name?.lastName}
+                tickets={getTNum?.[index]?.documentNumber}
+                airlinePNR={""}
+                nationality={"Nigeria"}
+                gender={data?.gender}
+                dob={data?.dateOfBirth}
+                passportNumber={""}
+                phoneNumber={data?.contact?.phones?.[0].number}
+                emailAddress={data?.contact?.emailAddress}
+              />
+              <HRStyled />
+            </>
+          ))}
 
           <h3>Flight Detail</h3>
-          {/* First Departure */}
+
           <FlightDetailWrapper>
             {/* title */}
             <TripDetailTile>
               <span>
                 {" "}
-                <h2>{FlightResult[0]}</h2>{" "}
+                <h2>{DepartName}</h2>{" "}
                 <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />{" "}
-                <h2>{FlightResult[1]}</h2>{" "}
+                <h2>{ReturnName}</h2>{" "}
               </span>
               <span>
+                <p>{DepartFullTimeAndDate}</p>
                 <p>
-                  {" "}
-                  {new Date(
-                    FlightOrder.itineraries[0].segments[0].departure.at
-                  ).toLocaleDateString("en-US", {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
-                <p>
-                  {" "}
-                  {
-                    FlightOrder.itineraries[0].segments[0].numberOfStops
-                  } Stops.{" "}
-                  {`${
-                    parseDuration(
-                      FlightOrder.itineraries[0].segments[0].duration
-                    ).hours
-                  }hr ${
-                    parseDuration(
-                      FlightOrder.itineraries[0].segments[0].duration
-                    ).minutes
-                  }min`}
+                  {DepartStops} Stops. {DepartPeriodOfHours}
                 </p>
                 <div>{/* <IoIosArrowDown /> */}</div>
               </span>
@@ -255,10 +330,18 @@ export default function OnewaySucess() {
             <TripDetailBody>
               <TripDetailClass>
                 <span>
-                  <AirlineFlightLogo
-                    keyWord={FlightOrder.validatingAirlineCodes[0]}
-                    detail={true}
-                  />
+                  <img
+                    src={`https://images.wakanow.com/Images/flight-logos/${
+                      flight?.itineraries?.[0]?.segments?.[0]?.operating
+                        ?.carrierCode
+                        ? flight?.itineraries?.[0]?.segments?.[0]?.operating
+                            ?.carrierCode
+                        : flight?.itineraries?.[0]?.segments?.[0]?.carrierCode
+                    }.gif`}
+                    alt=""
+                    srcset=""
+                  />{" "}
+                  <h4>{DepartCarrierName}</h4> <p>.</p>{" "}
                 </span>
                 <span>
                   <a href="#">Economy</a>
@@ -268,23 +351,8 @@ export default function OnewaySucess() {
                 <TripHour>
                   <span>
                     <div>
-                      <h4>
-                        {new Date(
-                          FlightOrder.itineraries[0].segments[0].departure.at
-                        ).toLocaleTimeString("en-US", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </h4>
-                      <h4>
-                        {" "}
-                        {new Date(
-                          FlightOrder.itineraries[0].segments[0].arrival.at
-                        ).toLocaleTimeString("en-US", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </h4>
+                      <h4>{DepartStartTime}</h4>
+                      <h4>{DepartEndTime}</h4>
                     </div>
                     <div>
                       <hr />
@@ -296,19 +364,13 @@ export default function OnewaySucess() {
                 <TripAirport>
                   <div>
                     <p>
-                      {FlightResult[0]} <b>({FlightResult[3]})</b>
+                      <b>({DepartCode}) </b>
+                      {DepartName}
                     </p>
-                    <p>{`${
-                      parseDuration(
-                        FlightOrder.itineraries[0].segments[0].duration
-                      ).hours
-                    }hr ${
-                      parseDuration(
-                        FlightOrder.itineraries[0].segments[0].duration
-                      ).minutes
-                    }min`}</p>
+                    <p>1h 15m</p>
                     <p>
-                      {FlightResult[1]} <b>({FlightResult[4]})</b>
+                      <b>({ReturnCode})</b>
+                      {ReturnName}
                     </p>
                   </div>
                   <div>
@@ -324,9 +386,37 @@ export default function OnewaySucess() {
             </TripDetailBody>
           </FlightDetailWrapper>
 
+          {/* for flight Return */}
+          {/* Flight Detail section */}
+          <FlightDetailWrapper>
+            {/* title */}
+            <TripDetailTile>
+              <span>
+                {" "}
+                <h2>{ReturnName}</h2>{" "}
+                <FlightIcon rotate={"270deg"} iconColor={"#FF6805"} />{" "}
+                <h2>{DepartName}</h2>{" "}
+              </span>
+              <span>
+                <p>{ReturnFullTimeAndDate}</p>
+                <p>
+                  {ReturnStops} Stops. {ReturnPeriodOfHours}
+                </p>
+
+                <div>{/* <IoIosArrowDown /> */}</div>
+              </span>
+            </TripDetailTile>
+            {/* body */}
+          </FlightDetailWrapper>
+
           {/* Trip Total Price */}
           <HRStyled />
-          <TripFare />
+          <TripFare
+            price={flight?.price}
+            children={data?.littelFlightInfo?.[0]?.children}
+            adults={data?.littelFlightInfo?.[0]?.adults}
+            infants={data?.littelFlightInfo?.[0]?.infants}
+          />
           <HRStyled />
           <ContactDetail>
             <span>Hotline: 02013438157, 07009252669</span>

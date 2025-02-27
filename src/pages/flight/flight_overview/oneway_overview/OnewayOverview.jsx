@@ -35,6 +35,7 @@ import Timeline from "../../../../components/timeline/Timeline";
 import { useNavigate, useParams } from "react-router-dom";
 import FlightIcon from "../../../../components/flight_icon/FlightIcon";
 import flightLogo from "../../../../images/aire-peace.png";
+import Loader from "../../../../components/loader/Loader";
 import { FaCheckCircle, FaCircle, FaPaypal, FaTimes } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import {
@@ -62,11 +63,13 @@ export default function OnewayOverview() {
   const [showTerms, setShowTerms] = useState(false);
   const [termsTitle, setTermsTitle] = useState("");
   const [termsBody, setTermsBody] = useState("");
-  const [FResult, setFResult] = useState("");
-  const [showIframe, setShowIframe] = useState(false);
-  const [authorizationUrl, setAuthorizationUrl] = useState("");
-  const [transactionReference, setTransactionReference] = useState("");
-  const [mainFlight, setMainFlight] = useState("");
+  // const [FResult, setFResult] = useState("");
+  // const [showIframe, setShowIframe] = useState(false);
+  // const [authorizationUrl, setAuthorizationUrl] = useState("");
+  // const [transactionReference, setTransactionReference] = useState("");
+  // const [mainFlight, setMainFlight] = useState("");
+  const [bottonLoading, setBottonLoading] = useState(false);
+  const [loader, setLoader] = useState(false);
   const { oneWayFlightResultIndex } = useParams();
 
   let Price;
@@ -82,9 +85,24 @@ export default function OnewayOverview() {
     currency: "NGN",
     style: "currency",
   });
+  function parseDuration(duration) {
+    const regex = /PT(\d+H)?(\d+M)?/;
+    const matches = duration.match(regex);
+
+    let hours = 0;
+    let minutes = 0;
+
+    if (matches[1]) {
+      hours = parseInt(matches[1].replace("H", ""));
+    }
+    if (matches[2]) {
+      minutes = parseInt(matches[2].replace("M", ""));
+    }
+
+    return { hours, minutes };
+  }
 
   // Remove manzo outbout services
-  const [showOutboundService, setShowOutboundService] = useState(true);
 
   // show puchase condition
   const [rotateIcon, setRotateIcon] = useState("360deg");
@@ -215,81 +233,102 @@ export default function OnewayOverview() {
     setIsChecked(event.target.checked);
   };
 
+  let data = oneWayFlightResult?.[2][oneWayFlightResultIndex];
+  console.log(data);
+  // Depart
+  let DepartName = oneWayFlightResult?.[0];
+  let DepartCode = oneWayFlightResult?.[3];
+  let DepartFullTimeAndDate = new Date(
+    data?.itineraries?.[0]?.segments?.[0]?.departure?.at
+  ).toLocaleString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+  let DepartCarrierName =
+    data?.itineraries?.[0]?.segments?.[0]?.operating &&
+    oneWayFlightResult?.[9]?.carriers[
+      data?.itineraries?.[0]?.segments?.[0]?.operating?.carrierCode
+    ];
+  let DepartStartTime = new Date(
+    data?.itineraries?.[0]?.segments?.[0]?.departure?.at
+  ).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  let DepartEndTime = new Date(
+    data?.itineraries?.[0]?.segments?.[0]?.arrival.at
+  ).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  let DepartPeriodOfHours = `${
+    parseDuration(data?.itineraries?.[0]?.segments?.[0]?.duration).hours
+  }hr ${
+    parseDuration(data?.itineraries?.[0]?.segments?.[0]?.duration).minutes
+  }min`;
+  let DepartStops = data?.itineraries?.[0]?.segments?.[0]?.numberOfStops;
+
+  let ReturnCode = oneWayFlightResult?.[4];
+  let ReturnName = oneWayFlightResult?.[1];
+  let FPriceBase = money.format(data?.price?.base);
+  let FPriceTotal = money.format(data?.price?.total);
   // Form submit handler
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setBottonLoading(true);
     let priceChecked;
     // Check if checkbox is checked
     if (!isChecked) {
+      setBottonLoading(false);
       setIsValid(false);
       return;
     }
 
-    // Proceed with form submission or further logic
-    setIsValid(true);
-    const resPriceLookup = await flightPriceLookup(
-      oneWayFlightResult[2][oneWayFlightResultIndex]
-    );
+    const resPriceLookup = await flightPriceLookup(data);
 
     if (resPriceLookup) {
-      console.log(resPriceLookup);
-      // setFResult(res?.data?.data?.flightOffers[0]);
-
-      if (resPriceLookup?.flightOffers[0]?.price?.total) {
-        Price = resPriceLookup.flightOffers[0]?.price?.total;
-        priceChecked = resPriceLookup?.flightOffers[0];
-        if (paymentMode === paystack) {
-          await Paystack();
-        }
-      }
+      Price = resPriceLookup.flightOffers[0]?.price?.total;
+      priceChecked = resPriceLookup?.flightOffers[0];
+    } else {
+      setBottonLoading(false);
     }
+
     if (priceChecked) {
       popup.newTransaction({
-        // key: "pk_test_eb4cdcb0e9bd59a140958352025d6f25edc89db7",
-        key: "pk_test_4d7c8fea9dc4783cdc375f4d268de759e8537ab5",
-        email: travelDetail.email,
+        key: "pk_test_eb4cdcb0e9bd59a140958352025d6f25edc89db7",
+        // key: "pk_test_4d7c8fea9dc4783cdc375f4d268de759e8537ab5",
+        email: travelDetail?.AdultData?.[0]?.email,
         amount: Number(parseInt(Price) + "00"),
         onSuccess: async (transaction) => {
+          setLoader(true);
           let res = await flightCreateOrders(
             priceChecked,
             travelDetail,
             transaction.reference,
             [
               {
-                departureDate: oneWayFlightResult[5].departureDate,
-                destinationLocationCode: oneWayFlightResult[4],
-                from: oneWayFlightResult[0],
+                returnDate: oneWayFlightResult?.[5].returnDate,
+                departureDate: oneWayFlightResult?.[5].departureDate,
+                destinationLocationCode: oneWayFlightResult?.[4],
+                from: oneWayFlightResult?.[0],
                 id: 1,
-                originLocationCode: oneWayFlightResult[3],
-                to: oneWayFlightResult[1],
-                adults: oneWayFlightResult[6],
-                children: oneWayFlightResult[7],
-                infants: oneWayFlightResult[8],
+                originLocationCode: oneWayFlightResult?.[3],
+                to: oneWayFlightResult?.[1],
+                adults: oneWayFlightResult?.[6],
+                children: oneWayFlightResult?.[7],
+                infants: oneWayFlightResult?.[8],
+                dictionaries: oneWayFlightResult?.[9],
               },
             ]
           );
           if (res) {
             console.log(res);
-            setOneWayFlightOrder(res);
-            navigate(`/oneway-success/${res?.id}`);
+            // setOneWayFlightOrder(res);
+            navigate(`/oneway-success/${res?._id}`);
+          } else {
+            setBottonLoading(false);
           }
-          // bookflights(priceChecked, transaction.reference, [
-          //   {
-          //     departureDate: oneWayFlightResult[5].departureDate,
-          //     destinationLocationCode: oneWayFlightResult[4],
-          //     from: oneWayFlightResult[0],
-          //     id: 1,
-          //     originLocationCode: oneWayFlightResult[3],
-          //     to: oneWayFlightResult[1],
-          //     adults: oneWayFlightResult[6],
-          //     children: oneWayFlightResult[7],
-          //     infants: oneWayFlightResult[8],
-          //   },
-          // ]);
-
-          // setTransactionReference(transaction.reference);
-          // PaystackVerifyTransaction();
-          // console.log("goood", transaction);
         },
         onLoad: (response) => {
           console.log("onLoad: ", response);
@@ -301,163 +340,12 @@ export default function OnewayOverview() {
           console.log("Error: ", error.message);
         },
       });
-    }
-
-    // navigate("/oneway-success");
-    // You can also reset form or perform other actions here
-  };
-
-  function parseDuration(duration) {
-    const regex = /PT(\d+H)?(\d+M)?/;
-    const matches = duration.match(regex);
-
-    let hours = 0;
-    let minutes = 0;
-
-    if (matches[1]) {
-      hours = parseInt(matches[1].replace("H", ""));
-    }
-    if (matches[2]) {
-      minutes = parseInt(matches[2].replace("M", ""));
-    }
-
-    return { hours, minutes };
-  }
-
-  const pricelookup = async () => {
-    try {
-      setMainFlight([]);
-      const res = await flightPriceLookup(
-        oneWayFlightResult[2][oneWayFlightResultIndex]
-      );
-
-      if (res) {
-        console.log(res);
-        setFResult(res.flightOffers[0]);
-
-        if (res.flightOffers[0]?.price?.total) {
-          Price = res?.flightOffers[0]?.price?.total;
-          await setMainFlight(res.flightOffers[0]);
-          if (paymentMode === paystack) {
-            await Paystack();
-          }
-        }
-      }
-    } catch (err) {
-      console.log(err?.response?.data);
-    }
-  };
-
-  const Paystack = async () => {
-    try {
-      popup.newTransaction({
-        key: "pk_test_eb4cdcb0e9bd59a140958352025d6f25edc89db7",
-        email: travelDetail.email,
-        amount: Number(parseInt(Price) + "00"),
-        onSuccess: (transaction) => {
-          bookflights();
-          // setTransactionReference(transaction.reference);
-          // PaystackVerifyTransaction();
-          // console.log("goood", transaction);
-        },
-        onLoad: (response) => {
-          console.log("onLoad: ", response);
-        },
-        onCancel: () => {
-          console.log("onCancel");
-        },
-        onError: (error) => {
-          console.log("Error: ", error.message);
-        },
-      });
-    } catch (err) {
-      console.log(err?.response?.data);
-    }
-  };
-
-  const PaystackVerifyTransaction = async () => {
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/paystackVerifyTransaction",
-        {
-          reference: transactionReference,
-        }
-      );
-      if (res) {
-        console.log(res?.data?.data);
-        if (res?.data?.data?.gateway_response === "Successful") {
-          bookflights();
-        } else {
-          alert(res?.data?.data?.gateway_response);
-        }
-      }
-    } catch (err) {
-      console.log(err?.response?.data);
-    }
-  };
-
-  const bookflights = async (
-    Flight,
-    transactionReference,
-    littelFlightInfo
-  ) => {
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/v1/flights/flightCreateOrders",
-        {
-          flight: Flight,
-          travelers: travelDetail,
-          transactionReference,
-          littelFlightInfo,
-        }
-      );
-      if (res) {
-        console.log(res?.data?.data);
-        setOneWayFlightOrder(res?.data?.data);
-        navigate(`/oneway-success/${res?.data?.data?.id}`);
-      }
-    } catch (err) {
-      console.log(err?.response?.data);
     }
   };
 
   return (
     <OverviewWrapper>
-      {showIframe && (
-        <div
-          style={{
-            position: "fixed",
-            top: "0",
-            left: "0",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            zIndex: "1000",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <button
-            onClick={() => {
-              setShowIframe(false);
-            }}
-            style={{ fontSize: 100 }}
-          >
-            X
-          </button>
-          <div>
-            <button
-              onClick={async () => {
-                // await pricelookup();
-                await PaystackVerifyTransaction();
-              }}
-            >
-              I've made the payment
-            </button>
-          </div>
-        </div>
-      )}
+      {loader && <Loader text={"Issuing ticket and reserving, please wait"} />}
 
       {/* Header */}
       <OverviewHeader>
@@ -497,25 +385,14 @@ export default function OnewayOverview() {
             </FlightIconWrapper>
 
             <FlightHeader>
-              <h2> {oneWayFlightResult[0]}</h2>
+              <h2>{DepartName}</h2>
               <FlightIcon
                 IconSize={"13px"}
                 rotate={"90deg"}
                 iconColor={"black"}
               />
-              <h2> {oneWayFlightResult[1]}</h2>
-              <p>
-                {" "}
-                {new Date(
-                  oneWayFlightResult[2][
-                    oneWayFlightResultIndex
-                  ].itineraries[0].segments[0].departure.at
-                ).toLocaleDateString("en-US", {
-                  weekday: "long",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
+              <h2>{ReturnName}</h2>
+              <p>{DepartFullTimeAndDate}</p>
             </FlightHeader>
 
             <FlightTimeContainer>
@@ -527,44 +404,16 @@ export default function OnewayOverview() {
                 <Containerbody>
                   <div>
                     <ContainerTime>
-                      <b>
-                        {" "}
-                        {new Date(
-                          oneWayFlightResult[2][
-                            oneWayFlightResultIndex
-                          ].itineraries[0].segments[0].departure.at
-                        ).toLocaleTimeString("en-US", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </b>{" "}
-                      {oneWayFlightResult[3]}
+                      <b>{DepartStartTime}</b> {DepartCode}
                     </ContainerTime>
-                    <span>{oneWayFlightResult[0]}</span>
+                    <span>{ReturnName}</span>
                   </div>
                   <div>
                     <span>
                       <FaCheckCircle />
                     </span>
-                    <span>{`${
-                      parseDuration(
-                        oneWayFlightResult[2][oneWayFlightResultIndex]
-                          .itineraries[0].segments[0].duration
-                      ).hours
-                    }hr ${
-                      parseDuration(
-                        oneWayFlightResult[2][oneWayFlightResultIndex]
-                          .itineraries[0].segments[0].duration
-                      ).minutes
-                    }min`}</span>
-                    <span>
-                      {" "}
-                      {
-                        oneWayFlightResult[2][oneWayFlightResultIndex]
-                          .itineraries[0].segments[0].numberOfStops
-                      }
-                      -stop
-                    </span>
+                    <span>{DepartPeriodOfHours}</span>
+                    <span>{DepartStops}-stop</span>
                   </div>
                 </Containerbody>
               </ContainerWrapper>
@@ -577,20 +426,9 @@ export default function OnewayOverview() {
                 <Containerbody>
                   <div>
                     <ContainerTime>
-                      <b>
-                        {" "}
-                        {new Date(
-                          oneWayFlightResult[2][
-                            oneWayFlightResultIndex
-                          ].itineraries[0].segments[0].arrival.at
-                        ).toLocaleTimeString("en-US", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </b>{" "}
-                      {oneWayFlightResult[4]}
+                      <b>{DepartEndTime}</b> {ReturnCode}
                     </ContainerTime>
-                    <span>{oneWayFlightResult[1]}</span>
+                    <span>{ReturnName}</span>
                   </div>
                   <div>
                     <span
@@ -601,10 +439,10 @@ export default function OnewayOverview() {
                         fontSize: "9px",
                       }}
                     >
-                      AIR PEACE
+                      {DepartCarrierName}
                     </span>
                     <img
-                      src={flightLogo}
+                      src={`https://images.wakanow.com/Images/flight-logos/${data?.itineraries?.[0]?.segments?.[0]?.operating?.carrierCode}.gif`}
                       height={20}
                       width={40}
                       alt=""
@@ -630,13 +468,13 @@ export default function OnewayOverview() {
                   <div>
                     <ContainerTime>Economy (F)</ContainerTime>
                     <span>
-                      Adult: {oneWayFlightResult[6]} piece(s), upto 23kg each
+                      Adult: {oneWayFlightResult?.[6]} piece(s), upto 23kg each
                     </span>
                     <span>
-                      Child: {oneWayFlightResult[7]} piece(s), upto 23kg each
+                      Child: {oneWayFlightResult?.[7]} piece(s), upto 23kg each
                     </span>
                     <span>
-                      Infant: {oneWayFlightResult[8]} piece(s), upto 23kg
+                      Infant: {oneWayFlightResult?.[8]} piece(s), upto 23kg
                     </span>
                   </div>
                   <div></div>
@@ -659,18 +497,39 @@ export default function OnewayOverview() {
               </ContainerHeader>
               <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
                 <div>
-                  <span>
-                    {travelDetail?.selectedTitleValue}.{" "}
-                    {travelDetail?.firstName} {travelDetail?.lastName}
-                  </span>
-                  {/* <span>Najib Abdulmin</span>
-                  <span>Amjad Abdulmumin</span> */}
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
                 </div>
                 <div>
                   <span>-</span>
                   <span>-</span>
                   <span>-</span>
                 </div>
+                {/* selectedTitleValue,
+            lastName,
+            firstName,
+            middleName,
+            dob,
+            selectedCountryValue,
+            selectedGender,
+            phone,
+            email, */}
               </Containerbody>
             </ContainerWrapper>
 
@@ -685,14 +544,26 @@ export default function OnewayOverview() {
               </ContainerHeader>
               <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
                 <div>
-                  <span>{travelDetail?.dob}</span>
-                  {/* <span>08 April 2023</span>
-                  <span>01 March 2013</span> */}
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>{data.dob}</span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>{data.dob}</span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>{data.dob}</span>
+                  ))}
                 </div>
                 <div>
-                  <span>Adult</span>
-                  {/* <span>Infant</span>
-                  <span>Child</span> */}
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>Adult</span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>Infant</span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>Child</span>
+                  ))}
                 </div>
               </Containerbody>
             </ContainerWrapper>
@@ -713,12 +584,24 @@ export default function OnewayOverview() {
               </ContainerHeader>
               <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
                 <div>
-                  <span>
-                    {" "}
-                    {travelDetail?.selectedTitleValue}.{" "}
-                    {travelDetail?.firstName} {travelDetail?.middleName}{" "}
-                    {travelDetail?.lastName}
-                  </span>
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
                 </div>
                 <div>
                   <span>Primary Passenger</span>
@@ -737,92 +620,32 @@ export default function OnewayOverview() {
               </ContainerHeader>
               <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
                 <div>
-                  <span>{travelDetail?.email}</span>
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>{data.email}</span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>{data.email}</span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>{data.email}</span>
+                  ))}
                 </div>
                 <div>
-                  <span>{travelDetail?.phone}</span>
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>{data.phone}</span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>{data.phone}</span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>{data.phone}</span>
+                  ))}
                 </div>
               </Containerbody>
             </ContainerWrapper>
           </PDetailWrapper>
 
           {/* Manzo Travel Services For OutBound */}
-          {showOutboundService && (
-            <>
-              <HorizontalLine />
-              <h3>Manzo Travel Services Outbound</h3>
-              <FlightHeader>
-                <h4>{oneWayFlightResult[0]}</h4>
-                <FlightIcon
-                  IconSize={"13px"}
-                  rotate={"90deg"}
-                  iconColor={"black"}
-                />
-                <h4>{oneWayFlightResult[1]}</h4>
-                <p>
-                  {" "}
-                  {new Date(
-                    oneWayFlightResult[2][
-                      oneWayFlightResultIndex
-                    ].itineraries[0].segments[0].departure.at
-                  ).toLocaleDateString("en-US", {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
-              </FlightHeader>
-
-              <PDetailWrapper>
-                {/* Remove service Icon */}
-                <RemoveService onClick={() => setShowOutboundService(false)} />
-                <ContainerWrapper>
-                  <ContainerHeader>
-                    <div>
-                      <b>Passenger</b>
-                    </div>
-                    <div>
-                      <b>Service </b>
-                    </div>
-                  </ContainerHeader>
-                  <Containerbody>
-                    <div>
-                      <span>
-                        {travelDetail?.selectedTitleValue}.{" "}
-                        {travelDetail?.firstName} {travelDetail?.middleName}{" "}
-                        {travelDetail?.lastName},{" "}
-                      </span>
-                    </div>
-                    <div>
-                      <span>
-                        Airport lounge ({oneWayFlightResult[0]} &{" "}
-                        {oneWayFlightResult[1]}), Abuja
-                      </span>
-                    </div>
-                  </Containerbody>
-                </ContainerWrapper>
-
-                <ContainerWrapper>
-                  <ContainerHeader>
-                    <div>
-                      <b>Lounge Type</b>
-                    </div>
-                    <div>
-                      <b>Price </b>
-                    </div>
-                  </ContainerHeader>
-                  <Containerbody>
-                    <div>
-                      <span>Transit</span>
-                    </div>
-                    <div>
-                      <span>₦20,000</span>
-                    </div>
-                  </Containerbody>
-                </ContainerWrapper>
-              </PDetailWrapper>
-            </>
-          )}
 
           {/* Purchase Condition */}
 
@@ -996,28 +819,26 @@ export default function OnewayOverview() {
               <ContainerHeader hBt={"none"}>
                 <span>
                   <b>Trip Price</b>
-                  <br />({oneWayFlightResult[6]} Adult + {oneWayFlightResult[7]}{" "}
-                  Child + {oneWayFlightResult[8]} infant)
+                  <br />
+                  {`(${oneWayFlightResult?.[6]} Adult + ${oneWayFlightResult?.[7]} Child
+                          + ${oneWayFlightResult?.[8]} infant )`}
                 </span>
-                <span>
-                  <b>N270,000 </b>
-                </span>
+                <span>{/* <b>N270,000 </b> */}</span>
               </ContainerHeader>
               <ContainerHeader hBt={"none"}>
-                <span>Airport lounge (Lagos & Abuja only), Abuja</span>
                 <span>
-                  {money.format(
-                    oneWayFlightResult[2][oneWayFlightResultIndex].price.total
-                  )}
+                  Airport lounge ({DepartName} & {ReturnName} only),{" "}
+                  {ReturnName}
                 </span>
+                <span> {FPriceBase}</span>
               </ContainerHeader>
               <ContainerHeader hBt={"none"}>
-                <span> Manzo Protocol Service (Lagos & Abuja Only), Lagos</span>
                 <span>
-                  {money.format(
-                    oneWayFlightResult[2][oneWayFlightResultIndex].price.total
-                  )}
+                  {" "}
+                  Manzo Protocol Service ({ReturnName} & {DepartName} Only),{" "}
+                  {DepartName}
                 </span>
+                <span>{FPriceBase}</span>
               </ContainerHeader>
               <ContainerHeader hBt={"none"}>
                 <span>
@@ -1025,11 +846,7 @@ export default function OnewayOverview() {
                   <h2>Payable Amount</h2>
                 </span>
                 <span>
-                  <h2>
-                    {money.format(
-                      oneWayFlightResult[2][oneWayFlightResultIndex].price.total
-                    )}
-                  </h2>
+                  <h2>{FPriceTotal}</h2>
                 </span>
               </ContainerHeader>
             </ContainerWrapper>
@@ -1089,6 +906,7 @@ export default function OnewayOverview() {
                 </b>
               </span>
               <Button
+                loading={bottonLoading}
                 text={"Continue to payment"}
                 // onClick={() => console.log(paymentMode)}
               />

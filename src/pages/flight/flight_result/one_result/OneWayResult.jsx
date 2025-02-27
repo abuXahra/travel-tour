@@ -168,6 +168,7 @@ export default function OneWayResult() {
     setOwBrColor("grey");
     setOwCheckColor("white");
   };
+  console.log(oneWayFlightResult[2]);
 
   return (
     <FlightResultWrapper>

@@ -193,7 +193,7 @@ export default function FlightBooking() {
 
   return (
     <FlightWrapper>
-      {loader && <Loader />}
+      {loader && <Loader text={"Searching for Flight"} />}
 
       {/* hero section with form */}
       <HeroSection heroImage={heroImage}>

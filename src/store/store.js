@@ -1,8 +1,10 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const domain = "http://localhost:5000";
-//const domain = "https://backend.lillybeautyfashion.com";
+// const domain = "http://localhost:5000";
+// const domain = "https://manzo-travels-be.vercel.app";
+const domain = "https://manzo-travels-be.onrender.com";
+// const domain = "https://backend.manzotravels.com";
 
 export const useAuthStore = create((set) => ({
   loader: false,
@@ -98,10 +100,46 @@ export const useAuthStore = create((set) => ({
           littelFlightInfo,
         }
       );
-      console.log(res?.data?.data);
-      return res?.data?.data;
+      // console.log("vfbsbvfksbjhvfsbvjhf", res?.data);
+      return res?.data;
     } catch (err) {
       console.log(err, err?.response?.data);
     }
+  },
+  getCreatedIssuanceBooked: async (id) => {
+    try {
+      console.log("ddddddddddddd", id);
+      const res = await axios.post(
+        `${domain}/api/v1/flights/createdIssuanceBooked`,
+        {
+          bookingId: id,
+        }
+      );
+      console.log(res?.data);
+      return res?.data;
+    } catch (err) {
+      console.log(err, err?.response?.data);
+      return err?.response?.data;
+    }
+  },
+  calculateAgeCategory: (birthdate) => {
+    const birthDate = new Date(birthdate);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+
+    // Adjust age if birthday hasn't occurred yet this year
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--;
+    }
+
+    // if (age <= 1) return `Infant (${age} year old)`;
+    // if (age <= 12) return `Child (${age} years old)`;
+    // return `Adult (${age} years old)`;
+    if (age <= 1) return `Infant`;
+    if (age <= 12) return `Child`;
+    return `Adult`;
   },
 }));

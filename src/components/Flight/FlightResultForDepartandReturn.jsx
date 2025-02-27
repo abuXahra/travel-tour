@@ -92,7 +92,7 @@ const FlightResultForDepartandReturn = ({
                     ).toLocaleTimeString("en-US", {
                       hour: "2-digit",
                       minute: "2-digit",
-                    })}
+                    })}{" "}
                   </h3>
                   <p style={{ width: 150, fontSize: 10 }}>{locationName[0]}</p>
 

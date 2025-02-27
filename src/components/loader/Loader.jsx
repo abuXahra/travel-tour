@@ -9,7 +9,7 @@ import {
 import { Circles, ThreeDots } from "react-loader-spinner";
 import loaderImage from "../../images/rb_57.png";
 
-export default function Loader() {
+export default function Loader({ text }) {
   return (
     <div
       style={{
@@ -32,7 +32,7 @@ export default function Loader() {
           wrapperStyle={{}}
           wrapperClass=""
         />
-        <h3>Searching for Flight</h3>
+        <h3>{text}</h3>
       </LoaderWrapper>
     </div>
   );

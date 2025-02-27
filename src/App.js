@@ -121,7 +121,10 @@ function App() {
             <Route path="/multicity-edit" element={<MulticityEdit />} />
 
             {/* Flight Overview */}
-            <Route path="/overview-payment" element={<FlightOverview />} />
+            <Route
+              path="/overview-payment/:flightResultIndex"
+              element={<FlightOverview />}
+            />
             <Route
               path="/oneway-overview/:oneWayFlightResultIndex"
               element={<OnewayOverview />}

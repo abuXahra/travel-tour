@@ -1082,15 +1082,6 @@ export default function TripInfo() {
                           <a href="#">Terms and Conditions</a>
                         </p>
                       </div>
-                      <Button
-                        text={"Continue"}
-                        onClick={() => {
-                          setTravelDetail(queryParams);
-                          navigate(
-                            `/flight-customization/${flightResultIndex}`
-                          );
-                        }}
-                      />
                     </ButtonWrapper>
                   </FormWrapper>
                 </TripInfoContent>
@@ -1244,7 +1235,7 @@ export default function TripInfo() {
                           <a href="#">Terms and Conditions</a>
                         </p>
                       </div>
-                      <Button
+                      {/* <Button
                         text={"Continue"}
                         onClick={() => {
                           setTravelDetail(queryParams);
@@ -1252,7 +1243,7 @@ export default function TripInfo() {
                             `/flight-customization/${flightResultIndex}`
                           );
                         }}
-                      />
+                      /> */}
                     </ButtonWrapper>
                   </FormWrapper>
                 </TripInfoContent>
@@ -1405,7 +1396,7 @@ export default function TripInfo() {
                           <a href="#">Terms and Conditions</a>
                         </p>
                       </div>
-                      <Button
+                      {/* <Button
                         text={"Continue"}
                         onClick={() => {
                           setTravelDetail(queryParams);
@@ -1413,12 +1404,19 @@ export default function TripInfo() {
                             `/flight-customization/${flightResultIndex}`
                           );
                         }}
-                      />
+                      /> */}
                     </ButtonWrapper>
                   </FormWrapper>
                 </TripInfoContent>
               )
             )}
+            <Button
+              text={"Continue"}
+              onClick={() => {
+                setTravelDetail(TravelData);
+                navigate(`/flight-customization/${flightResultIndex}`);
+              }}
+            />
             {/*user trip data  */}
           </TripMinContent>
         </TripInfoBody>

@@ -512,10 +512,12 @@ export default function FlightCustomization() {
                     </TripDetailClass>
                     <TripDetailTime>
                       <CustomizeTripDetail>
-                        <h4>(1) {travelDetail?.firstName}</h4>
+                        <h4>(1) {travelDetail?.AdultData[0]?.firstName}</h4>
                         <p>ADULT</p>
-                        <span>{travelDetail?.selectedGender}</span>
-                        <span>{travelDetail?.email}</span>
+                        <span>
+                          {travelDetail?.AdultData[0]?.selectedGender}
+                        </span>
+                        <span>{travelDetail?.AdultData[0]?.email}</span>
                         <EditIcon
                           onClick={() =>
                             navigate(`/trip-info/${flightResultIndex}`)
@@ -570,7 +572,9 @@ export default function FlightCustomization() {
             ))}
             <div>
               <Button
-                onClick={() => navigate("/overview-payment")}
+                onClick={() =>
+                  navigate(`/overview-payment/${flightResultIndex}`)
+                }
                 text={"Continue to payment"}
               />
             </div>
