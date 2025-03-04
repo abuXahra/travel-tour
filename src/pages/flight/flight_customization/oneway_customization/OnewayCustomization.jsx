@@ -45,11 +45,11 @@ import { FlightAddons } from "../../../../data/object/flightAddons";
 import { FiEdit } from "react-icons/fi";
 import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../../store/store";
-import axios from "axios";
 
 export default function OnewayCustomization() {
   const navigate = useNavigate();
-  const { oneWayFlightResult, travelDetail } = useAuthStore();
+  const { oneWayFlightResult, travelDetail, flightPriceLookup } =
+    useAuthStore();
   const [FResult, setFResult] = useState("");
   //let FResult;
   const { oneWayFlightResultIndex } = useParams();
@@ -77,12 +77,13 @@ export default function OnewayCustomization() {
   useEffect(() => {
     const bookflights = async () => {
       try {
-        const res = await axios.post("http://localhost:5000/pricelookup", {
-          flight: oneWayFlightResult[2][oneWayFlightResultIndex],
-        });
+        const res = await flightPriceLookup(
+          oneWayFlightResult[2][oneWayFlightResultIndex]
+        );
+
         if (res) {
-          console.log(res?.data?.data);
-          setFResult(res?.data?.data?.flightOffers[0]);
+          console.log(res);
+          setFResult(res?.flightOffers[0]);
         }
       } catch (err) {
         console.log(err?.response?.data);
@@ -222,6 +223,8 @@ export default function OnewayCustomization() {
                     <TripDetailClass>
                       <span>
                         <AirlineFlightLogo
+                          dictionaries={oneWayFlightResult[9]}
+                          data={oneWayFlightResult[2][oneWayFlightResultIndex]}
                           keyWord={
                             oneWayFlightResult[2][oneWayFlightResultIndex]
                               .validatingAirlineCodes[0]
@@ -355,20 +358,26 @@ export default function OnewayCustomization() {
               {/* Body */}
               {showTravelDetail && (
                 <TripDetailBody>
-                  <TripDetailClass>
+                  {/* <TripDetailClass>
                     <span>
                       <img src={flightLogo} alt="" /> <h4>Air Peace</h4>{" "}
                       <p>73G</p>
                     </span>
                     <span>Economy</span>
-                  </TripDetailClass>
+                  </TripDetailClass> */}
                   <TripDetailTime>
                     <CustomizeTripDetail>
-                      <h4>(1) {travelDetail?.firstName}</h4>
+                      <h4>(1) {travelDetail?.AdultData[0]?.firstName}</h4>
                       <p>ADULT</p>
-                      <span>{travelDetail?.selectedGender}</span>
-                      <span>{travelDetail?.email}</span>
-                      <EditIcon onClick={() => navigate("/oneway-edit")}>
+                      <span>{travelDetail?.AdultData[0]?.selectedGender}</span>
+                      <span>{travelDetail?.AdultData[0]?.email}</span>
+                      <EditIcon
+                        onClick={() =>
+                          navigate(
+                            `/oneway-trip-info/${oneWayFlightResultIndex}`
+                          )
+                        }
+                      >
                         <FiEdit />
                       </EditIcon>
                     </CustomizeTripDetail>
@@ -418,7 +427,9 @@ export default function OnewayCustomization() {
           ))}
           <div>
             <Button
-              onClick={() => navigate("/oneway-overview")}
+              onClick={() =>
+                navigate(`/oneway-overview/${oneWayFlightResultIndex}`)
+              }
               text={"Continue to payment"}
             />
           </div>

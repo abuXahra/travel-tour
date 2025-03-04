@@ -47,18 +47,24 @@ import AirlineCodeLookup from "../../../../components/Flight/AirlineCodeLookup";
 import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../../store/store";
 import FlightResultForDepart from "../../../../components/Flight/FlightResultForDepart";
+import NoResult from "../../../../components/no_result/NoResult";
 
 export default function OneWayResult() {
   const { oneWayFlightResult } = useAuthStore();
   // const flightData = JSON.parse(myObject);
 
   const navigate = useNavigate();
-
+  console.log(oneWayFlightResult);
   useEffect(() => {
     if (!oneWayFlightResult || oneWayFlightResult?.length === 0) {
       navigate("/flight-booking");
     }
   }, [oneWayFlightResult, navigate]);
+  // useEffect(() => {
+  //   if (!oneWayFlightResult[0]) {
+  //     navigate("/flight-booking");
+  //   }
+  // }, [oneWayFlightResult, navigate]);
 
   // Show View Detail Variable
   const [showViewDetailCard, setShowViewDetailCard] = useState(false);
@@ -162,9 +168,11 @@ export default function OneWayResult() {
     setOwBrColor("grey");
     setOwCheckColor("white");
   };
+  console.log(oneWayFlightResult[2]);
 
   return (
     <FlightResultWrapper>
+      {oneWayFlightResult[2]?.length === 0 && <NoResult />}
       {/* flight header section */}
       <FlightResultHeader>
         <DateFlight>Mon, 9 Sep 2024</DateFlight>
@@ -224,6 +232,7 @@ export default function OneWayResult() {
 
           {/* Flight Result Card  1*/}
           <FlightResultForDepart
+            dictionaries={oneWayFlightResult[9]}
             flightSearchResultData={oneWayFlightResult[2]}
             locationName={[oneWayFlightResult[0], oneWayFlightResult[1]]}
             setIndex={setIndex}
@@ -254,7 +263,7 @@ export default function OneWayResult() {
               <DNRDetail>
                 <DNRDetailFlightImage>
                   <img
-                    src={`https://wakanow-images.azureedge.net/Images/flight-logos/${oneWayFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
+                    src={`https://images.wakanow.com/Images/flight-logos/${oneWayFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
                     alt={oneWayFlightResult[2][index].validatingAirlineCodes[0]}
                   />
                 </DNRDetailFlightImage>
@@ -333,6 +342,8 @@ export default function OneWayResult() {
                     <h3>Airline</h3>
 
                     <AirlineFlightLogo
+                      dictionaries={oneWayFlightResult[9]}
+                      data={oneWayFlightResult[2][index]}
                       keyWord={
                         oneWayFlightResult[2][index].validatingAirlineCodes[0]
                       }

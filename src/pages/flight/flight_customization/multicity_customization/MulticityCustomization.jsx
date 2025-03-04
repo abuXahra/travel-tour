@@ -45,12 +45,12 @@ import { FlightAddons } from "../../../../data/object/flightAddons";
 import { FiEdit } from "react-icons/fi";
 import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../../store/store";
-import axios from "axios";
 
 export default function MulticityCustomization() {
   const navigate = useNavigate();
 
-  const { multiCityFlightResult, travelDetail } = useAuthStore();
+  const { multiCityFlightResult, travelDetail, flightPriceLookup } =
+    useAuthStore();
   const { multiCityFlightResultIndex } = useParams();
   let queryParams;
   let location = multiCityFlightResult[0];
@@ -91,12 +91,13 @@ export default function MulticityCustomization() {
   useEffect(() => {
     const bookflights = async () => {
       try {
-        const res = await axios.post("http://localhost:5000/pricelookup", {
-          flight: multiCityFlightResult[1][multiCityFlightResultIndex],
-        });
+        const res = await flightPriceLookup(
+          multiCityFlightResult[1][multiCityFlightResultIndex]
+        );
+
         if (res) {
-          console.log(res?.data?.data);
-          setFResult(res?.data?.data?.flightOffers[0]);
+          console.log(res);
+          setFResult(res?.flightOffers[0]);
         }
       } catch (err) {
         console.log(err?.response?.data);

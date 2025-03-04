@@ -51,6 +51,7 @@ import { LiaCcVisa } from "react-icons/lia";
 import AirlineCodeLookup from "../../../components/Flight/AirlineCodeLookup";
 import AirlineFlightLogo from "../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../store/store";
+import NoResult from "../../../components/no_result/NoResult";
 
 export default function FlightResult() {
   const { singleFlightResult } = useAuthStore();
@@ -59,7 +60,7 @@ export default function FlightResult() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!singleFlightResult || singleFlightResult?.length === 0) {
+    if (!singleFlightResult[0]) {
       navigate("/flight-booking");
     }
   }, [singleFlightResult, navigate]);
@@ -193,6 +194,7 @@ export default function FlightResult() {
 
   return (
     <FlightResultWrapper>
+      {singleFlightResult[2]?.length === 0 && <NoResult />}
       {/* flight header section */}
       <FlightResultHeader>
         <DateFlight>Mon, 9 Sep 2024</DateFlight>
@@ -245,6 +247,7 @@ export default function FlightResult() {
 
           {/* Flight Result Card  1*/}
           <FlightResultForDepartandReturn
+            dictionaries={singleFlightResult[9]}
             flightSearchResultData={singleFlightResult[2]}
             locationName={[singleFlightResult[0], singleFlightResult[1]]}
             setIndex={setIndex}
@@ -275,7 +278,7 @@ export default function FlightResult() {
               <DNRDetail>
                 <DNRDetailFlightImage>
                   <img
-                    src={`https://wakanow-images.azureedge.net/Images/flight-logos/${singleFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
+                    src={`https://images.wakanow.com/Images/flight-logos/${singleFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
                     alt={singleFlightResult[2][index].validatingAirlineCodes[0]}
                   />
                 </DNRDetailFlightImage>
@@ -354,6 +357,8 @@ export default function FlightResult() {
                     <h3>Airline</h3>
 
                     <AirlineFlightLogo
+                      dictionaries={singleFlightResult[9]}
+                      data={singleFlightResult[2][index]}
                       keyWord={
                         singleFlightResult[2][index].validatingAirlineCodes[0]
                       }
@@ -383,7 +388,7 @@ export default function FlightResult() {
               <DNRDetail>
                 <DNRDetailFlightImage>
                   <img
-                    src={`https://wakanow-images.azureedge.net/Images/flight-logos/${singleFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
+                    src={`https://images.wakanow.com/Images/flight-logos/${singleFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
                     alt={singleFlightResult[2][index].validatingAirlineCodes[0]}
                   />
                 </DNRDetailFlightImage>
@@ -460,6 +465,8 @@ export default function FlightResult() {
                   <span>
                     <h3>Airline</h3>
                     <AirlineFlightLogo
+                      dictionaries={singleFlightResult[9]}
+                      data={singleFlightResult[2][index]}
                       keyWord={
                         singleFlightResult[2][index].validatingAirlineCodes[0]
                       }

@@ -12,6 +12,7 @@ import AirlineCodeLookup from "./AirlineCodeLookup";
 import AirlineFlightLogo from "./AirlineFlightLogo";
 
 const FlightResultForDepart = ({
+  dictionaries,
   flightSearchResultData,
   setIndex,
   locationName,
@@ -23,13 +24,13 @@ const FlightResultForDepart = ({
     style: "currency",
   });
   useEffect(() => {
-    if (currentIndex < flightSearchResultData.length) {
+    if (currentIndex < flightSearchResultData?.length) {
       const timer = setTimeout(() => {
         setCurrentIndex(currentIndex + 1);
       }, 2000); // Delay of 1 second for each item
       return () => clearTimeout(timer);
     }
-  }, [currentIndex, flightSearchResultData.length]);
+  }, [currentIndex, flightSearchResultData?.length]);
 
   // Cacula for duration
   function parseDuration(duration) {
@@ -54,8 +55,10 @@ const FlightResultForDepart = ({
         <FlightCard>
           {/* flight logo */}
           <AirlineFlightLogo
+            dictionaries={dictionaries}
             keyWord={data.validatingAirlineCodes[0]}
             index={index}
+            data={data}
             setIndex={setIndex}
             showViewDetail={showViewDetail}
           />
@@ -70,7 +73,13 @@ const FlightResultForDepart = ({
                     data.itineraries[0].segments[0].departure.at
                   ).toLocaleString()}
                 </p>{" "}
-                <p>Arik Air</p>
+                <p>
+                  {data.itineraries[0].segments[0].operating
+                    ? dictionaries.carriers[
+                        data.itineraries[0].segments[0].operating.carrierCode
+                      ]
+                    : ""}
+                </p>
               </DnRHeader>
               <div>
                 <span>

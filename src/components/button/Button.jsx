@@ -1,5 +1,5 @@
 import React from "react";
-import { ButtonStyle } from "./Button.style";
+import { ButtonStyle, Loader } from "./Button.style";
 
 export default function Button({
   onClick,
@@ -10,7 +10,7 @@ export default function Button({
   Icon,
   rightIcon,
   pd,
-  
+  loading,
 }) {
   return (
     <ButtonStyle
@@ -20,8 +20,15 @@ export default function Button({
       type="submit"
       onClick={onClick}
       pd={pd}
+      disabled={loading}
     >
-      {Icon} {text} {rightIcon && rightIcon}
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          {Icon} {text} {rightIcon && rightIcon}
+        </>
+      )}
     </ButtonStyle>
   );
 }

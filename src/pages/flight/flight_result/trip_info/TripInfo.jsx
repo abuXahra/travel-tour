@@ -47,10 +47,16 @@ import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../../store/store";
 
 export default function TripInfo() {
+  const [data, setData] = useState({});
   // navigation
   const navigate = useNavigate();
 
-  const { singleFlightResult, setTravelDetail } = useAuthStore();
+  const {
+    singleFlightResult,
+    setTravelDetail,
+    flightPriceLookup,
+    setSingleFlightResult,
+  } = useAuthStore();
   const { flightResultIndex } = useParams();
 
   useEffect(() => {
@@ -58,6 +64,20 @@ export default function TripInfo() {
       navigate("/flight-booking");
     }
   }, [singleFlightResult, navigate]);
+
+  useEffect(() => {
+    const flightPrice = async () => {
+      let flightPrice = await flightPriceLookup(
+        singleFlightResult[2][flightResultIndex]
+      );
+
+      if (flightPrice) {
+        console.log(flightPrice);
+        setData(flightPrice.flightOffers[0]);
+      }
+    };
+    flightPrice();
+  }, [singleFlightResult]);
 
   let queryParams;
 
@@ -87,6 +107,11 @@ export default function TripInfo() {
   const [genderError, setGenderError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
   const [emailError, setEmailError] = useState(false);
+  const [TravelData, setTravelData] = useState({
+    AdultData: [],
+    ChildrenData: [],
+    InfantData: [],
+  });
 
   // title selection handler
   const userTitle = [
@@ -94,44 +119,231 @@ export default function TripInfo() {
     { title: "Mrs", value: "Mrs." },
   ];
 
-  const handleSelectTitleChange = (event) => {
-    setSelectedTitleValue(event.target.value);
+  const handleSelectTitleChange = (data, event, index) => {
+    const newTitle = event.target.value;
+
+    setTravelData((prevState) => {
+      // Create a copy of the existing AdultData array
+      let updatedData = { ...prevState };
+
+      if (!updatedData[data]) {
+        updatedData[data] = [];
+      }
+
+      // Ensure the object at 'index' exists before modifying it
+      if (!updatedData[data][index]) {
+        updatedData[data][index] = {};
+      }
+
+      // Update last name
+      updatedData[data][index] = {
+        ...updatedData[data][index],
+        title: newTitle,
+      };
+
+      return updatedData;
+    });
+    if (TravelData?.AdultData?.[index]?.title) {
+      setSelectedTitleValue(newTitle);
+    }
+    if (TravelData?.ChildrenData?.[index]?.title) {
+      setSelectedTitleValue(newTitle);
+    }
+    if (TravelData?.InfantData?.[index]?.title) {
+      setSelectedTitleValue(newTitle);
+    }
     setTitleError(false);
   };
 
   // last name Handler
-  const lastNameOnchangeHandler = (e) => {
-    setLastName(e.target.value);
+  const lastNameOnchangeHandler = (data, event, index) => {
+    const newData = event.target.value;
+
+    setTravelData((prevState) => {
+      // Create a copy of the existing AdultData array
+      // Create a copy of the existing AdultData array
+      let updatedData = { ...prevState };
+
+      if (!updatedData[data]) {
+        updatedData[data] = [];
+      }
+
+      // Ensure the object at 'index' exists before modifying it
+      if (!updatedData[data][index]) {
+        updatedData[data][index] = {};
+      }
+
+      // Update last name
+      updatedData[data][index] = {
+        ...updatedData[data][index],
+        lastName: newData,
+      };
+
+      return updatedData;
+    });
+
+    setLastName(newData);
     setLastNameError(false);
   };
 
   // First name Handler
-  const firstNameOnchangeHandler = (e) => {
-    setFirstName(e.target.value);
+  const firstNameOnchangeHandler = (data, event, index) => {
+    const newData = event.target.value;
+
+    setTravelData((prevState) => {
+      // Create a copy of the existing AdultData array
+      let updatedData = { ...prevState };
+
+      if (!updatedData[data]) {
+        updatedData[data] = [];
+      }
+
+      // Ensure the object at 'index' exists before modifying it
+      if (!updatedData[data][index]) {
+        updatedData[data][index] = {};
+      }
+
+      // Update last name
+      updatedData[data][index] = {
+        ...updatedData[data][index],
+        firstName: newData,
+      };
+
+      return updatedData;
+    });
+    setFirstName(newData);
     setFirstNameError(false);
   };
 
   // middle name Handler
-  const middleNameOnchangeHandler = (e) => {
-    setMiddleName(e.target.value);
+  const middleNameOnchangeHandler = (data, event, index) => {
+    const newData = event.target.value;
+
+    setTravelData((prevState) => {
+      // Create a copy of the existing AdultData array
+      let updatedData = { ...prevState };
+
+      if (!updatedData[data]) {
+        updatedData[data] = [];
+      }
+
+      // Ensure the object at 'index' exists before modifying it
+      if (!updatedData[data][index]) {
+        updatedData[data][index] = {};
+      }
+
+      // Update last name
+      updatedData[data][index] = {
+        ...updatedData[data][index],
+        middleName: newData,
+      };
+
+      return updatedData;
+    });
+    setMiddleName(newData);
     setMiddleNameError(false);
   };
 
   // dob name Handler
-  const dobOnchangeHandler = (e) => {
-    setDob(e.target.value);
+  const dobOnchangeHandler = (data, event, index) => {
+    const newData = event.target.value;
+
+    setTravelData((prevState) => {
+      // Create a copy of the existing AdultData array
+      let updatedData = { ...prevState };
+
+      if (!updatedData[data]) {
+        updatedData[data] = [];
+      }
+
+      // Ensure the object at 'index' exists before modifying it
+      if (!updatedData[data][index]) {
+        updatedData[data][index] = {};
+      }
+
+      // Update last name
+      updatedData[data][index] = {
+        ...updatedData[data][index],
+        dob: newData,
+      };
+
+      return updatedData;
+    });
+    setDob(newData);
     setDobError(false);
   };
 
   // country selection handler
-  const handleSelectCountryChange = (event) => {
-    setSelectedCountryValue(event.target.value);
+  const handleSelectCountryChange = (data, event, index) => {
+    const newData = event.target.value;
+
+    setTravelData((prevState) => {
+      // Create a copy of the existing AdultData array
+      let updatedData = { ...prevState };
+
+      if (!updatedData[data]) {
+        updatedData[data] = [];
+      }
+
+      // Ensure the object at 'index' exists before modifying it
+      if (!updatedData[data][index]) {
+        updatedData[data][index] = {};
+      }
+
+      // Update last name
+      updatedData[data][index] = {
+        ...updatedData[data][index],
+        selectedCountryValue: newData,
+      };
+
+      return updatedData;
+    });
+    if (TravelData?.AdultData?.[index]?.selectedCountryValue) {
+      setSelectedCountryValue(newData);
+    }
+    if (TravelData?.ChildrenData?.[index]?.selectedCountryValue) {
+      setSelectedCountryValue(newData);
+    }
+    if (TravelData?.InfantData?.[index]?.selectedCountryValue) {
+      setSelectedCountryValue(newData);
+    }
     setCountryError(false);
   };
 
   // Gender handler;
-  const handleGenderChange = (value) => {
-    setSelectedGender(value);
+  const handleGenderChange = (data, event, index, type) => {
+    const newData = event;
+
+    setTravelData((prevState) => {
+      // Create a copy of the existing AdultData array
+      let updatedData = { ...prevState };
+
+      if (!updatedData[data]) {
+        updatedData[data] = [];
+      }
+
+      // Ensure the object at 'index' exists before modifying it
+      if (!updatedData[data][index]) {
+        updatedData[data][index] = {};
+      }
+
+      // Update last name
+      updatedData[data][index] = {
+        ...updatedData[data][index],
+        [type]: newData,
+      };
+
+      return updatedData;
+    });
+    if (TravelData?.AdultData?.[index]?.gender) {
+      setSelectedGender(newData);
+    }
+    if (TravelData?.ChildrenData?.[index]?.gender) {
+      setSelectedGender(newData);
+    }
+    if (TravelData?.InfantData?.[index]?.gender) {
+      setSelectedGender(newData);
+    }
     setGenderError(false);
   };
 
@@ -141,15 +353,63 @@ export default function TripInfo() {
   ];
 
   // phone number Handler
-  const phonOnchangeHandler = (e) => {
-    setPhone(e.target.value);
+  const phonOnchangeHandler = (data, event, index) => {
+    const newData = event.target.value;
+
+    setTravelData((prevState) => {
+      // Create a copy of the existing AdultData array
+      let updatedData = { ...prevState };
+
+      if (!updatedData[data]) {
+        updatedData[data] = [];
+      }
+
+      // Ensure the object at 'index' exists before modifying it
+      if (!updatedData[data][index]) {
+        updatedData[data][index] = {};
+      }
+
+      // Update last name
+      updatedData[data][index] = {
+        ...updatedData[data][index],
+        phone: newData,
+      };
+
+      return updatedData;
+    });
+
+    setPhone(newData);
     setPhoneError(false);
   };
   //
 
   // email  number Handler
-  const emailOnchangeHandler = (e) => {
-    setEmail(e.target.value);
+  const emailOnchangeHandler = (data, event, index) => {
+    const newData = event.target.value;
+
+    setTravelData((prevState) => {
+      // Create a copy of the existing AdultData array
+      let updatedData = { ...prevState };
+
+      if (!updatedData[data]) {
+        updatedData[data] = [];
+      }
+
+      // Ensure the object at 'index' exists before modifying it
+      if (!updatedData[data][index]) {
+        updatedData[data][index] = {};
+      }
+
+      // Update last name
+      updatedData[data][index] = {
+        ...updatedData[data][index],
+        email: newData,
+      };
+
+      return updatedData;
+    });
+
+    setEmail(newData);
     setEmailError(false);
   };
 
@@ -235,6 +495,9 @@ export default function TripInfo() {
     phone,
     email,
   };
+  console.log(TravelData);
+  // let carrierCode = singleFlightResult[9].carriers[keyWord];
+
   // console.log(queryParams);
   if (!singleFlightResult || singleFlightResult?.length === 0) {
     navigate("/flight-booking");
@@ -325,11 +588,7 @@ export default function TripInfo() {
                 </div>
                 <div>
                   <span>Base Fee</span>
-                  <span>
-                    {money.format(
-                      singleFlightResult[2][flightResultIndex].price.base
-                    )}
-                  </span>
+                  <span>{money.format(data?.price?.base)}</span>
                 </div>
                 <div>
                   <span>Discount</span>
@@ -343,22 +602,13 @@ export default function TripInfo() {
                   <span>
                     <b>Total Fare</b>
                   </span>
-                  <span>
-                    {money.format(
-                      singleFlightResult[2][flightResultIndex].price.total
-                    )}
-                  </span>
+                  <span>{money.format(data?.price?.total)}</span>
                 </div>
               </SideFlightSummary>
               <TotalTrip>
                 <div>
                   <span>Trip Total</span>
-                  <span>
-                    {" "}
-                    {money.format(
-                      singleFlightResult[2][flightResultIndex].price.total
-                    )}
-                  </span>
+                  <span> {money.format(data?.price?.total)}</span>
                 </div>
               </TotalTrip>
             </TripInfoSideContent>
@@ -435,6 +685,8 @@ export default function TripInfo() {
                     <TripDetailClass>
                       <span>
                         <AirlineFlightLogo
+                          dictionaries={singleFlightResult[9]}
+                          data={singleFlightResult[2][flightResultIndex]}
                           keyWord={
                             singleFlightResult[2][flightResultIndex]
                               .validatingAirlineCodes[0]
@@ -583,6 +835,8 @@ export default function TripInfo() {
                     <TripDetailClass>
                       <span>
                         <AirlineFlightLogo
+                          dictionaries={singleFlightResult[9]}
+                          data={singleFlightResult[2][flightResultIndex]}
                           keyWord={
                             singleFlightResult[2][flightResultIndex]
                               .validatingAirlineCodes[0]
@@ -681,143 +935,489 @@ export default function TripInfo() {
                 )}
               </FlightDetailWrapper>
             </TripInfoContent>
+            {Array.from(
+              { length: singleFlightResult?.[6] || 0 },
+              (_, index) => (
+                <TripInfoContent key={index}>
+                  <h2>Travel Detail</h2>
 
+                  {/* Passenger */}
+                  <TripPassenger>
+                    <div>
+                      <span>
+                        <FaUser />
+                      </span>
+                      <h3>Adult, {index + 1} (40yrs+)</h3>
+                    </div>
+                    <div>
+                      <p>0/1 added</p>
+                    </div>
+                  </TripPassenger>
+
+                  {/* Form */}
+                  <FormWrapper onSubmit={handledSubmit}>
+                    <FormContent>
+                      {/* Title  */}
+
+                      <SelectInput
+                        label={"Title"}
+                        options={userTitle}
+                        title={"Title"}
+                        error={titleError}
+                        onChange={(e) =>
+                          handleSelectTitleChange("AdultData", e, index)
+                        }
+                      />
+
+                      {/* Last name */}
+                      <Input
+                        title={"Last Name"}
+                        label={"Last Name"}
+                        type={"text"}
+                        value={TravelData?.AdultData?.[index]?.lastName}
+                        onChange={(e) =>
+                          lastNameOnchangeHandler("AdultData", e, index)
+                        }
+                        error={lastNameError}
+                        requiredSymbol={"*"}
+                      />
+
+                      {/* First name */}
+                      <Input
+                        type={"text"}
+                        title={"First Name"}
+                        label={"First Name"}
+                        value={TravelData?.AdultData?.[index]?.firstName}
+                        onChange={(e) =>
+                          firstNameOnchangeHandler("AdultData", e, index)
+                        }
+                        error={firstNameError}
+                        requiredSymbol={"*"}
+                      />
+                    </FormContent>
+
+                    <FormContent>
+                      {/* Middle name */}
+                      <Input
+                        type={"text"}
+                        title={"Middle Name"}
+                        label={"Middle Name"}
+                        value={TravelData?.AdultData?.[index]?.middleName}
+                        onChange={(e) =>
+                          middleNameOnchangeHandler("AdultData", e, index)
+                        }
+                        error={middleNameError}
+                        requiredSymbol={"*"}
+                      />
+
+                      {/* DOB */}
+                      <Input
+                        title={"Date of Birth"}
+                        label={"Date of Birth"}
+                        type={"date"}
+                        value={TravelData?.AdultData?.[index]?.dob}
+                        onChange={(e) =>
+                          dobOnchangeHandler("AdultData", e, index)
+                        }
+                        error={dobError}
+                        requiredSymbol={"*"}
+                      />
+
+                      {/* Country  */}
+                      <SelectInput
+                        options={Countries}
+                        title={"Nationality"}
+                        error={countryError}
+                        onChange={(e) =>
+                          handleSelectCountryChange("AdultData", e, index)
+                        }
+                      />
+                    </FormContent>
+
+                    <FormContent>
+                      {/* Gender */}
+                      <RadioInput
+                        options={gender}
+                        defaultValue={selectedGender}
+                        onChange={(e) =>
+                          handleGenderChange("AdultData", e, index, "gender")
+                        }
+                        error={genderError}
+                      />
+
+                      {/* Phone Number */}
+                      <Input
+                        title={"Phone Number "}
+                        label={"Phone Number "}
+                        type={"text"}
+                        value={TravelData?.AdultData?.[index]?.phone || ""}
+                        onChange={(e) =>
+                          phonOnchangeHandler("AdultData", e, index)
+                        }
+                        error={phoneError}
+                        requiredSymbol={"*"}
+                        maxLength={12}
+                      />
+
+                      {/* email address */}
+                      <Input
+                        title={"Email Address"}
+                        label={"Email Address"}
+                        type={"email"}
+                        value={TravelData?.AdultData?.[index]?.email || ""}
+                        onChange={(e) =>
+                          emailOnchangeHandler("AdultData", e, index)
+                        }
+                        error={emailError}
+                        requiredSymbol={"*"}
+                      />
+                    </FormContent>
+
+                    {/* Continue Button */}
+                    <ButtonWrapper>
+                      <div>
+                        <input type="checkbox" name="terms" id="terms" />
+                        <p>
+                          By proceeding you agree have read and accept our{" "}
+                          <a href="#">Terms and Conditions</a>
+                        </p>
+                      </div>
+                    </ButtonWrapper>
+                  </FormWrapper>
+                </TripInfoContent>
+              )
+            )}
+
+            {Array.from(
+              { length: singleFlightResult?.[7] || 0 },
+              (_, index) => (
+                <TripInfoContent key={index}>
+                  <h2>Travel Detail</h2>
+
+                  {/* Passenger */}
+                  <TripPassenger>
+                    <div>
+                      <span>
+                        <FaUser />
+                      </span>
+                      <h3>Children, {index + 1} (12yrs+)</h3>
+                    </div>
+                    <div>
+                      <p>0/1 added</p>
+                    </div>
+                  </TripPassenger>
+
+                  {/* Form */}
+                  <FormWrapper onSubmit={handledSubmit}>
+                    <FormContent>
+                      {/* Title  */}
+
+                      <SelectInput
+                        label={"Title"}
+                        options={userTitle}
+                        title={"Title"}
+                        error={titleError}
+                        onChange={(e) =>
+                          handleSelectTitleChange("ChildrenData", e, index)
+                        }
+                      />
+
+                      {/* Last name */}
+                      <Input
+                        title={"Last Name"}
+                        label={"Last Name"}
+                        type={"text"}
+                        value={TravelData?.ChildrenData?.[index]?.lastName}
+                        onChange={(e) =>
+                          lastNameOnchangeHandler("ChildrenData", e, index)
+                        }
+                        error={lastNameError}
+                        requiredSymbol={"*"}
+                      />
+
+                      {/* First name */}
+                      <Input
+                        type={"text"}
+                        title={"First Name"}
+                        label={"First Name"}
+                        value={TravelData?.ChildrenData?.[index]?.firstName}
+                        onChange={(e) =>
+                          firstNameOnchangeHandler("ChildrenData", e, index)
+                        }
+                        error={firstNameError}
+                        requiredSymbol={"*"}
+                      />
+                    </FormContent>
+
+                    <FormContent>
+                      {/* Middle name */}
+                      <Input
+                        type={"text"}
+                        title={"Middle Name"}
+                        label={"Middle Name"}
+                        value={TravelData?.ChildrenData?.[index]?.middleName}
+                        onChange={(e) =>
+                          middleNameOnchangeHandler("ChildrenData", e, index)
+                        }
+                        error={middleNameError}
+                        requiredSymbol={"*"}
+                      />
+
+                      {/* DOB */}
+                      <Input
+                        title={"Date of Birth"}
+                        label={"Date of Birth"}
+                        type={"date"}
+                        value={TravelData?.ChildrenData?.[index]?.dob}
+                        onChange={(e) =>
+                          dobOnchangeHandler("ChildrenData", e, index)
+                        }
+                        error={dobError}
+                        requiredSymbol={"*"}
+                      />
+
+                      {/* Country  */}
+                      <SelectInput
+                        options={Countries}
+                        title={"Nationality"}
+                        error={countryError}
+                        onChange={(e) =>
+                          handleSelectCountryChange("ChildrenData", e, index)
+                        }
+                      />
+                    </FormContent>
+
+                    <FormContent>
+                      {/* Gender */}
+                      <RadioInput
+                        options={gender}
+                        defaultValue={selectedGender}
+                        onChange={(e) =>
+                          handleGenderChange("ChildrenData", e, index, "gender")
+                        }
+                        error={genderError}
+                      />
+
+                      {/* Phone Number */}
+                      <Input
+                        title={"Phone Number "}
+                        label={"Phone Number "}
+                        type={"text"}
+                        value={TravelData?.ChildrenData?.[index]?.phone}
+                        onChange={(e) =>
+                          phonOnchangeHandler("ChildrenData", e, index)
+                        }
+                        error={phoneError}
+                        requiredSymbol={"*"}
+                        maxLength={12}
+                      />
+
+                      {/* email address */}
+                      <Input
+                        title={"Email Address"}
+                        label={"Email Address"}
+                        type={"email"}
+                        value={TravelData?.ChildrenData?.[index]?.email}
+                        onChange={(e) =>
+                          emailOnchangeHandler("ChildrenData", e, index)
+                        }
+                        error={emailError}
+                        requiredSymbol={"*"}
+                      />
+                    </FormContent>
+
+                    {/* Continue Button */}
+                    <ButtonWrapper>
+                      <div>
+                        <input type="checkbox" name="terms" id="terms" />
+                        <p>
+                          By proceeding you agree have read and accept our{" "}
+                          <a href="#">Terms and Conditions</a>
+                        </p>
+                      </div>
+                      {/* <Button
+                        text={"Continue"}
+                        onClick={() => {
+                          setTravelDetail(queryParams);
+                          navigate(
+                            `/flight-customization/${flightResultIndex}`
+                          );
+                        }}
+                      /> */}
+                    </ButtonWrapper>
+                  </FormWrapper>
+                </TripInfoContent>
+              )
+            )}
+            {Array.from(
+              { length: singleFlightResult?.[8] || 0 },
+              (_, index) => (
+                <TripInfoContent key={index}>
+                  <h2>Travel Detail</h2>
+
+                  {/* Passenger */}
+                  <TripPassenger>
+                    <div>
+                      <span>
+                        <FaUser />
+                      </span>
+                      <h3>Infants, {index + 1} (2yrs+)</h3>
+                    </div>
+                    <div>
+                      <p>0/1 added</p>
+                    </div>
+                  </TripPassenger>
+
+                  {/* Form */}
+                  <FormWrapper onSubmit={handledSubmit}>
+                    <FormContent>
+                      {/* Title  */}
+
+                      <SelectInput
+                        label={"Title"}
+                        options={userTitle}
+                        title={"Title"}
+                        error={titleError}
+                        onChange={(e) =>
+                          handleSelectTitleChange("InfantData", e, index)
+                        }
+                      />
+
+                      {/* Last name */}
+                      <Input
+                        title={"Last Name"}
+                        label={"Last Name"}
+                        type={"text"}
+                        value={TravelData?.InfantData?.[index]?.lastName}
+                        onChange={(e) =>
+                          lastNameOnchangeHandler("InfantData", e, index)
+                        }
+                        error={lastNameError}
+                        requiredSymbol={"*"}
+                      />
+
+                      {/* First name */}
+                      <Input
+                        type={"text"}
+                        title={"First Name"}
+                        label={"First Name"}
+                        value={TravelData?.InfantData?.[index]?.firstName}
+                        onChange={(e) =>
+                          firstNameOnchangeHandler("InfantData", e, index)
+                        }
+                        error={firstNameError}
+                        requiredSymbol={"*"}
+                      />
+                    </FormContent>
+
+                    <FormContent>
+                      {/* Middle name */}
+                      <Input
+                        type={"text"}
+                        title={"Middle Name"}
+                        label={"Middle Name"}
+                        value={TravelData?.InfantData?.[index]?.middleName}
+                        onChange={(e) =>
+                          middleNameOnchangeHandler("InfantData", e, index)
+                        }
+                        error={middleNameError}
+                        requiredSymbol={"*"}
+                      />
+
+                      {/* DOB */}
+                      <Input
+                        title={"Date of Birth"}
+                        label={"Date of Birth"}
+                        type={"date"}
+                        value={TravelData?.InfantData?.[index]?.dob}
+                        onChange={(e) =>
+                          dobOnchangeHandler("InfantData", e, index)
+                        }
+                        error={dobError}
+                        requiredSymbol={"*"}
+                      />
+
+                      {/* Country  */}
+                      <SelectInput
+                        options={Countries}
+                        title={"Nationality"}
+                        error={countryError}
+                        onChange={(e) =>
+                          handleSelectCountryChange("InfantData", e, index)
+                        }
+                      />
+                    </FormContent>
+
+                    <FormContent>
+                      {/* Gender */}
+                      <RadioInput
+                        options={gender}
+                        defaultValue={selectedGender}
+                        onChange={(e) =>
+                          handleGenderChange("InfantData", e, index, "gender")
+                        }
+                        error={genderError}
+                      />
+
+                      {/* Phone Number */}
+                      <Input
+                        title={"Phone Number "}
+                        label={"Phone Number "}
+                        type={"text"}
+                        value={TravelData?.InfantData?.[index]?.phone}
+                        onChange={(e) =>
+                          phonOnchangeHandler("InfantData", e, index)
+                        }
+                        error={phoneError}
+                        requiredSymbol={"*"}
+                        maxLength={12}
+                      />
+
+                      {/* email address */}
+                      <Input
+                        title={"Email Address"}
+                        label={"Email Address"}
+                        type={"email"}
+                        value={TravelData?.InfantData?.[index]?.email}
+                        onChange={(e) =>
+                          emailOnchangeHandler("InfantData", e, index)
+                        }
+                        error={emailError}
+                        requiredSymbol={"*"}
+                      />
+                    </FormContent>
+
+                    {/* Continue Button */}
+                    <ButtonWrapper>
+                      <div>
+                        <input type="checkbox" name="terms" id="terms" />
+                        <p>
+                          By proceeding you agree have read and accept our{" "}
+                          <a href="#">Terms and Conditions</a>
+                        </p>
+                      </div>
+                      {/* <Button
+                        text={"Continue"}
+                        onClick={() => {
+                          setTravelDetail(queryParams);
+                          navigate(
+                            `/flight-customization/${flightResultIndex}`
+                          );
+                        }}
+                      /> */}
+                    </ButtonWrapper>
+                  </FormWrapper>
+                </TripInfoContent>
+              )
+            )}
+            <Button
+              text={"Continue"}
+              onClick={() => {
+                setTravelDetail(TravelData);
+                navigate(`/flight-customization/${flightResultIndex}`);
+              }}
+            />
             {/*user trip data  */}
-            <TripInfoContent>
-              <h2>Travel Detail</h2>
-
-              {/* Passenger */}
-              <TripPassenger>
-                <div>
-                  <span>
-                    <FaUser />
-                  </span>
-                  <h3>Adult (40yrs+)</h3>
-                </div>
-                <div>
-                  <p>0/1 added</p>
-                </div>
-              </TripPassenger>
-
-              {/* Form */}
-              <FormWrapper onSubmit={handledSubmit}>
-                <FormContent>
-                  {/* Title  */}
-                  <SelectInput
-                    label={"Title"}
-                    options={userTitle}
-                    title={"Title"}
-                    error={titleError}
-                    onChange={handleSelectTitleChange}
-                  />
-
-                  {/* Last name */}
-                  <Input
-                    title={"Last Name"}
-                    label={"Last Name"}
-                    type={"text"}
-                    value={lastName}
-                    onChange={lastNameOnchangeHandler}
-                    error={lastNameError}
-                    requiredSymbol={"*"}
-                  />
-
-                  {/* First name */}
-                  <Input
-                    type={"text"}
-                    title={"First Name"}
-                    label={"First Name"}
-                    value={firstName}
-                    onChange={firstNameOnchangeHandler}
-                    error={firstNameError}
-                    requiredSymbol={"*"}
-                  />
-                </FormContent>
-
-                <FormContent>
-                  {/* Middle name */}
-                  <Input
-                    type={"text"}
-                    title={"Middle Name"}
-                    label={"Middle Name"}
-                    value={middleName}
-                    onChange={middleNameOnchangeHandler}
-                    error={middleNameError}
-                    requiredSymbol={"*"}
-                  />
-
-                  {/* DOB */}
-                  <Input
-                    title={"Date of Birth"}
-                    label={"Date of Birth"}
-                    type={"date"}
-                    value={dob}
-                    onChange={dobOnchangeHandler}
-                    error={dobError}
-                    requiredSymbol={"*"}
-                  />
-
-                  {/* Country  */}
-                  <SelectInput
-                    options={Countries}
-                    title={"Nationality"}
-                    error={countryError}
-                    onChange={handleSelectCountryChange}
-                  />
-                </FormContent>
-
-                <FormContent>
-                  {/* Gender */}
-                  <RadioInput
-                    options={gender}
-                    defaultValue={selectedGender}
-                    onChange={handleGenderChange}
-                    error={genderError}
-                  />
-
-                  {/* Phone Number */}
-                  <Input
-                    title={"Phone Number "}
-                    label={"Phone Number "}
-                    type={"text"}
-                    value={phone}
-                    onChange={phonOnchangeHandler}
-                    error={phoneError}
-                    requiredSymbol={"*"}
-                    maxLength={12}
-                  />
-
-                  {/* email address */}
-                  <Input
-                    title={"Email Address"}
-                    label={"Email Address"}
-                    type={"email"}
-                    value={email}
-                    onChange={emailOnchangeHandler}
-                    error={emailError}
-                    requiredSymbol={"*"}
-                  />
-                </FormContent>
-
-                {/* Continue Button */}
-                <ButtonWrapper>
-                  <div>
-                    <input type="checkbox" name="terms" id="terms" />
-                    <p>
-                      By proceeding you agree have read and accept our{" "}
-                      <a href="#">Terms and Conditions</a>
-                    </p>
-                  </div>
-                  <Button
-                    text={"Continue"}
-                    onClick={() => {
-                      setTravelDetail(queryParams);
-                      navigate(`/flight-customization/${flightResultIndex}`);
-                    }}
-                  />
-                </ButtonWrapper>
-              </FormWrapper>
-            </TripInfoContent>
           </TripMinContent>
         </TripInfoBody>
       </TripInfoWrapper>

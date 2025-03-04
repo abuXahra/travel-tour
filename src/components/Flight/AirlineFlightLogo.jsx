@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useDebounce } from "../dalay"; // Adjust the import path as needed
 import { FlightLogo } from "../../pages/flight/flight_result/FlightResult.style";
+import { useAuthStore } from "../../store/store";
 import flightLogo from "../../images/aire-peace.png";
 const AirlineFlightLogo = React.memo(
-  ({ keyWord, index, setIndex, showViewDetail, only, detail }) => {
+  ({
+    keyWord,
+    index,
+    setIndex,
+    showViewDetail,
+    only,
+    detail,
+    data,
+    dictionaries,
+  }) => {
+    const { airlinCodeLookup } = useAuthStore();
     const [cityName, setCityName] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -13,15 +23,11 @@ const AirlineFlightLogo = React.memo(
 
     const fetchData = async (retryCount = 0) => {
       try {
-        setLoading(true);
-        const res = await axios.post("http://localhost:5000/codelookup", {
-          airlineCodeLookup: keyWord,
-        });
-        console.log(res);
-        setCityName(
-          `${res?.data?.data[0]?.businessName}, ${res?.data?.data[0]?.commonName}`
-        );
-        setError(null);
+        // setLoading(true);
+        // const res = await airlinCodeLookup(keyWord);
+        // console.log(res);
+        // setCityName(`${res[0]?.businessName}, ${res[0]?.commonName}`);
+        // setError(null);
       } catch (err) {
         if (err.response?.status === 429 && retryCount < 5) {
           const retryAfter = Math.pow(2, retryCount) * 1000; // Exponential backoff: 1s, 2s, 4s, 8s, 16s
@@ -38,30 +44,26 @@ const AirlineFlightLogo = React.memo(
 
       fetchData();
     }, [debouncedKeyWord]);
+    let operating = "";
+    let carrierCode = dictionaries.carriers[keyWord];
 
-    if (loading) {
-      return <p>Loading...</p>;
+    if (data.itineraries[0].segments[0].operating) {
+      operating =
+        dictionaries.carriers[
+          data.itineraries[0].segments[0].operating.carrierCode
+        ];
     }
-
-    if (error) {
-      return <p>Error: {error}</p>;
-    }
-
-    if (!cityName) {
-      return <p>No data found</p>;
-    }
-
     if (only) {
-      return <div>{cityName}</div>;
+      return <div>{carrierCode}</div>;
     } else {
       return (
         <FlightLogo>
           <span>
             <img
-              src={`https://wakanow-images.azureedge.net/Images/flight-logos/${keyWord}.gif`}
+              src={`https://images.wakanow.com/Images/flight-logos/${keyWord}.gif`}
               alt={keyWord}
             />
-            <h3> {cityName}</h3>
+            <h3>{carrierCode}</h3>
           </span>
           {detail ? (
             <></>
