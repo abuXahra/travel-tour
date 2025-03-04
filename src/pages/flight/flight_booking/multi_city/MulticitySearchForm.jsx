@@ -10,6 +10,7 @@ const MulticitySearchForm = () => {
   const maxCities = 4; // Maximum number of city inputs
   const { setMultiCityFlightResult, flightOffersSearchMultiCity, setLoader } =
     useAuthStore();
+
   const [cities, setCities] = useState([
     { id: 1, from: "", to: "", departureDate: "" },
     { id: 2, from: "", to: "", departureDate: "" },
@@ -70,12 +71,30 @@ const MulticitySearchForm = () => {
 
   const flightSearch = async () => {
     setLoader(true);
-    const res = await flightOffersSearchMultiCity(cities);
+    // console.log();
+    // console.log();
+    // console.log(adults, children, infants);
+    const res = await flightOffersSearchMultiCity({
+      passenger: {
+        adults: adults,
+        children: children,
+        infants: infants,
+      },
+      flightSearch: cities,
+    });
 
     if (res) {
-      console.log(res);
-
-      setMultiCityFlightResult([cities, res]);
+      setLoader(false);
+      setMultiCityFlightResult([
+        cities,
+        res.data,
+        {
+          adults: adults,
+          children: children,
+          infants: infants,
+          dictionaries: res?.dictionaries,
+        },
+      ]);
 
       navigate("/multi-city-result");
 
