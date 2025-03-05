@@ -559,15 +559,11 @@ export default function SingleSearchCityForm({
 
               <FlightDepatWrapContent>
                 <FlightPassengerWrapper>
-                  <FlightPassengerClass
-                    onClick={() => setShowPassenger(!showPassenger)}
-                  >
+                  <FlightPassengerClass onClick={() => setShowPassenger(!showPassenger)}>
                     <span>Passenger and Class</span>
                     <div>
-                      <strong>
                         <span id="passengerValue">{totalPassengers}</span>{" "}
                         passenger and <span id="classValue">{flightClass}</span>{" "}
-                      </strong>
                     </div>
                   </FlightPassengerClass>
                   {/* Passengers */}{" "}

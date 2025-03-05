@@ -169,29 +169,27 @@ export const FlightInputWrapper = styled.div`
         width: 100%;
         padding: 25px;
         border-radius: 10px;
-        font-size: 15px;
-        font-weight: bold;
+        font-size: 13px;
         color: black;
-        text-transform: uppercase;
+        text-transform: capitalize;
         background-color: #0d398428;
         border: none;
-
-        &:focus {
-        outline: 2px solid #0D3984;
-    }
+            &:focus {
+            outline: 2px solid #0D3984;
+        }
     }
 
     span{
         position: absolute;
         right: 20px;
-        bottom: 10px;
-        font-size: 30px;
+        top: 40%;
+        font-size: 13px;
         color: #292929;
 
     }
 
     @media (max-width:768px) {
-        input{ font-size: 14px;}
+        input{ font-size: 12px;}
     }
 
     
@@ -235,8 +233,8 @@ export const FlightDepatWrapContent = styled.div`
             width: 100%;
             padding: 30px 10px 10px 10px;
             border-radius: 10px;
-            font-size: 15px;
-            background-color: #0d398428;
+            font-size: 13px;
+          background-color: #0d398428;
             border: none;
 
             &:focus {
@@ -265,13 +263,14 @@ export const FlightPassengerClass = styled.div`
             width: 100%;
             padding: 14px 10px 10px 10px;
             border-radius: 10px;
-            font-size: 15px;
+            font-size: 12px;
             background-color: #0d398428;
             /* outline: 2px solid #0D3984; */
     
 
             div{
-                color: black
+                color: black;
+                text-transform: capitalize;
             }
             
 `

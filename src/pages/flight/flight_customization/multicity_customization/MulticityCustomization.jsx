@@ -232,6 +232,10 @@ export default function MulticityCustomization() {
                       <TripDetailClass>
                         <span>
                           <AirlineFlightLogo
+                            dictionaries={
+                              multiCityFlightResult?.[2]?.dictionaries
+                            }
+                            data={multiCityFlightResult[1][index]}
                             keyWord={
                               multiCityFlightResult[1][
                                 multiCityFlightResultIndex
@@ -362,13 +366,13 @@ export default function MulticityCustomization() {
               {/* Body */}
               {showTravelDetail && (
                 <TripDetailBody>
-                  <TripDetailClass>
+                  {/* <TripDetailClass>
                     <span>
                       <img src={flightLogo} alt="" /> <h4>Air Peace</h4>{" "}
                       <p>73G</p>
                     </span>
                     <span>Economy</span>
-                  </TripDetailClass>
+                  </TripDetailClass> */}
                   <TripDetailTime>
                     <CustomizeTripDetail>
                       <h4>(1) {travelDetail?.firstName}</h4>
@@ -425,7 +429,9 @@ export default function MulticityCustomization() {
           ))}
           <div>
             <Button
-              onClick={() => navigate("/multicity-Overview")}
+              onClick={() =>
+                navigate(`/multicity-Overview/${multiCityFlightResultIndex}`)
+              }
               text={"Continue to payment"}
             />
           </div>

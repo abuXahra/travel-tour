@@ -129,7 +129,10 @@ function App() {
               path="/oneway-overview/:oneWayFlightResultIndex"
               element={<OnewayOverview />}
             />
-            <Route path="/multicity-overview" element={<MulticityOverview />} />
+            <Route
+              path="/multicity-overview/:flightResultIndex"
+              element={<MulticityOverview />}
+            />
 
             {/* Flight success */}
             <Route
