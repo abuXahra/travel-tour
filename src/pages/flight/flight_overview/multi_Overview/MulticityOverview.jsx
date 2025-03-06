@@ -69,16 +69,36 @@ export default function MulticityOverview() {
   };
 
   // Remove manzo outbout services
-  const [showOutboundService, setShowOutboundService] = useState(true);
+  const [showOutboundService, setShowOutboundService] = useState(false);
 
   // Remove manzo outbout services
-  const [showInboundService, setShowInboundService] = useState(true);
+  const [showInboundService, setShowInboundService] = useState(false);
 
   // show puchase condition
   const [rotateIcon, setRotateIcon] = useState("360deg");
   const [rotateIcon2, setRotateIcon2] = useState("360deg");
   const [showPurchase, setShowPurchase] = useState(false);
   const [showFareRules, setShowFareRules] = useState(false);
+  const money = new Intl.NumberFormat("en-us", {
+    currency: "NGN",
+    style: "currency",
+  });
+  function parseDuration(duration) {
+    const regex = /PT(\d+H)?(\d+M)?/;
+    const matches = duration.match(regex);
+
+    let hours = 0;
+    let minutes = 0;
+
+    if (matches[1]) {
+      hours = parseInt(matches[1].replace("H", ""));
+    }
+    if (matches[2]) {
+      minutes = parseInt(matches[2].replace("M", ""));
+    }
+
+    return { hours, minutes };
+  }
 
   // show/hide dropdown handler
   const handleOpenAndClose = (type) => {
@@ -126,7 +146,7 @@ export default function MulticityOverview() {
   };
 
   //=============== Payment Modes =================
-
+  console.log("herer ========>", multiCityFlightResult);
   // Paystack
   const [paystack, setPaystack] = useState("Paystack");
   const [paystackBrColor, setPaystackBrColor] = useState("#2563eb");
@@ -218,6 +238,14 @@ export default function MulticityOverview() {
     navigate("/multicity-success");
     // You can also reset form or perform other actions here
   };
+
+  let FPriceBase = money.format(
+    multiCityFlightResult[1][flightResultIndex]?.price?.base
+  );
+  let FPriceTotal = money.format(
+    multiCityFlightResult[1][flightResultIndex]?.price?.total
+  );
+
   return (
     <OverviewWrapper>
       {/* Header */}
@@ -260,14 +288,22 @@ export default function MulticityOverview() {
                 </FlightIconWrapper>
 
                 <FlightHeader>
-                  <h2>Lagos</h2>
+                  <h2>{multiCityFlightResult?.[0][index]?.from}</h2>
                   <FlightIcon
                     IconSize={"13px"}
                     rotate={"90deg"}
                     iconColor={"black"}
                   />
-                  <h2>Abuja</h2>
-                  <p>Fri, 26 Jul 2024</p>
+                  <h2>{multiCityFlightResult?.[0][index]?.to}</h2>
+                  <p>
+                    {new Date(
+                      data?.segments?.[0]?.departure?.at
+                    ).toLocaleString("en-US", {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
                 </FlightHeader>
 
                 <FlightTimeContainer>
@@ -279,18 +315,33 @@ export default function MulticityOverview() {
                     <Containerbody>
                       <div>
                         <ContainerTime>
-                          <b>13:09</b> LOS
+                          <b>
+                            {new Date(
+                              data?.segments?.[0]?.departure?.at
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </b>{" "}
+                          (
+                          {
+                            multiCityFlightResult?.[0][index]
+                              ?.originLocationCode
+                          }
+                          )
                         </ContainerTime>
-                        <span>
-                          Naamdi Azikiwe International Airport, Lagos, Nigeria
-                        </span>
+                        <span>{multiCityFlightResult?.[0][index]?.from}</span>
                       </div>
                       <div>
                         <span>
                           <FaCheckCircle />
                         </span>
-                        <span>1hr : 30min</span>
-                        <span>0-stop</span>
+                        <span>{`${
+                          parseDuration(data?.segments?.[0]?.duration).hours
+                        }hr ${
+                          parseDuration(data?.segments?.[0]?.duration).minutes
+                        }min`}</span>
+                        <span>{data?.segments[0]?.numberOfStops}-stop</span>
                       </div>
                     </Containerbody>
                   </ContainerWrapper>
@@ -303,11 +354,22 @@ export default function MulticityOverview() {
                     <Containerbody>
                       <div>
                         <ContainerTime>
-                          <b>14:50</b> ABV
+                          <b>
+                            {new Date(
+                              data?.segments?.[0]?.arrival.at
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </b>{" "}
+                          (
+                          {
+                            multiCityFlightResult?.[0][index]
+                              ?.destinationLocationCode
+                          }
+                          )
                         </ContainerTime>
-                        <span>
-                          Murtala Muammed International Airport, Abuja, Nigeria
-                        </span>
+                        <span>{multiCityFlightResult?.[0][index]?.to}</span>
                       </div>
                       <div>
                         <span
@@ -318,22 +380,29 @@ export default function MulticityOverview() {
                             fontSize: "9px",
                           }}
                         >
-                          AIR PEACE
+                          {data?.segments[0]?.operating &&
+                            multiCityFlightResult?.[2]?.dictionaries?.carriers[
+                              data?.segments[0]?.operating?.carrierCode
+                            ]}
                         </span>
                         <img
-                          src={flightLogo}
+                          src={`https://images.wakanow.com/Images/flight-logos/${
+                            data?.segments?.[0]?.operating?.carrierCode
+                              ? data?.segments?.[0]?.operating?.carrierCode
+                              : data?.segments?.[0]?.operating?.carrierCode
+                          }.gif`}
                           height={20}
                           width={40}
                           alt=""
                           srcset=""
                         />
-                        <img
+                        {/* <img
                           src={flightLogo}
                           height={20}
                           width={40}
                           alt=""
                           srcset=""
-                        />
+                        /> */}
                       </div>
                     </Containerbody>
                   </ContainerWrapper>
@@ -346,9 +415,18 @@ export default function MulticityOverview() {
                     <Containerbody>
                       <div>
                         <ContainerTime>Economy (F)</ContainerTime>
-                        <span>Adult: 2 piece(s), upto 23kg each</span>
-                        <span>Child: 2 piece(s), upto 23kg each</span>
-                        <span>Infant: 2 piece(s), upto 23kg</span>
+                        <span>
+                          Adult: {multiCityFlightResult?.[2].adults} piece(s),
+                          upto 23kg each
+                        </span>
+                        <span>
+                          Child: {multiCityFlightResult?.[2].children} piece(s),
+                          upto 23kg each
+                        </span>
+                        <span>
+                          Infant: {multiCityFlightResult?.[2].infants} piece(s),
+                          upto 23kg
+                        </span>
                       </div>
                       <div></div>
                     </Containerbody>
@@ -357,224 +435,6 @@ export default function MulticityOverview() {
               </FlightContainer>
             )
           )}
-
-          {/* ANOTHER OUTBOUND FLIGHT */}
-          <FlightContainer>
-            <FlightIconWrapper>
-              {/* <FlightIcon rotate={'270deg'} iconColor={'#FF6805'}/>  */}
-              <FlightIcon
-                IconSize={"13px"}
-                rotate={"90deg"}
-                iconColor={"#0D3984"}
-              />
-              <p>Outbound Flight</p>
-            </FlightIconWrapper>
-
-            <FlightHeader>
-              <h2>Abuja</h2>
-              <FlightIcon
-                IconSize={"13px"}
-                rotate={"90deg"}
-                iconColor={"black"}
-              />
-              <h2>Port Harcourt</h2>
-              <p>Fri, 26 Jul 2024</p>
-            </FlightHeader>
-
-            <FlightTimeContainer>
-              {/* Departure */}
-              <ContainerWrapper>
-                <ContainerHeader>
-                  <b>Departure</b>
-                </ContainerHeader>
-                <Containerbody>
-                  <div>
-                    <ContainerTime>
-                      <b>13:09</b> LOS
-                    </ContainerTime>
-                    <span>
-                      Naamdi Azikiwe International Airport, Lagos, Nigeria
-                    </span>
-                  </div>
-                  <div>
-                    <span>
-                      <FaCheckCircle />
-                    </span>
-                    <span>1hr : 30min</span>
-                    <span>0-stop</span>
-                  </div>
-                </Containerbody>
-              </ContainerWrapper>
-
-              {/* Arrival */}
-              <ContainerWrapper>
-                <ContainerHeader>
-                  <b>Arrival</b>
-                </ContainerHeader>
-                <Containerbody>
-                  <div>
-                    <ContainerTime>
-                      <b>14:50</b> ABV
-                    </ContainerTime>
-                    <span>
-                      Murtala Muammed International Airport, Abuja, Nigeria
-                    </span>
-                  </div>
-                  <div>
-                    <span
-                      style={{
-                        color: "red",
-                        fontStyle: "italic",
-                        fontWeight: "bold",
-                        fontSize: "9px",
-                      }}
-                    >
-                      AIR PEACE
-                    </span>
-                    <img
-                      src={flightLogo}
-                      height={20}
-                      width={40}
-                      alt=""
-                      srcset=""
-                    />
-                    <img
-                      src={flightLogo}
-                      height={20}
-                      width={40}
-                      alt=""
-                      srcset=""
-                    />
-                  </div>
-                </Containerbody>
-              </ContainerWrapper>
-
-              {/* Class/ Baggage */}
-              <ContainerWrapper>
-                <ContainerHeader>
-                  <b>Class/Checked Baggage Allowance </b>
-                </ContainerHeader>
-                <Containerbody>
-                  <div>
-                    <ContainerTime>Economy (F)</ContainerTime>
-                    <span>Adult: 2 piece(s), upto 23kg each</span>
-                    <span>Child: 2 piece(s), upto 23kg each</span>
-                    <span>Infant: 2 piece(s), upto 23kg</span>
-                  </div>
-                  <div></div>
-                </Containerbody>
-              </ContainerWrapper>
-            </FlightTimeContainer>
-          </FlightContainer>
-
-          {/* INBOUND FLIGHT */}
-          <FlightContainer>
-            <FlightIconWrapper>
-              {/* <FlightIcon rotate={'270deg'} iconColor={'#FF6805'}/>  */}
-              <FlightIcon
-                IconSize={"13px"}
-                rotate={"270deg"}
-                iconColor={"#FF6805"}
-              />
-              <p>Inbound Flight</p>
-            </FlightIconWrapper>
-
-            <FlightHeader>
-              <h2>Port Harcourt</h2>
-              <FlightIcon
-                IconSize={"13px"}
-                rotate={"90deg"}
-                iconColor={"black"}
-              />
-              <h2>Lagos</h2>
-              <p>Fri, 26 Jul 2024</p>
-            </FlightHeader>
-
-            <FlightTimeContainer>
-              {/* Departure */}
-              <ContainerWrapper>
-                <ContainerHeader>
-                  <b>Departure</b>
-                </ContainerHeader>
-                <Containerbody>
-                  <div>
-                    <ContainerTime>
-                      <b>14:50</b> ABV
-                    </ContainerTime>
-                    <span>
-                      Murtala Muammed International Airport, Abuja Nigeria
-                    </span>
-                  </div>
-                  <div>
-                    <span>
-                      <FaCheckCircle />
-                    </span>
-                    <span>1hr : 30min</span>
-                    <span>0-stop</span>
-                  </div>
-                </Containerbody>
-              </ContainerWrapper>
-
-              {/* Arrival */}
-              <ContainerWrapper>
-                <ContainerHeader>
-                  <b>Arrival</b>
-                </ContainerHeader>
-                <Containerbody>
-                  <div>
-                    <ContainerTime>
-                      <b>13:09</b> LOS
-                    </ContainerTime>
-                    <span>
-                      Naamdi Azikiwe International Airport, Lagos Nigeria
-                    </span>
-                  </div>
-                  <div>
-                    <span
-                      style={{
-                        color: "red",
-                        fontStyle: "italic",
-                        fontWeight: "bold",
-                        fontSize: "9px",
-                      }}
-                    >
-                      AIR PEACE
-                    </span>
-                    <img
-                      src={flightLogo}
-                      height={20}
-                      width={40}
-                      alt=""
-                      srcset=""
-                    />
-                    <img
-                      src={flightLogo}
-                      height={20}
-                      width={40}
-                      alt=""
-                      srcset=""
-                    />
-                  </div>
-                </Containerbody>
-              </ContainerWrapper>
-
-              {/* Class/ Baggage */}
-              <ContainerWrapper>
-                <ContainerHeader>
-                  <b>Class/Checked Baggage Allowance </b>
-                </ContainerHeader>
-                <Containerbody>
-                  <div>
-                    <ContainerTime>Economy (F)</ContainerTime>
-                    <span>Adult: 2 piece(s), upto 23kg each</span>
-                    <span>Child: 2 piece(s), upto 23kg each</span>
-                    <span>Infant: 2 piece(s), upto 23kg</span>
-                  </div>
-                  <div></div>
-                </Containerbody>
-              </ContainerWrapper>
-            </FlightTimeContainer>
-          </FlightContainer>
 
           {/* Passengers Detail */}
           <h3>Passenger Detail</h3>
@@ -590,9 +450,24 @@ export default function MulticityOverview() {
               </ContainerHeader>
               <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
                 <div>
-                  <span>Mr. Isah Abdulmumin</span>
-                  <span>Najib Abdulmin</span>
-                  <span>Amjad Abdulmumin</span>
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
                 </div>
                 <div>
                   <span>-</span>
@@ -613,14 +488,26 @@ export default function MulticityOverview() {
               </ContainerHeader>
               <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
                 <div>
-                  <span>02 March 1972</span>
-                  <span>08 April 2023</span>
-                  <span>01 March 2013</span>
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>{data.dob}</span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>{data.dob}</span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>{data.dob}</span>
+                  ))}
                 </div>
                 <div>
-                  <span>Adult</span>
-                  <span>Infant</span>
-                  <span>Child</span>
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>Adult</span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>Infant</span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>Child</span>
+                  ))}
                 </div>
               </Containerbody>
             </ContainerWrapper>
@@ -641,7 +528,24 @@ export default function MulticityOverview() {
               </ContainerHeader>
               <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
                 <div>
-                  <span>Mr. Isah Abdulmumin</span>
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>
+                      {data.title} {data.firstName} {data.middleName}{" "}
+                      {data.lastName}
+                    </span>
+                  ))}
                 </div>
                 <div>
                   <span>Primary Passenger</span>
@@ -660,10 +564,26 @@ export default function MulticityOverview() {
               </ContainerHeader>
               <Containerbody bb={"1px solid #48484810"} pb={"5px"}>
                 <div>
-                  <span>abdulmuminisah79@gmail.com</span>
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>{data.email}</span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>{data.email}</span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>{data.email}</span>
+                  ))}
                 </div>
                 <div>
-                  <span>+234-9055001663</span>
+                  {travelDetail?.AdultData?.map((data, index) => (
+                    <span key={index}>{data.phone}</span>
+                  ))}
+                  {travelDetail?.ChildrenData?.map((data, index) => (
+                    <span key={index}>{data.phone}</span>
+                  ))}
+                  {travelDetail?.InfantData?.map((data, index) => (
+                    <span key={index}>{data.phone}</span>
+                  ))}
                 </div>
               </Containerbody>
             </ContainerWrapper>
@@ -964,20 +884,19 @@ export default function MulticityOverview() {
               <ContainerHeader hBt={"none"}>
                 <span>
                   <b>Trip Price</b>
-                  <br />
-                  (1 Adult + 1 Child + 1 infant)
+                  <br />({multiCityFlightResult?.[2].adults} Adult +{" "}
+                  {multiCityFlightResult?.[2].children} Child +{" "}
+                  {multiCityFlightResult?.[2].infants} infant)
                 </span>
-                <span>
-                  <b>N270,000 </b>
-                </span>
+                <span>{/* <b>N270,000 </b> */}</span>
               </ContainerHeader>
               <ContainerHeader hBt={"none"}>
-                <span>Airport lounge (Lagos & Abuja only), Abuja</span>
-                <span> N20,000</span>
+                <span>Airport lounge </span>
+                <span> {FPriceBase}</span>
               </ContainerHeader>
               <ContainerHeader hBt={"none"}>
-                <span> Manzo Protocol Service (Lagos & Abuja Only), Lagos</span>
-                <span>N20,000</span>
+                <span> Manzo Protocol </span>
+                <span>{FPriceBase}</span>
               </ContainerHeader>
               <ContainerHeader hBt={"none"}>
                 <span>
@@ -985,7 +904,7 @@ export default function MulticityOverview() {
                   <h2>Payable Amount</h2>
                 </span>
                 <span>
-                  <h2>N310,000</h2>
+                  <h2>{FPriceTotal}</h2>
                 </span>
               </ContainerHeader>
             </ContainerWrapper>
@@ -1037,7 +956,7 @@ export default function MulticityOverview() {
             {/* Total Payable amount */}
             <ButtonWrapper>
               <span>
-                Payable Amount: <b>N31,000.00</b>
+                Payable Amount: <b>{FPriceTotal}</b>
               </span>
               <Button text={"Continue to payment"} />
             </ButtonWrapper>

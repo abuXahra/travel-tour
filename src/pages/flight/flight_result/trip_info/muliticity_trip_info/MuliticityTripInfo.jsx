@@ -1227,7 +1227,7 @@ export default function MuliticityTripInfo() {
               text={"Continue"}
               onClick={() => {
                 setTravelDetail(TravelData);
-                setTravelDetail(queryParams);
+                // setTravelDetail(queryParams);
                 navigate(
                   `/multicity-customization/${multiCityFlightResultIndex}`
                 );
