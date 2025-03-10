@@ -1,16 +1,9 @@
-
-
-
-
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from "react";
 import {
-
   FlightSuccessBody,
   FlightSuccessContent,
   FlightSuccessHeader,
-
   FlightSuccessWrapper,
-  
   SuccessWrapper,
   MarkIcon,
   BookingId,
@@ -20,341 +13,393 @@ import {
   PassengerContent,
   HRStyled,
   ButtonWrapper,
-  ContactDetail
-} from './MulticitySuccess.style';
-import Button from '../../../../components/button/Button';
-import { useNavigate } from 'react-router-dom';
-import FlightIcon from '../../../../components/flight_icon/FlightIcon';
-import flightLogo from '../../../../images/aire-peace.png';
-import { FaCheckCircle, FaCircle, FaMarkdown, FaPaypal, FaTimes } from 'react-icons/fa';
-import { IoIosArrowDown, IoMdCheckmark } from 'react-icons/io';
-import { RadioCheck, RadioItem, RadioItemWrapper } from '../../flight_booking/FlightBooking.style';
-import SuccessPassengerDetail from '../component/passenger_detail/SucessPassengerDetail';
-import { FlightDetailWrapper, TripAirport, TripDetailBody, TripDetailClass, TripDetailTile, TripDetailTime, TripHour } from '../../flight_result/trip_info/TripInfo.style';
-import TripFare from '../trip_fare/TripFare';
-import { HotelContentWrapper, Section, SpaceBetweenContent } from '../../../hotel/hotel_booking/HotelBooking.style';
-import HotelCard from '../../../../components/hotel_components/hotel_card/HotelCard';
-import { hotelList } from '../../../../data/object/hotelList';
-
+  ContactDetail,
+} from "./MulticitySuccess.style";
+import Button from "../../../../components/button/Button";
+import { useNavigate, useParams } from "react-router-dom";
+import FlightIcon from "../../../../components/flight_icon/FlightIcon";
+import flightLogo from "../../../../images/aire-peace.png";
+import {
+  FaCheckCircle,
+  FaCircle,
+  FaMarkdown,
+  FaPaypal,
+  FaTimes,
+} from "react-icons/fa";
+import { IoIosArrowDown, IoMdCheckmark } from "react-icons/io";
+import {
+  RadioCheck,
+  RadioItem,
+  RadioItemWrapper,
+} from "../../flight_booking/FlightBooking.style";
+import SuccessPassengerDetail from "../component/passenger_detail/SucessPassengerDetail";
+import {
+  FlightDetailWrapper,
+  TripAirport,
+  TripDetailBody,
+  TripDetailClass,
+  TripDetailTile,
+  TripDetailTime,
+  TripHour,
+} from "../../flight_result/trip_info/TripInfo.style";
+import TripFare from "../trip_fare/TripFare";
+import {
+  HotelContentWrapper,
+  Section,
+  SpaceBetweenContent,
+} from "../../../hotel/hotel_booking/HotelBooking.style";
+import HotelCard from "../../../../components/hotel_components/hotel_card/HotelCard";
+import { hotelList } from "../../../../data/object/hotelList";
+import { useAuthStore } from "../../../../store/store";
 
 export default function MulticitySuccess() {
   const navigate = useNavigate();
- 
 
+  const { getCreatedIssuanceBooked } = useAuthStore();
+  const { orderID } = useParams();
 
   // Click to copy text
-const [bookId, setBookId] = useState('240727041354');
+  const [bookId, setBookId] = useState("240727041354");
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-const copyToClipboard = () => {
-  navigator.clipboard.writeText(bookId)
-    .then(() => {
-      alert('Booking ID copied to clipboard!');
-    })
-    .catch(err => {
-      console.error('Failed to copy text: ', err);
-    });
-};
+  const copyToClipboard = () => {
+    navigator.clipboard
+      .writeText(bookId)
+      .then(() => {
+        alert("Booking ID copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+  };
 
+  const handlePrint = () => {
+    const printContent = document.getElementById("printable-div");
+    const originalContent = document.body.innerHTML;
 
-const handlePrint = () => {
-  const printContent = document.getElementById('printable-div');
-  const originalContent = document.body.innerHTML;
+    document.body.innerHTML = printContent.innerHTML;
+    window.print();
+    document.body.innerHTML = originalContent;
+  };
+  // Cacula for duration
+  function parseDuration(duration) {
+    if (!duration) return { hours: 0, minutes: 0 };
+    const regex = /PT(\d+H)?(\d+M)?/;
+    const matches = duration.match(regex);
 
-  document.body.innerHTML = printContent.innerHTML;
-  window.print();
-  document.body.innerHTML = originalContent;
-};
+    let hours = 0;
+    let minutes = 0;
 
+    if (matches[1]) {
+      hours = parseInt(matches[1].replace("H", ""));
+    }
+    if (matches[2]) {
+      minutes = parseInt(matches[2].replace("M", ""));
+    }
+
+    return { hours, minutes };
+  }
+
+  const calculateAgeCategory = (birthdate) => {
+    const birthDate = new Date(birthdate + "T00:00:00"); // Ensures UTC parsing
+    const today = new Date();
+
+    if (birthDate > today) return "Invalid birthdate"; // Handles future birthdates
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+
+    // Adjust age if birthday hasn't occurred yet this year
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--;
+    }
+
+    if (age <= 1) return `Infant`;
+    if (age <= 12) return `Child`;
+    return `Adult`;
+  };
+
+  useEffect(() => {
+    const fetchIssuance = async () => {
+      try {
+        // console.log(orderID);
+        const response = await getCreatedIssuanceBooked(orderID);
+
+        if (response?.error) {
+          throw new Error(`Error: ${response.error}`);
+        }
+
+        const result = response;
+        console.log(result);
+        setBookId(result?.FlightBooked?.id);
+        setData(result);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchIssuance();
+  }, [orderID]);
+  let getTNum = data?.FlightBooked?.tickets;
+  let fInfo = data?.littelFlightInfo?.[0];
+  let hrMin = `${parseDuration(data?.segments?.[0]?.duration).hours}hr ${
+    parseDuration(data?.segments?.[0]?.duration).minutes
+  }min`;
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
 
   return (
     <FlightSuccessWrapper>
       {/* Header */}
       <FlightSuccessHeader>
-          <Button text={'Home'} onClick={()=>navigate('/')} /> 
+        <Button text={"Home"} onClick={() => navigate("/")} />
       </FlightSuccessHeader>
 
       {/* Body */}
-        {/* Main Content */}
-        <FlightSuccessBody>
-        
+      {/* Main Content */}
+      <FlightSuccessBody>
         <FlightSuccessContent>
-           <SuccessWrapper>
-           <MarkIcon><IoMdCheckmark /></MarkIcon> 
+          <SuccessWrapper>
+            <MarkIcon>
+              <IoMdCheckmark />
+            </MarkIcon>
             <h2>Great Job! your have been successfully booked </h2>
-            <p>Your booking has been placed successfully. we will send you a confirmation <br/>email with your booking details</p>
-           <BookingId><span>Booking ID: <b>{bookId}</b> </span> <div onClick={copyToClipboard}>Copy</div></BookingId> 
-            
+            <p>
+              Your booking has been placed successfully. we will send you a
+              confirmation <br />
+              email with your booking details
+            </p>
+            <BookingId>
+              <span>
+                Booking ID: <b>{bookId}</b>{" "}
+              </span>{" "}
+              <div onClick={copyToClipboard}>Copy</div>
+            </BookingId>
+            <BookingId>
+              <span>
+                Order ID: <b>{data?._id}</b>{" "}
+              </span>{" "}
+              <div onClick={copyToClipboard}>Copy</div>
+            </BookingId>
+
             <PaymentStatusContent>
               <div>
-                  <span>PAYMENT STATUS:</span>
-                  <b>N/A</b>
+                <span>PAYMENT STATUS:</span>
+                <b>N/A</b>
               </div>
               <div>
-                  <span>BOOKING REFERENCE:</span>
-                  <b>240727041354</b>
+                <span>BOOKING REFERENCE:</span>
+                <b>{data?.FlightBooked?.associatedRecords?.[0]?.reference}</b>
               </div>
               <div>
-                  <span>BOOKING DATE:</span>
-                  <b>JULY 27, 2024</b>
+                <span>BOOKING DATE:</span>
+                <b>
+                  {new Date(data?.createdAt).toLocaleString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </b>
               </div>
             </PaymentStatusContent>
-        </SuccessWrapper>
+          </SuccessWrapper>
         </FlightSuccessContent>
 
+        <FlightSuccessContent id="printable-div">
+          {/* Passagner detail */}
+          <h3>Passenger Detail</h3>
+          <HRStyled />
+          {/* Adult */}
+          {data?.travelers?.map((data, index) => (
+            <>
+              <SuccessPassengerDetail
+                key={index}
+                title={`${calculateAgeCategory(data?.dateOfBirth)}`}
+                passengerName={`${data?.name?.firstName}`}
+                passportName={data?.name?.lastName}
+                tickets={getTNum?.[index]?.documentNumber}
+                airlinePNR={""}
+                nationality={"Nigeria"}
+                gender={data?.gender}
+                dob={data?.dateOfBirth}
+                passportNumber={""}
+                phoneNumber={data?.contact?.phones?.[0].number}
+                emailAddress={data?.contact?.emailAddress}
+              />
+              <HRStyled />
+            </>
+          ))}
 
-      <FlightSuccessContent id='printable-div'>
-        
-     {/* Passagner detail */}
-      <h3>Passenger Detail</h3>
-      <HRStyled /> 
-      {/* Adult */}
-      <SuccessPassengerDetail
-          title={'Adult'}
-          passengerName={'Isah Yusuf'} 
-          passportName={'Isah Yusuf'}  
-          tickets={''} 
-          airlinePNR={''} 
-          nationality={'Nigeria'}  
-          gender={'male'}  
-          dob={'08/18/1989'}  
-          passportNumber={'jdjd47474994uc'}  
-          phoneNumber={'+234 8135701458'}  
-          emailAddress={'isahyusuf@gmail.com'} 
-      />
-        <HRStyled /> 
-
-              {/* child */}
-      <SuccessPassengerDetail
-         title={'Child'}
-          passengerName={'Amjad Yusuf'} 
-          passportName={'Amjad Yusuf'}  
-          tickets={''} 
-          airlinePNR={''} 
-          nationality={'Nigeria'}  
-          gender={'male'}  
-          dob={'08/18/1989'}  
-          passportNumber={'jdjd47474994uc'}  
-          phoneNumber={'+234 8135701458'}  
-          emailAddress={'isahyusuf@gmail.com'} 
-      />
-
-        <HRStyled /> 
-          {/* infant */}
-      <SuccessPassengerDetail
-          title={'Infant'}
-          passengerName={'Muiz Yusuf'} 
-          passportName={'Muiz Yusuf'}  
-          tickets={''} 
-          airlinePNR={''} 
-          nationality={'Nigeria'}  
-          gender={'male'}  
-          dob={'08/18/1989'}  
-          passportNumber={'jdjd47474994uc'}  
-          phoneNumber={'+234 8135701458'}  
-          emailAddress={'isahyusuf79@gmail.com'} 
-      />
-
-<HRStyled /> 
- 
-  <h3>Flight Detail</h3>
-  {/* First Departure */}
-  <FlightDetailWrapper>
-               {/* title */}
-                  <TripDetailTile>
-                    <span> <h2>Abuja</h2> <FlightIcon rotate={'90deg'} iconColor={'#0D3984'}/>  <h2>Lagos</h2> </span>
-                    <span>
-                      <p>Saturday, July 13</p>
-                      <p>0 Stops. 1h 15m</p>
-                      <div>
-                            {/* <IoIosArrowDown /> */}
-                      </div>
-                    </span>
-                  </TripDetailTile>
-                      {/* body */}
-                    
-                     <TripDetailBody>
-                        <TripDetailClass>
-                          <span><img src={flightLogo} alt="" srcset="" /> <h4>Air Peace</h4> <p>73G</p> </span>
-                          <span><a href="#">Economy</a></span>
-                        </TripDetailClass>
-                        <TripDetailTime>
-                            <TripHour>
-                              <span>
-                                <div>  
-                                  <h4>20:05</h4>
-                                  <h4>20:05</h4>
-                                </div>
-                                <div>
-                                  <hr />
-                                    <FlightIcon rotate={'180deg'} iconColor={'#0D3984'}/> 
-                                  <hr />
-                                </div> 
-                              </span>
-                          </TripHour>
-                        <TripAirport>
-                          <div>
-                               <p><b>Abuja</b>.ABV, Nnamdi Azikwe International Ai...</p> 
-                               <p>1h 15m</p>
-                               <p><b>Lagos</b>.BOS, Murtala Muhammed International...</p> 
-                          </div>
-                          <div>
-                            <span><h4>BAGGAGE:</h4> <p>ADULT</p></span>
-                            <span><h4>CHECK IN:</h4> <p>20KG</p> </span>
-                          </div>
-                        </TripAirport>
-         
-                        </TripDetailTime>
-                  </TripDetailBody>
-              </FlightDetailWrapper>
-
-
-
-            {/* Second Departure */}
+          <h3>Flight Detail</h3>
+          {/* First Departure */}
+          {data?.FlightBooked?.flightOffers?.[0]?.itineraries?.map(
+            (data, index) => (
               <FlightDetailWrapper>
-               {/* title */}
-                  <TripDetailTile>
-                    <span> <h2>Lagos</h2> <FlightIcon rotate={'90deg'} iconColor={'#0D3984'}/>  <h2>Port Harcourt</h2> </span>
+                {/* title */}
+                <TripDetailTile>
+                  <span>
+                    {" "}
+                    <h2>{fInfo?.flightSearch?.[index]?.from}</h2>{" "}
+                    <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />{" "}
+                    <h2>{fInfo?.flightSearch?.[index]?.to}</h2>{" "}
+                  </span>
+                  <span>
+                    <p>
+                      {" "}
+                      {new Date(
+                        data?.segments?.[0]?.departure?.at
+                      ).toLocaleString("en-US", {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                    <p>
+                      {data?.segments[0]?.numberOfStops} Stops. {hrMin}
+                    </p>
+                    <div>{/* <IoIosArrowDown /> */}</div>
+                  </span>
+                </TripDetailTile>
+                {/* body */}
+
+                <TripDetailBody>
+                  <TripDetailClass>
                     <span>
-                      <p>Saturday, July 13</p>
-                      <p>0 Stops. 1h 15m</p>
-                      <div>
-                            {/* <IoIosArrowDown /> */}
-                      </div>
+                      <img
+                        src={`https://images.wakanow.com/Images/flight-logos/${
+                          data?.segments?.[0]?.operating?.carrierCode
+                            ? data?.segments?.[0]?.operating?.carrierCode
+                            : data?.segments?.[0]?.carrierCode
+                        }.gif`}
+                        alt=""
+                        srcset=""
+                      />{" "}
+                      <h4>
+                        {data?.segments?.[0] &&
+                          fInfo?.dictionaries?.dictionaries?.carriers[
+                            data?.segments?.[0]?.operating?.carrierCode
+                              ? data?.segments?.[0]?.operating?.carrierCode
+                              : data?.segments?.[0]?.carrierCode
+                          ]}
+                      </h4>{" "}
+                      <p>73G</p>{" "}
                     </span>
-                  </TripDetailTile>
-                      {/* body */}
-                    
-                     <TripDetailBody>
-                        <TripDetailClass>
-                          <span><img src={flightLogo} alt="" srcset="" /> <h4>Air Peace</h4> <p>73G</p> </span>
-                          <span><a href="#">Economy</a></span>
-                        </TripDetailClass>
-                        <TripDetailTime>
-                            <TripHour>
-                              <span>
-                                <div>  
-                                  <h4>20:05</h4>
-                                  <h4>20:05</h4>
-                                </div>
-                                <div>
-                                  <hr />
-                                    <FlightIcon rotate={'180deg'} iconColor={'#0D3984'}/> 
-                                  <hr />
-                                </div> 
-                              </span>
-                          </TripHour>
-                        <TripAirport>
-                          <div>
-                               <p><b>Lagos</b>.ABV, Nnamdi Azikwe International Ai...</p> 
-                               <p>1h 15m</p>
-                               <p><b>Port Harcourt</b>.BOS, Murtala Muhammed International...</p> 
-                          </div>
-                          <div>
-                            <span><h4>BAGGAGE:</h4> <p>ADULT</p></span>
-                            <span><h4>CHECK IN:</h4> <p>20KG</p> </span>
-                          </div>
-                        </TripAirport>
-         
-                        </TripDetailTime>
-                  </TripDetailBody>
-              </FlightDetailWrapper>
-
-
-
-              {/* third: flight Return */}
-               <FlightDetailWrapper>
-               {/* title */}
-                  <TripDetailTile>
-                    <span> <h2>Port Harcourt</h2> <FlightIcon rotate={'90deg'} iconColor={'#FF6805'}/>  <h2>Abuja</h2> </span>
                     <span>
-                      <p>Saturday, July 13</p>
-                      <p>0 Stops. 1h 15m</p>
-                      <div>
-                            {/* <IoIosArrowDown /> */}
-                      </div>
+                      <a href="#">Economy</a>
                     </span>
-                  </TripDetailTile>
-                      {/* body */}
-                   
-                     <TripDetailBody>
-                        <TripDetailClass>
-                          <span><img src={flightLogo} alt="" srcset="" /> <h4>Air Peace</h4> <p>73G</p> </span>
-                          <span><a href="#">Economy</a></span>
-                        </TripDetailClass>
-                        <TripDetailTime>
-                            <TripHour>
-                              <span>
-                                <div>  
-                                  <h4>20:05</h4>
-                                  <h4>20:05</h4>
-                                </div>
-                                <div>
-                                  <hr />
-                                    <FlightIcon rotate={'360deg'} iconColor={'#FF6805'}/> 
-                                  <hr />
-                                </div> 
-                              </span>
-                          </TripHour>
-                        <TripAirport>
-                          <div>
-                               <p><b>Abuja</b>.ABV, Nnamdi Azikwe International Ai...</p> 
-                               <p>1h 15m</p>
-                               <p><b>Port Harcourt</b>.BOS, Murtala Muhammed International...</p> 
-                          </div>
-                          <div>
-                            <span><h4>BAGGAGE:</h4> <p>ADULT</p></span>
-                            <span><h4>CHECK IN:</h4> <p>20KG</p> </span>
-                          </div>
-                        </TripAirport>
-         
-                        </TripDetailTime>
-                  </TripDetailBody>
+                  </TripDetailClass>
+                  <TripDetailTime>
+                    <TripHour>
+                      <span>
+                        <div>
+                          <h4>
+                            {" "}
+                            {new Date(
+                              data?.segments?.[0]?.departure?.at
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </h4>
+                          <h4>
+                            {" "}
+                            {new Date(
+                              data?.segments?.[0]?.arrival.at
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </h4>
+                        </div>
+                        <div>
+                          <hr />
+                          <FlightIcon rotate={"180deg"} iconColor={"#0D3984"} />
+                          <hr />
+                        </div>
+                      </span>
+                    </TripHour>
+                    <TripAirport>
+                      <div>
+                        <p>
+                          <b>{fInfo?.flightSearch?.[index]?.from}</b>. (
+                          {fInfo?.flightSearch?.[index]?.originLocationCode})
+                        </p>
+                        <p>1h 15m</p>
+                        <p>
+                          <b>{fInfo?.flightSearch?.[index]?.to}</b>. (
+                          {
+                            fInfo?.flightSearch?.[index]
+                              ?.destinationLocationCode
+                          }
+                          )
+                        </p>
+                      </div>
+                      <div>
+                        <span>
+                          <h4>BAGGAGE:</h4> <p>ADULT</p>
+                        </span>
+                        <span>
+                          <h4>CHECK IN:</h4> <p>20KG</p>{" "}
+                        </span>
+                      </div>
+                    </TripAirport>
+                  </TripDetailTime>
+                </TripDetailBody>
               </FlightDetailWrapper>
+            )
+          )}
 
-              {/* Trip Total Price */}
-              <HRStyled /> 
-              <TripFare/>  
-              <HRStyled /> 
-              <ContactDetail>
-                  <span>Hotline: 02013438157, 07009252669</span>
-                  <span>Mobile: 02013438157, 07009252669</span>
-                  <span>Email: info@manzotravel.com</span>
-              </ContactDetail>
-      </FlightSuccessContent>
-              {/* Print Button */}
-              <ButtonWrapper>
-                  <Button onClick={handlePrint} text={'Print Booking'} /> 
-              </ButtonWrapper>
+          {/* Trip Total Price */}
+          <HRStyled />
+          <TripFare
+            price={data?.FlightBooked?.flightOffers?.[0]?.price}
+            children={fInfo?.dictionaries?.children}
+            adults={fInfo?.dictionaries?.adults}
+            infants={fInfo?.dictionaries?.infants}
+          />
+          <HRStyled />
+          <ContactDetail>
+            <span>Hotline: 02013438157, 07009252669</span>
+            <span>Mobile: 02013438157, 07009252669</span>
+            <span>Email: info@manzotravel.com</span>
+          </ContactDetail>
+        </FlightSuccessContent>
+        {/* Print Button */}
+        <ButtonWrapper>
+          <Button onClick={handlePrint} text={"Print Booking"} />
+        </ButtonWrapper>
 
-
-              {/* Add hotel reservation */}
-               {/* List of Hotels */}   
-      <FlightSuccessContent>
-        <Section>
-          <SpaceBetweenContent>
-            <h2>Include Hotel Reservation in your Trip</h2> <a href='/hotel-reservation'>Make Reservation</a>
-          </SpaceBetweenContent>
+        {/* Add hotel reservation */}
+        {/* List of Hotels */}
+        <FlightSuccessContent>
+          <Section>
+            <SpaceBetweenContent>
+              <h2>Include Hotel Reservation in your Trip</h2>{" "}
+              <a href="/hotel-reservation">Make Reservation</a>
+            </SpaceBetweenContent>
             <HotelContentWrapper>
-                {
-                    hotelList.slice(0, 3)?.map((item, i)=>(
-                      <HotelCard 
-                        key={i} 
-                        imgUrl={item.imgUrl}
-                        title={item.title}
-                        subTitle={item.subTitle}
-                        rating={item.rating}
-                        reviewCount={item.reviewCount}
-                        price={item.price}
-                      />         
-                    ))
-                  } 
-           </HotelContentWrapper> 
+              {hotelList.slice(0, 3)?.map((item, i) => (
+                <HotelCard
+                  key={i}
+                  imgUrl={item.imgUrl}
+                  title={item.title}
+                  subTitle={item.subTitle}
+                  rating={item.rating}
+                  reviewCount={item.reviewCount}
+                  price={item.price}
+                />
+              ))}
+            </HotelContentWrapper>
           </Section>
-          </FlightSuccessContent>
-     
-
-        </FlightSuccessBody>
-</FlightSuccessWrapper>
+        </FlightSuccessContent>
+      </FlightSuccessBody>
+    </FlightSuccessWrapper>
   );
 }
-

@@ -38,6 +38,7 @@ import flightLogo from "../../../../images/aire-peace.png";
 import { useAuthStore } from "../../../../store/store";
 import PayStack from "@paystack/inline-js";
 import { FaCheckCircle, FaCircle, FaPaypal, FaTimes } from "react-icons/fa";
+import Loader from "../../../../components/loader/Loader";
 import { IoIosArrowDown } from "react-icons/io";
 import {
   RadioCheck,
@@ -47,6 +48,7 @@ import {
 import PaymentModes from "../../../../components/payment_mode/PaymentModes";
 
 export default function MulticityOverview() {
+  const popup = new PayStack();
   const navigate = useNavigate();
   const { flightResultIndex } = useParams();
   const {
@@ -57,9 +59,11 @@ export default function MulticityOverview() {
   } = useAuthStore();
   const [showTripSummary, setShowTripSummary] = useState(false);
   const [showTravelDetail, setShowTravelDetail] = useState(false);
+  const [bottonLoading, setBottonLoading] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [termsTitle, setTermsTitle] = useState("");
   const [termsBody, setTermsBody] = useState("");
+  const [loader, setLoader] = useState(false);
 
   // Terms and Condition click handler
   const handleTermClick = ({ title, terms }) => {
@@ -146,7 +150,7 @@ export default function MulticityOverview() {
   };
 
   //=============== Payment Modes =================
-  console.log("herer ========>", multiCityFlightResult);
+
   // Paystack
   const [paystack, setPaystack] = useState("Paystack");
   const [paystackBrColor, setPaystackBrColor] = useState("#2563eb");
@@ -219,23 +223,74 @@ export default function MulticityOverview() {
   const [isValid, setIsValid] = useState(true);
 
   // Handler for checkbox change
-  const handleCheckboxChange = (event) => {
+  const handleCheckboxChange = async (event) => {
     setIsChecked(event.target.checked);
   };
-
+  let Price;
   // Form submit handler
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
+    setBottonLoading(true);
+    let priceChecked;
     // Check if checkbox is checked
     if (!isChecked) {
       setIsValid(false);
       return;
     }
 
+    const resPriceLookup = await flightPriceLookup(
+      multiCityFlightResult[1][flightResultIndex]
+    );
+
+    if (resPriceLookup) {
+      Price = resPriceLookup.flightOffers[0]?.price?.total;
+      priceChecked = resPriceLookup?.flightOffers[0];
+    } else {
+      setBottonLoading(false);
+    }
+
+    if (priceChecked) {
+      popup.newTransaction({
+        key: "pk_test_eb4cdcb0e9bd59a140958352025d6f25edc89db7",
+        // key: "pk_test_4d7c8fea9dc4783cdc375f4d268de759e8537ab5",
+        email: travelDetail?.AdultData?.[0]?.email,
+        amount: Number(parseInt(Price) + "00"),
+        onSuccess: async (transaction) => {
+          setLoader(true);
+          let res = await flightCreateOrders(
+            priceChecked,
+            travelDetail,
+            transaction.reference,
+            [
+              {
+                flightSearch: multiCityFlightResult[0],
+                dictionaries: multiCityFlightResult?.[2],
+              },
+            ]
+          );
+          if (res) {
+            console.log(res);
+            // setOneWayFlightOrder(res);
+            navigate(`/multicity-success/${res?._id}`);
+          } else {
+            setBottonLoading(false);
+          }
+        },
+        onLoad: (response) => {
+          console.log("onLoad: ", response);
+        },
+        onCancel: () => {
+          console.log("onCancel");
+        },
+        onError: (error) => {
+          console.log("Error: ", error.message);
+        },
+      });
+    }
+
     // Proceed with form submission or further logic
-    setIsValid(true);
-    navigate("/multicity-success");
+    // setIsValid(true);
+    // navigate("/multicity-success");
     // You can also reset form or perform other actions here
   };
 
@@ -248,6 +303,7 @@ export default function MulticityOverview() {
 
   return (
     <OverviewWrapper>
+      {loader && <Loader text={"Issuing ticket and reserving, please wait"} />}
       {/* Header */}
       <OverviewHeader>
         <OverviewHeaderItems>
@@ -958,7 +1014,7 @@ export default function MulticityOverview() {
               <span>
                 Payable Amount: <b>{FPriceTotal}</b>
               </span>
-              <Button text={"Continue to payment"} />
+              <Button loading={bottonLoading} text={"Continue to payment"} />
             </ButtonWrapper>
           </form>
         </OverviewContent>

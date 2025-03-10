@@ -227,7 +227,7 @@ export default function FlightResult() {
                 {/* flight logo */}
 
                 <AirlineFlightLogo
-                  keyWord={data.validatingAirlineCodes[0]}
+                  keyWord={data?.validatingAirlineCodes[0]}
                   data={multiCityFlightResult[1][index]}
                   dictionaries={multiCityFlightResult?.[2]?.dictionaries}
                   index={index}
@@ -361,10 +361,10 @@ export default function FlightResult() {
                 <DNRDetail>
                   <DNRDetailFlightImage>
                     <img
-                      src={`https://images.wakanow.com/Images/flight-logos/${multiCityFlightResult[1][index].validatingAirlineCodes[0]}.gif`}
+                      src={`https://images.wakanow.com/Images/flight-logos/${multiCityFlightResult[1][index]?.validatingAirlineCodes[0]}.gif`}
                       alt={
                         multiCityFlightResult[1][index]
-                          .validatingAirlineCodes[0]
+                          ?.validatingAirlineCodes[0]
                       }
                     />
                   </DNRDetailFlightImage>
@@ -419,7 +419,7 @@ export default function FlightResult() {
                         data={multiCityFlightResult[1][index]}
                         keyWord={
                           multiCityFlightResult[1][index]
-                            .validatingAirlineCodes[0]
+                            ?.validatingAirlineCodes[0]
                         }
                         only={true}
                       />
