@@ -47,12 +47,13 @@ const AirlineFlightLogo = React.memo(
     let operating = "";
     let carrierCode = dictionaries.carriers[keyWord];
 
-    if (data.itineraries[0].segments[0].operating) {
+    if (data?.itineraries[index]?.segments?.[0]?.operating) {
       operating =
         dictionaries.carriers[
-          data.itineraries[0].segments[0].operating.carrierCode
+          data?.itineraries[index].segments[0].operating.carrierCode
         ];
     }
+
     if (only) {
       return <div>{carrierCode}</div>;
     } else {

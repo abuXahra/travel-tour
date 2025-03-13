@@ -35,6 +35,7 @@ import SingleSearchCityForm from "../../flight_booking/single_city/SingleSearchC
 import { MultiCityFormWrapper } from "./MultiCityResult.style";
 import { useAuthStore } from "../../../../store/store";
 import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
+import NoResult from "../../../../components/no_result/NoResult";
 
 export default function FlightResult() {
   const { multiCityFlightResult } = useAuthStore();
@@ -43,15 +44,15 @@ export default function FlightResult() {
 
   const navigate = useNavigate();
   let location = multiCityFlightResult[0];
-  console.log(location);
+  // console.log(location);
 
-  useEffect(() => {
-    if (!multiCityFlightResult[1] || multiCityFlightResult[1]?.length === 0) {
-      navigate("/flight-booking");
-    } else {
-      location = multiCityFlightResult[0];
-    }
-  }, [multiCityFlightResult, navigate]);
+  // useEffect(() => {
+  //   if (!multiCityFlightResult[1] || multiCityFlightResult[1]?.length === 0) {
+  //     navigate("/flight-booking");
+  //   } else {
+  //     location = multiCityFlightResult[0];
+  //   }
+  // }, [multiCityFlightResult, navigate]);
   // This is the Show View Detail Variable index
   const [index, setIndex] = useState(0);
 
@@ -169,6 +170,7 @@ export default function FlightResult() {
   return (
     <FlightResultWrapper>
       {/* dklfj;ldfjkv n;kld;jjfldfjslk */}
+      {multiCityFlightResult[1]?.length === 0 && <NoResult />}
       {/* flight header section */}
       <FlightResultHeader>
         <DateFlight>Mon, 9 Sep 2024</DateFlight>
@@ -225,7 +227,9 @@ export default function FlightResult() {
                 {/* flight logo */}
 
                 <AirlineFlightLogo
-                  keyWord={data.validatingAirlineCodes[0]}
+                  keyWord={data?.validatingAirlineCodes[0]}
+                  data={multiCityFlightResult[1][index]}
+                  dictionaries={multiCityFlightResult?.[2]?.dictionaries}
                   index={index}
                   setIndex={setIndex}
                   showViewDetail={showViewDetail}
@@ -241,7 +245,15 @@ export default function FlightResult() {
                           {new Date(
                             data.segments[0].departure.at
                           ).toLocaleString()}
-                        </p>{" "}
+                        </p>
+                        <p>
+                          {data.segments?.[0]?.operating
+                            ? multiCityFlightResult?.[2]?.dictionaries
+                                ?.carriers[
+                                data.segments?.[0]?.operating?.carrierCode
+                              ]
+                            : ""}
+                        </p>
                       </DnRHeader>
                       <div>
                         <span>
@@ -349,10 +361,10 @@ export default function FlightResult() {
                 <DNRDetail>
                   <DNRDetailFlightImage>
                     <img
-                      src={`https://wakanow-images.azureedge.net/Images/flight-logos/${multiCityFlightResult[1][index].validatingAirlineCodes[0]}.gif`}
+                      src={`https://images.wakanow.com/Images/flight-logos/${multiCityFlightResult[1][index]?.validatingAirlineCodes[0]}.gif`}
                       alt={
                         multiCityFlightResult[1][index]
-                          .validatingAirlineCodes[0]
+                          ?.validatingAirlineCodes[0]
                       }
                     />
                   </DNRDetailFlightImage>
@@ -403,9 +415,11 @@ export default function FlightResult() {
                     <span>
                       <h3>Airline</h3>
                       <AirlineFlightLogo
+                        dictionaries={multiCityFlightResult?.[2]?.dictionaries}
+                        data={multiCityFlightResult[1][index]}
                         keyWord={
                           multiCityFlightResult[1][index]
-                            .validatingAirlineCodes[0]
+                            ?.validatingAirlineCodes[0]
                         }
                         only={true}
                       />

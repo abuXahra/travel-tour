@@ -405,6 +405,7 @@ export default function SingleSearchCityForm({
   }
   const bookflights = async () => {
     setLoader(true);
+    console.log(searchParams);
     const res = await flightOffersSearch(searchParams);
     console.log(res);
     if (res) {

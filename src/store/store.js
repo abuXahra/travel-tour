@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import axios from "axios";
 
-// const domain = "http://localhost:5000";
+const domain = "http://localhost:5000";
 // const domain = "https://manzo-travels-be.vercel.app";
-const domain = "https://manzo-travels-be.onrender.com";
+// const domain = "https://manzo-travels-be.onrender.com";
 // const domain = "https://backend.manzotravels.com";
 
 export const useAuthStore = create((set) => ({
@@ -49,11 +49,10 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await axios.post(
         `${domain}/api/v1/flights/flightOffersSearchMultiCity`,
-        {
-          flightSearch: queryParams,
-        }
+
+        queryParams
       );
-      return res?.data?.data;
+      return res?.data;
     } catch (err) {
       console.log(err, err?.response?.data);
     }
