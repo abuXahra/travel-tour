@@ -154,6 +154,7 @@ export default function HotelBooking() {
   const handleCheckOutDate = (e) => {
     setCheckOutDate(e.target.value);
   };
+  
 
   const handleIncrement = (type) => {
     if (type === "adults" && adults < 6) {
@@ -373,11 +374,9 @@ export default function HotelBooking() {
           {/* flight form section  title */}
           <HotelFormSectionTitle>
             <h4>Need hotel accommodation?</h4>
-            <h1>Begin your reservation here and enjoy your stay</h1>
+            <h3>Begin your reservation here</h3>
           </HotelFormSectionTitle>
-          <button onClick={AxiosRequest}>F Click me</button>
-          <button onClick={axiosRequest}>Click me</button>
-
+        
           {/* flight form section content */}
           <HotelFormSectionContent>
             {/* Flight top level items  such as stopover, manage bookings etc..*/}

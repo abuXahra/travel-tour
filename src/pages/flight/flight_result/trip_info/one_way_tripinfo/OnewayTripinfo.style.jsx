@@ -260,6 +260,14 @@ export const TripDetailTile = styled.div`
     align-items: center;
     cursor: pointer;
 
+    span{
+        margin-top: "10px";
+        p{
+            font-weight: normal;
+            font-size: 9px;
+        }
+    }
+
     div{
             font-size: 20px;
             /* color: #0D3984; */
@@ -308,19 +316,17 @@ export const TripDetailTime = styled.div`
     padding: 25px;
     color: black;
     display: flex;
-    gap: 20px;
+    gap: 10px;
 
 `
 
 export const TripHour = styled.div`
         span{
             display: flex;
-      
-
             div{
                 display: flex;
                 flex-direction: column;
-                gap: 20px;
+                gap: 10px;
 
                 hr{
                     rotate: 90deg;

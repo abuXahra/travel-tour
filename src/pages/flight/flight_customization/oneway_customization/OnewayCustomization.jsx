@@ -124,7 +124,7 @@ export default function OnewayCustomization() {
                 onClick={() => navigate("/flight-result")}
               />
             </span>
-            <h2>Proceed with your booking</h2>
+            <h4>Proceed with your booking</h4>
           </CustomizeHeaderTitle>
           {/* Timeline: Trip info steps */}
           <Timeline currentStep={3} />
@@ -208,7 +208,7 @@ export default function OnewayCustomization() {
                 onClick={() => setShowTripSummary(!showTripSummary)}
               >
                 <span>
-                  <h2>Trip Summary</h2>
+                  <h4>Trip Summary</h4>
                 </span>
                 <span>
                   <div>
@@ -238,7 +238,7 @@ export default function OnewayCustomization() {
                       <TripHour>
                         <span>
                           <div>
-                            <h4>
+                            <h5>
                               {new Date(
                                 oneWayFlightResult[2][
                                   oneWayFlightResultIndex
@@ -247,8 +247,8 @@ export default function OnewayCustomization() {
                                 hour: "2-digit",
                                 minute: "2-digit",
                               })}
-                            </h4>
-                            <h4>
+                            </h5>
+                            <h5>
                               {" "}
                               {new Date(
                                 oneWayFlightResult[2][
@@ -258,7 +258,7 @@ export default function OnewayCustomization() {
                                 hour: "2-digit",
                                 minute: "2-digit",
                               })}
-                            </h4>
+                            </h5>
                           </div>
                           <div>
                             <hr />
@@ -347,7 +347,7 @@ export default function OnewayCustomization() {
                 onClick={() => setShowTravelDetail(!showTravelDetail)}
               >
                 <span>
-                  <h2>Travel Detail</h2>
+                  <h4>Travel Detail</h4>
                 </span>
                 <span>
                   <div>

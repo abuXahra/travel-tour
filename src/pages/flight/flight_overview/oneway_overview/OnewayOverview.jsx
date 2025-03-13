@@ -357,7 +357,7 @@ export default function OnewayOverview() {
                 onClick={() => navigate("/oneway-customization")}
               />
             </span>
-            <h2>Proceed with your booking</h2>
+            <h5>Proceed with your booking</h5>
           </OverviewHeaderTitle>
           {/* Timeline: Trip info steps */}
           <Timeline currentStep={4} />
@@ -385,13 +385,13 @@ export default function OnewayOverview() {
             </FlightIconWrapper>
 
             <FlightHeader>
-              <h2>{DepartName}</h2>
+              <h5>{DepartName}</h5>
               <FlightIcon
                 IconSize={"13px"}
                 rotate={"90deg"}
                 iconColor={"black"}
               />
-              <h2>{ReturnName}</h2>
+              <h5>{ReturnName}</h5>
               <p>{DepartFullTimeAndDate}</p>
             </FlightHeader>
 
@@ -477,7 +477,8 @@ export default function OnewayOverview() {
                       Infant: {oneWayFlightResult?.[8]} piece(s), upto 23kg
                     </span>
                   </div>
-                  <div></div>
+                  <div>
+                  </div>
                 </Containerbody>
               </ContainerWrapper>
             </FlightTimeContainer>

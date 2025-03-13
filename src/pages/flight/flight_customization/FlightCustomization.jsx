@@ -126,7 +126,7 @@ export default function FlightCustomization() {
                   onClick={() => navigate("/flight-result")}
                 />
               </span>
-              <h2>Proceed with your booking</h2>
+              <h4>Proceed with your booking</h4>
             </CustomizeHeaderTitle>
             {/* Timeline: Trip info steps */}
             <Timeline currentStep={3} />
@@ -233,7 +233,7 @@ export default function FlightCustomization() {
                   onClick={() => setShowTripSummary(!showTripSummary)}
                 >
                   <span>
-                    <h2>Trip Summary</h2>
+                    <h4>Trip Summary</h4>
                   </span>
                   <span>
                     <div>
@@ -271,7 +271,7 @@ export default function FlightCustomization() {
                         <TripHour>
                           <span>
                             <div>
-                              <h4>
+                              <h5>
                                 {new Date(
                                   singleFlightResult[2][
                                     flightResultIndex
@@ -280,8 +280,8 @@ export default function FlightCustomization() {
                                   hour: "2-digit",
                                   minute: "2-digit",
                                 })}
-                              </h4>
-                              <h4>
+                              </h5>
+                              <h5>
                                 {" "}
                                 {new Date(
                                   singleFlightResult[2][
@@ -291,7 +291,7 @@ export default function FlightCustomization() {
                                   hour: "2-digit",
                                   minute: "2-digit",
                                 })}
-                              </h4>
+                              </h5>
                             </div>
                             <div>
                               <hr />
@@ -382,7 +382,7 @@ export default function FlightCustomization() {
                         <TripHour>
                           <span>
                             <div>
-                              <h4>
+                              <h5>
                                 {new Date(
                                   singleFlightResult[2][
                                     flightResultIndex
@@ -391,8 +391,8 @@ export default function FlightCustomization() {
                                   hour: "2-digit",
                                   minute: "2-digit",
                                 })}
-                              </h4>
-                              <h4>
+                              </h5>
+                              <h5>
                                 {" "}
                                 {new Date(
                                   singleFlightResult[2][
@@ -402,7 +402,7 @@ export default function FlightCustomization() {
                                   hour: "2-digit",
                                   minute: "2-digit",
                                 })}
-                              </h4>
+                              </h5>
                             </div>
                             <div>
                               <hr />
@@ -428,10 +428,10 @@ export default function FlightCustomization() {
                           </div>
                           <div>
                             <span>
-                              <h4>BAGGAGE:</h4> <p>ADULT</p>
+                              <h5>BAGGAGE:</h5> <p>ADULT</p>
                             </span>
                             <span>
-                              <h4>CHECK IN:</h4> <p>20KG</p>
+                              <h5>CHECK IN:</h5> <p>20KG</p>
                             </span>
                           </div>
                           <div style={{ fontSize: "12px" }}>
@@ -480,7 +480,7 @@ export default function FlightCustomization() {
                   onClick={() => setShowTravelDetail(!showTravelDetail)}
                 >
                   <span>
-                    <h2>Travel Detail</h2>
+                    <h4>Travel Detail</h4>
                   </span>
                   <span>
                     <div>

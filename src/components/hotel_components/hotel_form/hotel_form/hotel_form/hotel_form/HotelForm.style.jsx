@@ -54,13 +54,15 @@ export const HotelInputWrapper = styled.div`
     align-items: center;
     border-radius: 10px;
     /* background-color: #0d398428; */
-
+div{
+    width: 100%;
     input{
         width: 100%;
         padding: 21px;
+        padding-right: 30px;
         border-radius: 10px;
-        font-size: 15px;
-        font-weight: bold;
+        font-size: 13px;
+        font-weight: normal;
         color: black;
         text-transform:capitalize;
         background-color: #0d398428;
@@ -70,19 +72,19 @@ export const HotelInputWrapper = styled.div`
         outline: 2px solid #0D3984;
     }
     }
-
+}
     span{
         position: absolute;
         top: 20px;
         right: 20px;
         bottom: 10px;
-        font-size: 18px;
+        font-size: 13px;
         color: #292929;
 
     }
 
     @media (max-width:768px) {
-        input{ font-size: 14px;}
+        div{input{width: 100%;}}
     }
 
     
@@ -112,9 +114,12 @@ export const HotelDepatWrapContent = styled.div`
 
         input{
             width: 100%;
-            padding: 30px 10px 10px 10px;
+            padding: 21px;
             border-radius: 10px;
-            font-size: 15px;
+            font-size: 13px;
+            font-weight: normal;
+            color: black;
+            text-transform:capitalize;
             background-color: #0d398428;
             border: none;
 
@@ -129,8 +134,9 @@ export const HotelDepatWrapContent = styled.div`
 
 export const Label = styled.label`
             position: absolute;
-            top: 10px;
-            left: 10px;    
+            top: 5px;
+            left: 21px;    
+            font-size: 12px;
 `
 
 
@@ -142,15 +148,19 @@ export const HotelPassengerWrapper  = styled.div`
 
 export const HotelPassengerClass = styled.div`
             width: 100%;
-            padding: 14px 10px 10px 10px;
+            padding: 10px 10px 10px 20px;
             border-radius: 10px;
-            font-size: 15px;
+            font-size: 13px;
             background-color: #0d398428;
+            display: flex;
+            gap: 5px;
+            flex-direction: column;
             /* outline: 2px solid #0D3984; */
-    
-
+            
             div{
-                color: black
+                color: black;
+                font-size: 13px;
+                
             }
             
 `

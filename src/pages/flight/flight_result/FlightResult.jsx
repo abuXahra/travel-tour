@@ -7,6 +7,7 @@ import {
   DNRDetailBaggage,
   DNRDetailFlightImage,
   DNRDetailTime,
+  DNRDetailTimeSec,
   DnRHeader,
   DnRWrapper,
   FlightCard,
@@ -267,25 +268,25 @@ export default function FlightResult() {
           {/* flight detail content */}
           <FLightDetailContent>
             {/* flight departure */}
-            <FlightDetailDNR>
-              <span>
+             <FlightDetailDNR>
+            <span>
                 <div>
                   <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
-                  <h3>{`Flight From ${singleFlightResult[0]} - ${singleFlightResult[1]}`}</h3>
+                  <h5>{`Flight From ${singleFlightResult[0]} - ${singleFlightResult[1]}`}</h5>
                 </div>
                 <b>Outbound</b>
               </span>
               <DNRDetail>
                 <DNRDetailFlightImage>
-                  <img
+                <img
                     src={`https://images.wakanow.com/Images/flight-logos/${singleFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
                     alt={singleFlightResult[2][index].validatingAirlineCodes[0]}
                   />
                 </DNRDetailFlightImage>
 
                 <DNRDetailTime>
-                  <span>
-                    <h3>
+                  <DNRDetailTimeSec>
+                  <h5>
                       {new Date(
                         singleFlightResult[2][
                           index
@@ -294,8 +295,8 @@ export default function FlightResult() {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
-                    </h3>
-                    <p style={{ width: 150, fontSize: 10 }}>
+                    </h5>
+                    <p>
                       {singleFlightResult[0]}
                     </p>
                     {/* <AirlineCodeLookup
@@ -304,9 +305,9 @@ export default function FlightResult() {
                           .departure.iataCode
                       }
                     /> */}
-                  </span>
-                  <span>
-                    {`${
+                  </DNRDetailTimeSec>
+                  <DNRDetailTimeSec>
+                  <p>  {`${
                       parseDuration(
                         singleFlightResult[2][index].itineraries[0].segments[0]
                           .duration
@@ -316,17 +317,16 @@ export default function FlightResult() {
                         singleFlightResult[2][index].itineraries[0].segments[0]
                           .duration
                       ).minutes
-                    }min`}
+                    }min`} </p>
                     <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
-                    {
+                  <p> {
                       singleFlightResult[2][index].itineraries[0].segments[0]
                         .numberOfStops
                     }
-                    -Stop
-                  </span>
-                  <span>
-                    <h3>
-                      {" "}
+                    -Stop</p>
+                  </DNRDetailTimeSec>
+                  <DNRDetailTimeSec>
+                    <h5>
                       {new Date(
                         singleFlightResult[2][
                           index
@@ -335,27 +335,24 @@ export default function FlightResult() {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
-                    </h3>
-                    <p style={{ width: 150, fontSize: 10 }}>
-                      {singleFlightResult[1]}
-                    </p>
+                    </h5>
+                    <p>{singleFlightResult[1]}</p>
                     {/* <AirlineCodeLookup
                       keyWord={
-                        singleFlightResult[2][index].itineraries[0].segments[0]
+                        singleFlightResult[2][index].itineraries[1].segments[0]
                           .arrival.iataCode
                       }
                     /> */}
-                  </span>
+                  </DNRDetailTimeSec>
                 </DNRDetailTime>
 
                 <DNRDetailAirport>
-                  <div>Airport ({singleFlightResult[3]})</div>
-                  <div>Airport ({singleFlightResult[4]})</div>
+                <div>Airport ({singleFlightResult[3]})</div>
+                <div>Airport ({singleFlightResult[4]})</div>
                 </DNRDetailAirport>
                 <DNRDetailBaggage>
                   <span>
-                    <h3>Airline</h3>
-
+                    <h5>Airline</h5>
                     <AirlineFlightLogo
                       dictionaries={singleFlightResult[9]}
                       data={singleFlightResult[2][index]}
@@ -366,7 +363,7 @@ export default function FlightResult() {
                     />
                   </span>
                   <span>
-                    <h3>Baggage</h3>
+                    <h5>Baggage</h5>
                     100kg
                   </span>
                 </DNRDetailBaggage>
@@ -378,10 +375,10 @@ export default function FlightResult() {
               <span>
                 <div>
                   <FlightIcon rotate={"270deg"} iconColor={"#FF6805"} />
-                  <h3>
+                  <h5>
                     Flight From {singleFlightResult[1]} -{" "}
                     {singleFlightResult[0]}
-                  </h3>
+                  </h5>
                 </div>
                 <b>Inbound</b>
               </span>
@@ -395,7 +392,7 @@ export default function FlightResult() {
 
                 <DNRDetailTime>
                   <span>
-                    <h3>
+                    <h5>
                       {new Date(
                         singleFlightResult[2][
                           index
@@ -404,10 +401,8 @@ export default function FlightResult() {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
-                    </h3>
-                    <p style={{ width: 150, fontSize: 10 }}>
-                      {singleFlightResult[1]}
-                    </p>
+                    </h5>
+                    <p>{singleFlightResult[1]}</p>
                     {/* <AirlineCodeLookup
                       keyWord={
                         singleFlightResult[2][index].itineraries[1].segments[0]
@@ -416,7 +411,7 @@ export default function FlightResult() {
                     /> */}
                   </span>
                   <span>
-                    {`${
+                  <p style={{fontSize: "8px"}}>  {`${
                       parseDuration(
                         singleFlightResult[2][index].itineraries[1].segments[0]
                           .duration
@@ -426,7 +421,7 @@ export default function FlightResult() {
                         singleFlightResult[2][index].itineraries[1].segments[0]
                           .duration
                       ).minutes
-                    }min`}
+                    }min`} </p>
                     <FlightIcon rotate={"270deg"} iconColor={"#FF6805"} />
                     {
                       singleFlightResult[2][index].itineraries[1].segments[0]
@@ -435,7 +430,7 @@ export default function FlightResult() {
                     -Stop
                   </span>
                   <span>
-                    <h3>
+                    <h5>
                       {new Date(
                         singleFlightResult[2][
                           index
@@ -444,10 +439,8 @@ export default function FlightResult() {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
-                    </h3>
-                    <p style={{ width: 150, fontSize: 10 }}>
-                      {singleFlightResult[0]}
-                    </p>
+                    </h5>
+                    <p>{singleFlightResult[0]}</p>
                     {/* <AirlineCodeLookup
                       keyWord={
                         singleFlightResult[2][index].itineraries[1].segments[0]
@@ -463,7 +456,7 @@ export default function FlightResult() {
                 </DNRDetailAirport>
                 <DNRDetailBaggage>
                   <span>
-                    <h3>Airline</h3>
+                    <h5>Airline</h5>
                     <AirlineFlightLogo
                       dictionaries={singleFlightResult[9]}
                       data={singleFlightResult[2][index]}
@@ -474,17 +467,18 @@ export default function FlightResult() {
                     />
                   </span>
                   <span>
-                    <h3>Baggage</h3>
+                    <h5>Baggage</h5>
                     100kg
                   </span>
                 </DNRDetailBaggage>
               </DNRDetail>
             </FlightDetailDNR>
-          </FLightDetailContent>
 
           <FlightDetailButton>
             <Button text={"Continue Booking"} onClick={continueBooking} />
           </FlightDetailButton>
+          </FLightDetailContent>
+
         </FLightDetail>
       )}
     </FlightResultWrapper>

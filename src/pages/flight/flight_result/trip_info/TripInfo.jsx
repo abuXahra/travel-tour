@@ -640,9 +640,9 @@ export default function TripInfo() {
                 >
                   <span>
                     {" "}
-                    <h2>{singleFlightResult[0]}</h2>{" "}
+                    <h5>{singleFlightResult[0]}</h5>{" "}
                     <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />{" "}
-                    <h2>{singleFlightResult[1]}</h2>{" "}
+                    <h5>{singleFlightResult[1]}</h5>{" "}
                   </span>
                   <span>
                     <p>
@@ -790,9 +790,9 @@ export default function TripInfo() {
                 >
                   <span>
                     {" "}
-                    <h2>{singleFlightResult[1]}</h2>{" "}
+                    <h5>{singleFlightResult[1]}</h5>{" "}
                     <FlightIcon rotate={"270deg"} iconColor={"#FF6805"} />{" "}
-                    <h2>{singleFlightResult[0]}</h2>{" "}
+                    <h5>{singleFlightResult[0]}</h5>{" "}
                   </span>
                   <span>
                     <p>
@@ -1410,13 +1410,16 @@ export default function TripInfo() {
                 </TripInfoContent>
               )
             )}
-            <Button
-              text={"Continue"}
-              onClick={() => {
-                setTravelDetail(TravelData);
+            <div>
+               <Button
+                text={"Continue"}
+                onClick={() => {
+                  setTravelDetail(TravelData);
                 navigate(`/flight-customization/${flightResultIndex}`);
               }}
             />
+            </div>
+           
             {/*user trip data  */}
           </TripMinContent>
         </TripInfoBody>

@@ -291,8 +291,6 @@ export const TripDetailTile = styled.div`
         }
 
         @media (max-width:768px) {
-
-        flex-direction: column;
         align-items: start;
    }
 `
@@ -427,19 +425,18 @@ export const TripDetailTime = styled.div`
     padding: 25px;
     color: black;
     display: flex;
-    gap: 20px;
+    gap: 5px;
 
 `
 
 export const TripHour = styled.div`
         span{
             display: flex;
-      
 
             div{
                 display: flex;
                 flex-direction: column;
-                gap: 20px;
+                gap: 10px;
 
                 hr{
                     rotate: 90deg;
@@ -454,6 +451,15 @@ export const CustomizeTripDetail = styled.div`
     display: flex;
     justify-content: space-between;
     width: 100%;
+
+    
+
+    @media (max-width:768px) {
+        flex-direction: column;
+        gap: 5px;
+        word-break: break-all;
+        font-size: 13px;
+    }
 `
 
 export const EditIcon = styled.span`
@@ -483,7 +489,6 @@ export const TripAirport = styled.div`
         flex-direction: column;
         gap: 10px;
         font-size: 16px;
-
 
         & span:nth-child(1){
             margin-bottom: 0px;

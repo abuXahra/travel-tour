@@ -279,20 +279,19 @@ export const FlightDetailWrapper =styled.div`
 
 
 export const TripDetailTile = styled.div`
+    width:100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
 
-    div{
+    span{
             font-size: 20px;
             /* color: #0D3984; */
             cursor: pointer;
         }
 
         @media (max-width:768px) {
-
-        flex-direction: column;
         align-items: start;
    }
 `
@@ -427,16 +426,15 @@ export const TripDetailTime = styled.div`
     padding: 25px;
     color: black;
     display: flex;
-    gap: 20px;
+    gap: 10px;
+    font-size: 12px;
 
 `
 
 export const TripHour = styled.div`
         span{
             display: flex;
-      
-
-            div{
+                div{
                 display: flex;
                 flex-direction: column;
                 gap: 20px;
@@ -454,6 +452,14 @@ export const CustomizeTripDetail = styled.div`
     display: flex;
     justify-content: space-between;
     width: 100%;
+
+    
+    @media (max-width:768px) {
+        flex-direction: column;
+        gap: 5px;
+        word-break: break-all;
+        font-size: 13px;
+    }
 `
 
 

@@ -137,8 +137,9 @@ export const FlightLogo = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 0px 10px;
-
+    gap: 20px;
     div{
+
     color: blue;
     font-size: 12px;
     font-weight: bold;
@@ -151,7 +152,7 @@ export const FlightLogo = styled.div`
     display: flex;
     align-items: center;
     color: #3d3d3d;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     gap: 10px;
 
@@ -191,34 +192,72 @@ export const DnRWrapper = styled.div`
     justify-content: space-between;
 
     span{
+        width: 100%;
         display: flex;
         flex-direction: column;
         gap:5px;
         justify-content: center;
-        align-items: center;
+        align-items: start;
         font-size: 13px;
+    }
+
+    span:nth-child(2){
+        align-items: center;
+        width: 100px;
     }
  }
 
 
  @media (max-width:768px) {
         width: 100%;
+    
+div{
+    width: 100%;
+    justify-content: start;
+    padding: 20px 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    
+
+    span{
+        width: 100%;
+        justify-content: center;
+        align-items: start;
+        font-size: 9.5px;
+    }
+
+
+    span:nth-child(2){
+        align-items: center;
+        width: 100px;
+    }
+ }
+
+
     }
 `
 
 export const DnRHeader = styled.span`
     display : flex;
     gap: 10px;
+    justify-content: space-between;
     align-items: center;
     color: #545353;
     padding-left: 10px;
+    padding-right: 10px;
+
+    p{
+        font-size: 10px;
+    }
+    
 `
 
 
 
 export const MdFlightStyled = styled.b`
     color: ${({IconColor})=>IconColor || "#0D3984"};
-    font-size: 20px;
+    font-size: 10px;
     rotate: ${({rotateIcon})=> rotateIcon || 90+'deg'};
 `
 
@@ -257,7 +296,6 @@ export const FLightDetailContent = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    width: 100%; 
     justify-content: center;
     align-items: center;
 
@@ -275,7 +313,8 @@ export const FlightDetailDNR = styled.div`
     background-color: #0d398413;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
     border-radius: 20px;
-    padding: 20px 30px;    
+    padding: 20px 30px;   
+     
     span{
         display: flex;
         justify-content: space-between;
@@ -312,7 +351,7 @@ export const DNRDetailFlightImage = styled.div`
         padding: 10px 0;
         border-bottom: 1px solid #8080804a;
         img{
-            width: 100px;
+            width: 60px;
             border-radius: 20px;
         }
 `
@@ -322,23 +361,34 @@ export const DNRDetailTime = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 20px;
         width: 100%;
         padding-top: 10px;
         border-bottom: 1px solid #8080804a;
-        font-size: 13px;
-
-        span{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: none;
-            flex-direction: column;
-        }
-
+        font-size: 13px;  
         
+        span{
+            width: 100%;
+            display: flex;
+            /* justify-content: space-between;
+            align-items: center;
+            border: none; */
+            flex-direction: column;
+            justify-content: center;
+            align-items: start;
+            font-size: 9.5px;
+            }
 `
 
-
+export const DNRDetailTimeSec= styled.span`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    font-size: 9.5px;
+`
+    
 
 export const DNRDetailAirport = styled.div`
         display: flex;
@@ -389,7 +439,11 @@ export const DNRDetailBaggage = styled.div`
         & span:nth-child(2){text-align: right;}
 `
 export const FlightDetailButton = styled.div`
-    width: 100%;
+    width: 80%; 
     display: flex;
     justify-content: flex-end;
+   
+    @media (max-width:768px) {
+        width: 100%; 
+    }
 `

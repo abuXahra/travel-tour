@@ -385,7 +385,7 @@ export default function FlightOverview() {
             <span>
               <Button
                 text={"Back"}
-                onClick={() => navigate("/flight-result")}
+                onClick={() => navigate("/flight-customization")}
               />
             </span>
             <h2>Proceed with your booking</h2>
@@ -400,7 +400,7 @@ export default function FlightOverview() {
       <TripMinContent>
         {/* User info content */}
         <OverviewContent>
-          <h3 style={{ marginBottom: "-10px" }}>Trip Summary</h3>
+          <h3>Trip Summary</h3>
           <HorizontalLine />
 
           {/* OUTBOUND FLIGHT */}
@@ -416,13 +416,13 @@ export default function FlightOverview() {
             </FlightIconWrapper>
 
             <FlightHeader>
-              <h2>{DepartName}</h2>
+              <h5>{DepartName}</h5>
               <FlightIcon
                 IconSize={"13px"}
                 rotate={"90deg"}
                 iconColor={"black"}
               />
-              <h2>{ReturnName}</h2>
+              <h5>{ReturnName}</h5>
               <p>{DepartFullTimeAndDate}</p>
             </FlightHeader>
 
@@ -527,13 +527,13 @@ export default function FlightOverview() {
             </FlightIconWrapper>
 
             <FlightHeader>
-              <h2>{ReturnName}</h2>
+              <h5>{ReturnName}</h5>
               <FlightIcon
                 IconSize={"13px"}
                 rotate={"90deg"}
                 iconColor={"black"}
               />
-              <h2>{DepartName}</h2>
+              <h5>{DepartName}</h5>
               <p>{ReturnFullTimeAndDate}</p>
             </FlightHeader>
 

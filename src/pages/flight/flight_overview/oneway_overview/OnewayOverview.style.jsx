@@ -237,6 +237,7 @@ export const TripMinContent = styled.div`
                   
       @media (max-width:768px) {
             width: 100%;
+            margin-top: 0px;
    }
 
 `
@@ -250,9 +251,11 @@ export const OverviewContent = styled.div`
       background-color: white;
       padding: 50px;
       border-radius: 10px;
+     
       @media (max-width:768px) {
         padding: 20px;
         width: ${({ swd }) => swd || "100%"};
+        border-radius: 0px;
    }
 `
 
@@ -329,6 +332,7 @@ export const ContainerHeader = styled.div`
         padding-top: 10px;
         padding-bottom: 10px;
         font-size: '12px';
+        gap: 10px;
         div{
             width: 50%;
         }
@@ -342,7 +346,7 @@ export const Containerbody = styled.div`
       display: flex;
       justify-content: space-between;
         width: 100%;
-        gap: 50px;
+        gap: 10px;
         color: #373737;
 
         div{
@@ -350,6 +354,7 @@ export const Containerbody = styled.div`
             display: flex;
             flex-direction: column;
             gap: 10px;
+            word-break: break-all
 
             span{
                 width: 100%;

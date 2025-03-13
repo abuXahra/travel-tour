@@ -270,7 +270,7 @@ export default function OneWayResult() {
 
                 <DNRDetailTime>
                   <span>
-                    <h3>
+                    <h5>
                       {new Date(
                         oneWayFlightResult[2][
                           index
@@ -279,8 +279,8 @@ export default function OneWayResult() {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
-                    </h3>
-                    <p style={{ width: 150, fontSize: 10 }}>
+                    </h5>
+                    <p>
                       {oneWayFlightResult[0]}
                     </p>
                     {/* <AirlineCodeLookup
@@ -291,7 +291,7 @@ export default function OneWayResult() {
                     /> */}
                   </span>
                   <span>
-                    {`${
+                  <p> {`${
                       parseDuration(
                         oneWayFlightResult[2][index].itineraries[0].segments[0]
                           .duration
@@ -301,16 +301,16 @@ export default function OneWayResult() {
                         oneWayFlightResult[2][index].itineraries[0].segments[0]
                           .duration
                       ).minutes
-                    }min`}
+                    }min`}</p>
                     <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
-                    {
+                   <p>{
                       oneWayFlightResult[2][index].itineraries[0].segments[0]
                         .numberOfStops
                     }
-                    -Stop
+                    -Stop</p>
                   </span>
                   <span>
-                    <h3>
+                    <h5>
                       {" "}
                       {new Date(
                         oneWayFlightResult[2][
@@ -320,8 +320,8 @@ export default function OneWayResult() {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
-                    </h3>
-                    <p style={{ width: 150, fontSize: 10 }}>
+                    </h5>
+                    <p>
                       {oneWayFlightResult[1]}
                     </p>
                     {/* <AirlineCodeLookup
@@ -339,7 +339,7 @@ export default function OneWayResult() {
                 </DNRDetailAirport>
                 <DNRDetailBaggage>
                   <span>
-                    <h3>Airline</h3>
+                    <h5>Airline</h5>
 
                     <AirlineFlightLogo
                       dictionaries={oneWayFlightResult[9]}
@@ -351,7 +351,7 @@ export default function OneWayResult() {
                     />
                   </span>
                   <span>
-                    <h3>Baggage</h3>
+                    <h5>Baggage</h5>
                     100kg
                   </span>
                 </DNRDetailBaggage>

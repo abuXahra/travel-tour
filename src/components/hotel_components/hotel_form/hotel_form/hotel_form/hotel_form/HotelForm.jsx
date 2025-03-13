@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import {
+  HotelDepartWrapper,
+  HotelDepatWrapContent,
   HotelInputAndDropDown,
   HotelInputContainer,
   HotelInputWrapper,
+  HotelPassengerClass,
+  HotelPassengerWrapper,
   Label,
   PassengerWrapper,
 } from "./HotelForm.style";
@@ -62,8 +66,8 @@ export default function HotelForm({
         <FormWrapper rounderBorder={rounderBorder} pd={pd}>
           {/* <!-- Depature and destination container --> */}
 
-          <FlightDepartWrapper>
-            <FlightDepatWrapContent>
+          <HotelDepartWrapper>
+            <HotelDepatWrapContent>
               <HotelInputContainer>
                 {/* takeoff input */}
                 <HotelInputAndDropDown>
@@ -76,7 +80,6 @@ export default function HotelForm({
                         onChange={handleDestination}
                       />
                     </div>
-
                     <span>
                       <FaTimes />
                     </span>
@@ -99,9 +102,9 @@ export default function HotelForm({
                   )}
                 </HotelInputAndDropDown>
               </HotelInputContainer>
-            </FlightDepatWrapContent>
+            </HotelDepatWrapContent>
 
-            <FlightDepatWrapContent>
+            <HotelDepatWrapContent>
               <Label for="depart">Check In</Label>
               <input
                 type="date"
@@ -109,9 +112,9 @@ export default function HotelForm({
                 onChange={handleCheckInDate}
                 value={checkInDate}
               />
-            </FlightDepatWrapContent>
+            </HotelDepatWrapContent>
 
-            <FlightDepatWrapContent>
+            <HotelDepatWrapContent>
               <Label for="depart">Check Out</Label>
               <input
                 type="date"
@@ -119,24 +122,22 @@ export default function HotelForm({
                 onChange={handleCheckOutDate}
                 value={checkOutDate}
               />
-            </FlightDepatWrapContent>
+            </HotelDepatWrapContent>
 
-            <FlightDepatWrapContent>
-              <FlightPassengerWrapper>
-                <FlightPassengerClass
+            <HotelDepatWrapContent>
+              <HotelPassengerWrapper>
+                <HotelPassengerClass
                   onClick={() => setShowPassenger(!showPassenger)}
                 >
                   <span>Passenger and Room</span>
                   <div>
-                    <strong>
                       <span id="passengerValue">Adults {adults}</span> Child{" "}
                       {children} Room {room}{" "}
-                    </strong>
                   </div>
-                </FlightPassengerClass>
+                </HotelPassengerClass>
                 {/* Passengers */}{" "}
                 {showPassenger && (
-                  <FlightPassengerContent>
+                  <HotelPassengerWrapper>
                     <PassengerWrapper>
                       <HotelRoom>
                         <h3>Room 1</h3>
@@ -177,10 +178,10 @@ export default function HotelForm({
                         />
                       </div>
                     </PassengerWrapper>
-                  </FlightPassengerContent>
+                  </HotelPassengerWrapper>
                 )}
-              </FlightPassengerWrapper>
-            </FlightDepatWrapContent>
+              </HotelPassengerWrapper>
+            </HotelDepatWrapContent>
             <div
               style={{
                 backgroundColor: "#FF6805",
@@ -196,7 +197,7 @@ export default function HotelForm({
                 text={btnText ? btnText : "Search"}
               />
             </div>
-          </FlightDepartWrapper>
+          </HotelDepartWrapper>
         </FormWrapper>
       </div>
     </div>

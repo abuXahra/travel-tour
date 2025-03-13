@@ -599,9 +599,9 @@ export default function OnewayTripinfo() {
               >
                 <span>
                   {" "}
-                  <h2>{oneWayFlightResult[0]}</h2>{" "}
+                  <h5>{oneWayFlightResult[0]}</h5>{" "}
                   <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />{" "}
-                  <h2>{oneWayFlightResult[1]}</h2>{" "}
+                  <h5>{oneWayFlightResult[1]}</h5>{" "}
                 </span>
                 <span>
                   <p>
@@ -666,7 +666,7 @@ export default function OnewayTripinfo() {
                     <TripHour>
                       <span>
                         <div>
-                          <h4>
+                          <h5>
                             {new Date(
                               oneWayFlightResult[2][
                                 oneWayFlightResultIndex
@@ -675,8 +675,8 @@ export default function OnewayTripinfo() {
                               hour: "2-digit",
                               minute: "2-digit",
                             })}
-                          </h4>
-                          <h4>
+                          </h5>
+                          <h5>
                             {" "}
                             {new Date(
                               oneWayFlightResult[2][
@@ -686,7 +686,7 @@ export default function OnewayTripinfo() {
                               hour: "2-digit",
                               minute: "2-digit",
                             })}
-                          </h4>
+                          </h5>
                         </div>
                         <div>
                           <hr />
@@ -719,10 +719,10 @@ export default function OnewayTripinfo() {
                       </div>
                       <div>
                         <span>
-                          <h4>BAGGAGE:</h4> <p>ADULT</p>
+                          <h5>BAGGAGE:</h5> <p>ADULT</p>
                         </span>
                         <span>
-                          <h4>CHECK IN:</h4> <p>20KG</p>{" "}
+                          <h5>CHECK IN:</h5> <p>20KG</p>{" "}
                         </span>
                       </div>
                     </TripAirport>
@@ -1195,6 +1195,8 @@ export default function OnewayTripinfo() {
               </FormWrapper>
             </TripInfoContent>
           ))}
+
+          <div>
           <Button
             text={"Continue"}
             onClick={() => {
@@ -1202,6 +1204,7 @@ export default function OnewayTripinfo() {
               navigate(`/oneway-customization/${oneWayFlightResultIndex}`);
             }}
           />
+          </div>
         </TripMinContent>
       </TripInfoBody>
     </TripInfoWrapper>
