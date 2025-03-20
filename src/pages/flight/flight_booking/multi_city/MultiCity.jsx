@@ -309,7 +309,8 @@ export default function MultiCity() {
                            {/*Destination input  */}
                         <FlightInputAndDropDown>                      
                               <FlightInputWrapper onClick={handleShowFlightInputsB}>
-                              <input type="text" placeholder="To" value={destinationAirport} onChange={handleDestination} />
+                              <input type="text" placeholder="To" value={destinationAirport} 
+                              onChange={handleDestination} />
                               <span><MdFlightLand/></span>
                           </FlightInputWrapper>
   

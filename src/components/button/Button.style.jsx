@@ -13,6 +13,7 @@ export const ButtonStyle = styled.button`
   border-bottom-right-radius: 10px;
   padding: ${({ pd }) => pd || "14px 25px"};
   display: flex;
+  font-size: 10px;
   gap: 10px;
   align-items: center;
   justify-content: center;

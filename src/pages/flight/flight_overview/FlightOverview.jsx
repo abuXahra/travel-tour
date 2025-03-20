@@ -48,6 +48,13 @@ import Loader from "../../../components/loader/Loader";
 import Overlay from "../../../components/overlay/Overlay";
 
 export default function FlightOverview() {
+
+
+    // user defined variable for stopover   ===============================================================
+    const [flightStopOver, setFlightStopOver] = useState(1);
+
+
+
   const popup = new PayStack();
   const {
     singleFlightResult,
@@ -377,7 +384,7 @@ export default function FlightOverview() {
 
   return (
     <OverviewWrapper>
-      {loader && <Loader text={"Issuing ticket and reserving, please wait"} />}
+      {loader && <Loader text={"Issuing ticketing and reservation, please wait"} />}
       {/* Header */}
       <OverviewHeader>
         <OverviewHeaderItems>
@@ -385,7 +392,7 @@ export default function FlightOverview() {
             <span>
               <Button
                 text={"Back"}
-                onClick={() => navigate("/flight-customization")}
+                onClick={() => navigate(`/flight-customization/${flightResultIndex}`)}
               />
             </span>
             <h2>Proceed with your booking</h2>
@@ -514,6 +521,112 @@ export default function FlightOverview() {
             </FlightTimeContainer>
           </FlightContainer>
 
+            
+            {/* ui stopover for outbound flight */}
+              {
+                flightStopOver === 1 &&
+            <FlightContainer>
+            <FlightHeader>
+              <h5>{DepartName}</h5>
+              <FlightIcon
+                IconSize={"13px"}
+                rotate={"90deg"}
+                iconColor={"black"}
+              />
+              <h5>{ReturnName}</h5>
+              <p>{DepartFullTimeAndDate}</p>
+            </FlightHeader>
+
+            <FlightTimeContainer>
+              {/* Departure */}
+              <ContainerWrapper>
+                <ContainerHeader>
+                  <b>Departure</b>
+                </ContainerHeader>
+                <Containerbody>
+                  <div>
+                    <ContainerTime>
+                      <b>{DepartStartTime}</b> {DepartCode}
+                    </ContainerTime>
+                    <span>{ReturnName}</span>
+                  </div>
+                  <div>
+                    <span>
+                      <FaCheckCircle />
+                    </span>
+                    <span>{DepartPeriodOfHours}</span>
+                    <span>{DepartStops}-stop</span>
+                  </div>
+                </Containerbody>
+              </ContainerWrapper>
+
+              {/* Arrival */}
+              <ContainerWrapper>
+                <ContainerHeader>
+                  <b>Arrival</b>
+                </ContainerHeader>
+                <Containerbody>
+                  <div>
+                    <ContainerTime>
+                      <b>{DepartEndTime}</b> {ReturnCode}
+                    </ContainerTime>
+                    <span>{ReturnName}</span>
+                  </div>
+                  <div>
+                    <span
+                      style={{
+                        color: "red",
+                        fontStyle: "italic",
+                        fontWeight: "bold",
+                        fontSize: "9px",
+                      }}
+                    >
+                      {DepartCarrierName}
+                    </span>
+                    <img
+                      src={`https://images.wakanow.com/Images/flight-logos/${data?.itineraries?.[0]?.segments?.[0]?.operating?.carrierCode}.gif`}
+                      height={20}
+                      width={40}
+                      alt=""
+                      srcset=""
+                    />
+                    <img
+                      src={flightLogo}
+                      height={20}
+                      width={40}
+                      alt=""
+                      srcset=""
+                    />
+                  </div>
+                </Containerbody>
+              </ContainerWrapper>
+
+              {/* Class/ Baggage */}
+              <ContainerWrapper>
+                <ContainerHeader>
+                  <b>Class/Checked Baggage Allowance </b>
+                </ContainerHeader>
+                <Containerbody>
+                  <div>
+                    <ContainerTime>Economy (F)</ContainerTime>
+                    <span>
+                      Adult: {singleFlightResult?.[6]} piece(s), upto 23kg each
+                    </span>
+                    <span>
+                      Child: {singleFlightResult?.[7]} piece(s), upto 23kg each
+                    </span>
+                    <span>
+                      Infant: {singleFlightResult?.[8]} piece(s), upto 23kg
+                    </span>
+                  </div>
+                  <div></div>
+                </Containerbody>
+              </ContainerWrapper>
+            </FlightTimeContainer>
+          </FlightContainer>
+        }
+
+
           {/* INBOUND FLIGHT */}
           <FlightContainer>
             <FlightIconWrapper>
@@ -633,6 +746,121 @@ export default function FlightOverview() {
               </ContainerWrapper>
             </FlightTimeContainer>
           </FlightContainer>
+
+
+         {/* ui stopover for Inbound flight */}
+           {
+                flightStopOver === 1 &&
+          <FlightContainer>
+  
+            <FlightHeader>
+              <h5>{ReturnName}</h5>
+              <FlightIcon
+                IconSize={"13px"}
+                rotate={"90deg"}
+                iconColor={"black"}
+              />
+              <h5>{DepartName}</h5>
+              <p>{ReturnFullTimeAndDate}</p>
+            </FlightHeader>
+
+            <FlightTimeContainer>
+              {/* Departure */}
+              <ContainerWrapper>
+                <ContainerHeader>
+                  <b>Departure</b>
+                </ContainerHeader>
+                <Containerbody>
+                  <div>
+                    <ContainerTime>
+                      <b>{ReturnStartTime}</b> {ReturnCode}
+                    </ContainerTime>
+                    <span>{ReturnName}</span>
+                  </div>
+                  <div>
+                    <span>
+                      <FaCheckCircle />
+                    </span>
+                    <span>{ReturnPeriodOfHours}</span>
+                    <span>{ReturnStops}-stop</span>
+                  </div>
+                </Containerbody>
+              </ContainerWrapper>
+
+              {/* Arrival */}
+              <ContainerWrapper>
+                <ContainerHeader>
+                  <b>Arrival</b>
+                </ContainerHeader>
+                <Containerbody>
+                  <div>
+                    <ContainerTime>
+                      <b>{ReturnEndTime}</b> {DepartCode}
+                    </ContainerTime>
+                    <span>{DepartName}</span>
+                  </div>
+                  <div>
+                    <span
+                      style={{
+                        color: "red",
+                        fontStyle: "italic",
+                        fontWeight: "bold",
+                        fontSize: "9px",
+                      }}
+                    >
+                      {ReturnCarrierName
+                        ? ReturnCarrierName
+                        : DepartCarrierName}
+                    </span>
+                    <img
+                      src={`https://images.wakanow.com/Images/flight-logos/${
+                        data?.itineraries?.[1]?.segments?.[0]?.operating
+                          ?.carrierCode
+                          ? data?.itineraries?.[1]?.segments?.[0]?.operating
+                              ?.carrierCode
+                          : data?.itineraries?.[0]?.segments?.[0]?.operating
+                              ?.carrierCode
+                      }.gif`}
+                      height={20}
+                      width={40}
+                      alt=""
+                      srcset=""
+                    />
+                    <img
+                      src={flightLogo}
+                      height={20}
+                      width={40}
+                      alt=""
+                      srcset=""
+                    />
+                  </div>
+                </Containerbody>
+              </ContainerWrapper>
+
+              {/* Class/ Baggage */}
+              <ContainerWrapper>
+                <ContainerHeader>
+                  <b>Class/Checked Baggage Allowance </b>
+                </ContainerHeader>
+                <Containerbody>
+                  <div>
+                    <ContainerTime>Economy (F)</ContainerTime>
+                    <span>
+                      Adult: {singleFlightResult?.[6]} piece(s), upto 23kg each
+                    </span>
+                    <span>
+                      Child: {singleFlightResult?.[7]} piece(s), upto 23kg each
+                    </span>
+                    <span>
+                      Infant: {singleFlightResult?.[8]} piece(s), upto 23kg
+                    </span>
+                  </div>
+                  <div></div>
+                </Containerbody>
+              </ContainerWrapper>
+            </FlightTimeContainer>
+          </FlightContainer>
+        }
 
           {/* Passengers Detail */}
           <h3>Passenger Detail</h3>

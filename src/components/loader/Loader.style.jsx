@@ -3,53 +3,29 @@ import styled from "styled-components";
 
 export const LoaderWrapper = styled.div`
     position: fixed;
+    background-color: #ffffff;
     width: 100%;
-    height: 100vh;
+    height: 105%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center;   
     align-items: center;
     color: blue;
-
-    h3{
-      margin-top: -20px;
+    z-index: 9999;
+    margin-top: -120px;
+    
+    span{
+      font-size: 12px;
+      margin-top: 10px;
     }
-
-
-img {
-  width: 40px; /* Adjust size as needed */
-  animation: roll 1s linear infinite; //Rolling animation
-}
-
-@keyframes roll {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
   `
 
 
 
-// export const Overlay = styled.div`
-//     background-color: #000000d0;
-//     width: 100%;
-//     height: 100vh;
-    
-// `
+export const HrStyled = styled.hr`
+  width:  100%;
+  /* height: 2px; */
+  border: 1px solid ${({bg})=> bg || "orange"};
+`
 
 
-
-// export const LoadingContainer = styled.div`
-//   width: 100%;
-//   height: 100vh;
-//   display: flex;
-//   flex-direction: column;
-//   gap: 10px;
-
-  
-// `
-  
- 

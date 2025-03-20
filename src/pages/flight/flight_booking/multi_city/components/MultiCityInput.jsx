@@ -76,6 +76,7 @@ const MultiCityInput = ({
   onCityChange,
   onRemove,
   setShowFlightButton,
+  locationError
 }) => {
   const [showFromDropdown, setShowFromDropdown] = useState(false);
   const [showToDropdown, setShowToDropdown] = useState(false);
@@ -89,6 +90,7 @@ const MultiCityInput = ({
     useState("");
   const originLocation = useDebounce(searchTakeOffInputValue);
   const destinationLocation = useDebounce(searchDestinationInputValue);
+  
   useEffect(() => {
     if (originLocation !== "") {
       // airports(originLocation, 0);
@@ -150,6 +152,7 @@ const MultiCityInput = ({
     handleInputChange("originLocationCode", originLocationCode);
     handleInputChange("destinationLocationCode", destinationLocationCode);
   }, [originLocationCode, destinationLocationCode]);
+  
   const toggleFromDropdown = () => {
     setShowFromDropdown(!showFromDropdown);
     setShowToDropdown(false); // Close 'To' dropdown if open
@@ -218,7 +221,17 @@ const MultiCityInput = ({
               type="text"
               placeholder="From"
               value={city.from}
-              onChange={(e) => handleInputChange("from", e.target.value)}
+              onChange={(e) => {
+                handleInputChange("from", e.target.value);
+                setSearchTakeOffInputValue(e.target.value);
+                handleFromSelect(e.target.value);                
+                  if(e.target.value.length > 0){
+                    setShowFromDropdown(true);
+                  }else{
+                    setShowFromDropdown(false);
+                  }
+              }
+              }
             />
             <span>
               <MdFlightTakeoff />
@@ -229,12 +242,12 @@ const MultiCityInput = ({
           {showFromDropdown && (
             <TakeOffWrapper>
               <LocationDropdown
-                onChange={(e) => {
-                  handleFromSelect(e.target.value);
-                  setSearchTakeOffInputValue(e.target.value);
-                }}
+                // onChange={(e) => {
+                //   handleFromSelect(e.target.value);
+                //   setSearchTakeOffInputValue(e.target.value);
+                // }}
                 items={takeOffAportList} //{/* Pass items for 'From' location dropdown */}
-                searchInputValue={searchTakeOffInputValue} //{/* Manage search input state */}
+                // searchInputValue={searchTakeOffInputValue} //{/* Manage search input state */}
                 setAirportSelected={(airport) => handleFromSelect(airport)}
                 setCityCode={setOriginLocationCode}
                 onCloseDropdown={() => setShowFromDropdown(false)}
@@ -254,7 +267,16 @@ const MultiCityInput = ({
               type="text"
               placeholder="To"
               value={city.to}
-              onChange={(e) => handleInputChange("to", e.target.value)}
+              onChange={(e) => {
+                handleInputChange("to", e.target.value);
+                handleToSelect(e.target.value);
+                setSearchDestinationInputValue(e.target.value);
+                if(e.target.value.length > 0){
+                  setShowToDropdown(true);
+                }else{
+                  setShowToDropdown(false);
+                }
+              }}
             />
             <span>
               <MdFlightLand />
@@ -271,16 +293,16 @@ const MultiCityInput = ({
           {showToDropdown && (
             <DestinationWrapper>
               <LocationDropdown
-                onChange={(e) => {
-                  handleToSelect(e.target.value);
-                  setSearchDestinationInputValue(e.target.value);
-                }}
                 items={destinationAriporList} //{/* Pass items for 'To' location dropdown */}
-                searchInputValue={searchDestinationInputValue} // {/* Manage search input state */}
                 setCityCode={setDestinationLocationCode}
                 setAirportSelected={(airport) => handleToSelect(airport)}
                 onCloseDropdown={() => setShowToDropdown(false)}
                 Icon={MdFlightLand} //{/* Example icon */}
+                // onChange={(e) => {
+                //   handleToSelect(e.target.value);
+                //   setSearchDestinationInputValue(e.target.value);
+                // }}
+                // searchInputValue={searchDestinationInputValue} // {/* Manage search input state */}
               />
             </DestinationWrapper>
           )}

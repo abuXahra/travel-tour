@@ -24,6 +24,7 @@ import {
   FlightResultMain,
   FlightResultSideBar,
   FlightResultWrapper,
+  FlightTitleWrapper,
   MdFlightStyled,
   ResultCounter,
   ResultCounterLeft,
@@ -56,9 +57,14 @@ import NoResult from "../../../components/no_result/NoResult";
 
 export default function FlightResult() {
   const { singleFlightResult } = useAuthStore();
+
   // const flightData = JSON.parse(myObject);
 
   const navigate = useNavigate();
+
+  // user defined variable for stopover   ===============================================================
+  const [flightStopOver, setFlightStopOver] = useState(1);
+  
 
   useEffect(() => {
     if (!singleFlightResult[0]) {
@@ -270,10 +276,10 @@ export default function FlightResult() {
             {/* flight departure */}
              <FlightDetailDNR>
             <span>
-                <div>
+                <FlightTitleWrapper>
                   <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
                   <h5>{`Flight From ${singleFlightResult[0]} - ${singleFlightResult[1]}`}</h5>
-                </div>
+                </FlightTitleWrapper>
                 <b>Outbound</b>
               </span>
               <DNRDetail>
@@ -368,18 +374,117 @@ export default function FlightResult() {
                   </span>
                 </DNRDetailBaggage>
               </DNRDetail>
+
+          {/* if there is stop then show this ui (stopover UI) */}
+          { flightStopOver === 1 &&
+               <DNRDetail>
+                <DNRDetailFlightImage>
+                <img
+                    src={`https://images.wakanow.com/Images/flight-logos/${singleFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
+                    alt={singleFlightResult[2][index].validatingAirlineCodes[0]}
+                  />
+                </DNRDetailFlightImage>
+
+                <DNRDetailTime>
+                  <DNRDetailTimeSec>
+                  <h5>
+                      {new Date(
+                        singleFlightResult[2][
+                          index
+                        ].itineraries[0].segments[0].departure.at
+                      ).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </h5>
+                    <p>
+                      {singleFlightResult[0]}
+                    </p>
+                    {/* <AirlineCodeLookup
+                      keyWord={
+                        singleFlightResult[2][index].itineraries[0].segments[0]
+                          .departure.iataCode
+                      }
+                    /> */}
+                  </DNRDetailTimeSec>
+                  <DNRDetailTimeSec>
+                  <p>  {`${
+                      parseDuration(
+                        singleFlightResult[2][index].itineraries[0].segments[0]
+                          .duration
+                      ).hours
+                    }hr ${
+                      parseDuration(
+                        singleFlightResult[2][index].itineraries[0].segments[0]
+                          .duration
+                      ).minutes
+                    }min`} </p>
+                    <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
+                  <p> {
+                      singleFlightResult[2][index].itineraries[0].segments[0]
+                        .numberOfStops
+                    }
+                    -Stop</p>
+                  </DNRDetailTimeSec>
+                  <DNRDetailTimeSec>
+                    <h5>
+                      {new Date(
+                        singleFlightResult[2][
+                          index
+                        ].itineraries[0].segments[0].arrival.at
+                      ).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </h5>
+                    <p>{singleFlightResult[1]}</p>
+                    {/* <AirlineCodeLookup
+                      keyWord={
+                        singleFlightResult[2][index].itineraries[1].segments[0]
+                          .arrival.iataCode
+                      }
+                    /> */}
+                  </DNRDetailTimeSec>
+                </DNRDetailTime>
+
+                <DNRDetailAirport>
+                <div>Airport ({singleFlightResult[3]})</div>
+                <div>Airport ({singleFlightResult[4]})</div>
+                </DNRDetailAirport>
+                <DNRDetailBaggage>
+                  <span>
+                    <h5>Airline</h5>
+                    <AirlineFlightLogo
+                      dictionaries={singleFlightResult[9]}
+                      data={singleFlightResult[2][index]}
+                      keyWord={
+                        singleFlightResult[2][index].validatingAirlineCodes[0]
+                      }
+                      only={true}
+                    />
+                  </span>
+                  <span>
+                    <h5>Baggage</h5>
+                    100kg
+                  </span>
+                </DNRDetailBaggage>
+              </DNRDetail> }
             </FlightDetailDNR>
+
+
+
+
 
             {/* flight return */}
             <FlightDetailDNR>
               <span>
-                <div>
+                <FlightTitleWrapper>
                   <FlightIcon rotate={"270deg"} iconColor={"#FF6805"} />
                   <h5>
                     Flight From {singleFlightResult[1]} -{" "}
                     {singleFlightResult[0]}
                   </h5>
-                </div>
+                </FlightTitleWrapper>
                 <b>Inbound</b>
               </span>
               <DNRDetail>
@@ -472,6 +577,99 @@ export default function FlightResult() {
                   </span>
                 </DNRDetailBaggage>
               </DNRDetail>
+
+              {/* if there is stop over then show this ui */}
+             { flightStopOver === 1  &&
+              <DNRDetail>
+                <DNRDetailFlightImage>
+                  <img
+                    src={`https://images.wakanow.com/Images/flight-logos/${singleFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
+                    alt={singleFlightResult[2][index].validatingAirlineCodes[0]}
+                  />
+                </DNRDetailFlightImage>
+
+                <DNRDetailTime>
+                  <span>
+                    <h5>
+                      {new Date(
+                        singleFlightResult[2][
+                          index
+                        ].itineraries[1].segments[0].departure.at
+                      ).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </h5>
+                    <p>{singleFlightResult[1]}</p>
+                    {/* <AirlineCodeLookup
+                      keyWord={
+                        singleFlightResult[2][index].itineraries[1].segments[0]
+                          .departure.iataCode
+                      }
+                    /> */}
+                  </span>
+                  <span>
+                  <p style={{fontSize: "8px"}}>  {`${
+                      parseDuration(
+                        singleFlightResult[2][index].itineraries[1].segments[0]
+                          .duration
+                      ).hours
+                    }hr ${
+                      parseDuration(
+                        singleFlightResult[2][index].itineraries[1].segments[0]
+                          .duration
+                      ).minutes
+                    }min`} </p>
+                    <FlightIcon rotate={"270deg"} iconColor={"#FF6805"} />
+                    {
+                      singleFlightResult[2][index].itineraries[1].segments[0]
+                        .numberOfStops
+                    }
+                    -Stop
+                  </span>
+                  <span>
+                    <h5>
+                      {new Date(
+                        singleFlightResult[2][
+                          index
+                        ].itineraries[1].segments[0].arrival.at
+                      ).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </h5>
+                    <p>{singleFlightResult[0]}</p>
+                    {/* <AirlineCodeLookup
+                      keyWord={
+                        singleFlightResult[2][index].itineraries[1].segments[0]
+                          .arrival.iataCode
+                      }
+                    /> */}
+                  </span>
+                </DNRDetailTime>
+
+                <DNRDetailAirport>
+                  <div>({singleFlightResult[4]})</div>
+                  <div>({singleFlightResult[3]})</div>
+                </DNRDetailAirport>
+                <DNRDetailBaggage>
+                  <span>
+                    <h5>Airline</h5>
+                    <AirlineFlightLogo
+                      dictionaries={singleFlightResult[9]}
+                      data={singleFlightResult[2][index]}
+                      keyWord={
+                        singleFlightResult[2][index].validatingAirlineCodes[0]
+                      }
+                      only={true}
+                    />
+                  </span>
+                  <span>
+                    <h5>Baggage</h5>
+                    100kg
+                  </span>
+                </DNRDetailBaggage>
+              </DNRDetail>}
             </FlightDetailDNR>
 
           <FlightDetailButton>

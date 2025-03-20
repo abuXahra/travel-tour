@@ -46,6 +46,12 @@ import { useAuthStore } from "../../../../../store/store";
 
 export default function OnewayTripinfo() {
   const [data, setData] = useState({});
+
+
+       // user defined variable for stopover   ===============================================================
+        const [flightStopOver, setFlightStopOver] = useState(1);
+
+
   // navigation
   const navigate = useNavigate();
 
@@ -640,7 +646,8 @@ export default function OnewayTripinfo() {
               </TripDetailTile>
               {/* body */}
               {showtripDepart && (
-                <TripDetailBody>
+               <>
+               <TripDetailBody>
                   <TripDetailClass>
                     <span>
                       <AirlineFlightLogo
@@ -728,7 +735,100 @@ export default function OnewayTripinfo() {
                     </TripAirport>
                   </TripDetailTime>
                 </TripDetailBody>
-              )}
+
+
+                    {/* ONEWAY STOPOVER UI */}
+                    { flightStopOver && 
+                      <TripDetailBody>
+                      <TripDetailClass>
+                        <span>
+                          <AirlineFlightLogo
+                            dictionaries={oneWayFlightResult[9]}
+                            data={oneWayFlightResult[2][oneWayFlightResultIndex]}
+                            keyWord={
+                              oneWayFlightResult[2][oneWayFlightResultIndex]
+                                .validatingAirlineCodes[0]
+                            }
+                            detail={true}
+                          />
+                        </span>
+                        <span>
+                          <a href="#">
+                            {
+                              oneWayFlightResult[2][oneWayFlightResultIndex]
+                                .travelerPricings[0].fareDetailsBySegment[0].cabin
+                            }
+                          </a>
+                        </span>
+                      </TripDetailClass>
+                      <TripDetailTime>
+                        <TripHour>
+                          <span>
+                            <div>
+                              <h5>
+                                {new Date(
+                                  oneWayFlightResult[2][
+                                    oneWayFlightResultIndex
+                                  ].itineraries[0].segments[0].departure.at
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </h5>
+                              <h5>
+                                {" "}
+                                {new Date(
+                                  oneWayFlightResult[2][
+                                    oneWayFlightResultIndex
+                                  ].itineraries[0].segments[0].arrival.at
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </h5>
+                            </div>
+                            <div>
+                              <hr />
+                              <FlightIcon rotate={"180deg"} iconColor={"#0D3984"} />
+                              <hr />
+                            </div>
+                          </span>
+                        </TripHour>
+                        <TripAirport>
+                          <div>
+                            <p>
+                              {oneWayFlightResult[0]}{" "}
+                              <b>({oneWayFlightResult[3]})</b>
+                            </p>
+                            <p>{`${
+                              parseDuration(
+                                oneWayFlightResult[2][oneWayFlightResultIndex]
+                                  .itineraries[0].segments[0].duration
+                              ).hours
+                            }hr ${
+                              parseDuration(
+                                oneWayFlightResult[2][oneWayFlightResultIndex]
+                                  .itineraries[0].segments[0].duration
+                              ).minutes
+                            }min`}</p>
+                            <p>
+                              {oneWayFlightResult[1]}{" "}
+                              <b>({oneWayFlightResult[4]})</b>
+                            </p>
+                          </div>
+                          <div>
+                            <span>
+                              <h5>BAGGAGE:</h5> <p>ADULT</p>
+                            </span>
+                            <span>
+                              <h5>CHECK IN:</h5> <p>20KG</p>{" "}
+                            </span>
+                          </div>
+                        </TripAirport>
+                      </TripDetailTime>
+                    </TripDetailBody>
+                    }
+              </>)}
             </FlightDetailWrapper>
           </TripInfoContent>
 

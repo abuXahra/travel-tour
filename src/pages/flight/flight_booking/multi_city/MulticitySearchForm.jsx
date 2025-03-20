@@ -11,9 +11,11 @@ const MulticitySearchForm = () => {
   const { setMultiCityFlightResult, flightOffersSearchMultiCity, setLoader } =
     useAuthStore();
 
+    const todayDate = new Date().toISOString().split('T')[0]; 
+
   const [cities, setCities] = useState([
-    { id: 1, from: "", to: "", departureDate: "" },
-    { id: 2, from: "", to: "", departureDate: "" },
+    { id: 1, from: "", to: "", departureDate: todayDate },
+    { id: 2, from: "", to: "", departureDate: todayDate },
   ]);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
@@ -70,6 +72,7 @@ const MulticitySearchForm = () => {
   const [showFlightButton, setShowFlightButton] = useState(false);
 
   const flightSearch = async () => {
+
     setLoader(true);
     // console.log();
     // console.log();

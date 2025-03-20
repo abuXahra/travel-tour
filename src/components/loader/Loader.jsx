@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  HrStyled,
   LoaderContent,
   LoaderWrapper,
   LoadingContainer,
@@ -7,33 +8,19 @@ import {
   Overlay,
 } from "./Loader.style";
 import { Circles, ThreeDots } from "react-loader-spinner";
-import loaderImage from "../../images/rb_57.png";
+import loaderImage from "../../images/loader/flight_loader.gif";
 
 export default function Loader({ text }) {
   return (
-    <div
-      style={{
-        position: "absolute",
-        width: "100%",
-        // backgroundColor: "#fff",
-        zIndex: 1,
-        height: "100%",
-      }}
-    >
+    
       <LoaderWrapper>
-        {/* <img src={loaderImage} alt="" srcset="" /> */}
-        <ThreeDots
-          visible={true}
-          height="100"
-          width="100"
-          color="blue"
-          radius="10"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-        />
-        <h3>{text}</h3>
+        <img src={loaderImage} alt="" srcset="" />
+        <div style={{width: "100%", display: "flex", flexDirection: "column", gap: "1px", marginTop:"-20px" }}>
+          <HrStyled/>
+          <HrStyled bg={'#0d3984cf'}/>
+        </div>
+        <span>{text}</span>
       </LoaderWrapper>
-    </div>
+   
   );
 }

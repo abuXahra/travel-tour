@@ -53,6 +53,12 @@ export default function OneWayResult() {
   const { oneWayFlightResult } = useAuthStore();
   // const flightData = JSON.parse(myObject);
 
+     // user defined variable for stopover   ===============================================================
+      const [flightStopOver, setFlightStopOver] = useState(1);
+  
+
+
+
   const navigate = useNavigate();
   console.log(oneWayFlightResult);
   useEffect(() => {
@@ -260,6 +266,7 @@ export default function OneWayResult() {
                 </div>
                 <b>Outbound</b>
               </span>
+
               <DNRDetail>
                 <DNRDetailFlightImage>
                   <img
@@ -356,6 +363,109 @@ export default function OneWayResult() {
                   </span>
                 </DNRDetailBaggage>
               </DNRDetail>
+
+
+
+              {/* STOPOVER UI FOR ONEWAY */}
+              {flightStopOver === 1 && 
+                <DNRDetail>
+                <DNRDetailFlightImage>
+                  <img
+                    src={`https://images.wakanow.com/Images/flight-logos/${oneWayFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
+                    alt={oneWayFlightResult[2][index].validatingAirlineCodes[0]}
+                  />
+                </DNRDetailFlightImage>
+
+                <DNRDetailTime>
+                  <span>
+                    <h5>
+                      {new Date(
+                        oneWayFlightResult[2][
+                          index
+                        ].itineraries[0].segments[0].departure.at
+                      ).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </h5>
+                    <p>
+                      {oneWayFlightResult[0]}
+                    </p>
+                    {/* <AirlineCodeLookup
+                      keyWord={
+                        oneWayFlightResult[2][index].itineraries[0].segments[0]
+                          .departure.iataCode
+                      }
+                    /> */}
+                  </span>
+                  <span>
+                  <p> {`${
+                      parseDuration(
+                        oneWayFlightResult[2][index].itineraries[0].segments[0]
+                          .duration
+                      ).hours
+                    }hr ${
+                      parseDuration(
+                        oneWayFlightResult[2][index].itineraries[0].segments[0]
+                          .duration
+                      ).minutes
+                    }min`}</p>
+                    <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
+                   <p>{
+                      oneWayFlightResult[2][index].itineraries[0].segments[0]
+                        .numberOfStops
+                    }
+                    -Stop</p>
+                  </span>
+                  <span>
+                    <h5>
+                      {" "}
+                      {new Date(
+                        oneWayFlightResult[2][
+                          index
+                        ].itineraries[0].segments[0].arrival.at
+                      ).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </h5>
+                    <p>
+                      {oneWayFlightResult[1]}
+                    </p>
+                    {/* <AirlineCodeLookup
+                      keyWord={
+                        oneWayFlightResult[2][index].itineraries[0].segments[0]
+                          .arrival.iataCode
+                      }
+                    /> */}
+                  </span>
+                </DNRDetailTime>
+
+                <DNRDetailAirport>
+                  <div>Airport ({oneWayFlightResult[3]})</div>
+                  <div>Airport ({oneWayFlightResult[4]})</div>
+                </DNRDetailAirport>
+                <DNRDetailBaggage>
+                  <span>
+                    <h5>Airline</h5>
+
+                    <AirlineFlightLogo
+                      dictionaries={oneWayFlightResult[9]}
+                      data={oneWayFlightResult[2][index]}
+                      keyWord={
+                        oneWayFlightResult[2][index].validatingAirlineCodes[0]
+                      }
+                      only={true}
+                    />
+                  </span>
+                  <span>
+                    <h5>Baggage</h5>
+                    100kg
+                  </span>
+                </DNRDetailBaggage>
+              </DNRDetail>
+              }
+
             </FlightDetailDNR>
           </FLightDetailContent>
 

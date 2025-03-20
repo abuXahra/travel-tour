@@ -48,6 +48,13 @@ import { useAuthStore } from "../../../../store/store";
 
 export default function TripInfo() {
   const [data, setData] = useState({});
+
+
+    // user defined variable for stopover   ===============================================================
+    const [flightStopOver, setFlightStopOver] = useState(1);
+
+
+
   // navigation
   const navigate = useNavigate();
 
@@ -681,6 +688,107 @@ export default function TripInfo() {
                 </TripDetailTile>
                 {/* body */}
                 {showtripDepart && (
+                  <> <TripDetailBody>
+                    <TripDetailClass>
+                      <span>
+                        <AirlineFlightLogo
+                          dictionaries={singleFlightResult[9]}
+                          data={singleFlightResult[2][flightResultIndex]}
+                          keyWord={
+                            singleFlightResult[2][flightResultIndex]
+                              .validatingAirlineCodes[0]
+                          }
+                          detail={true}
+                        />
+                      </span>
+                      <span>
+                        <a href="#">
+                          {
+                            singleFlightResult[2][flightResultIndex]
+                              .travelerPricings[0].fareDetailsBySegment[0].cabin
+                          }
+                        </a>
+                      </span>
+                    </TripDetailClass>
+                    <TripDetailTime>
+                      <TripHour>
+                        <span>
+                          <div>
+                            <h4>
+                              {new Date(
+                                singleFlightResult[2][
+                                  flightResultIndex
+                                ].itineraries[0].segments[0].departure.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </h4>
+                            <h4>
+                              {" "}
+                              {new Date(
+                                singleFlightResult[2][
+                                  flightResultIndex
+                                ].itineraries[0].segments[0].arrival.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </h4>
+                          </div>
+                          <div>
+                            <hr />
+                            <FlightIcon
+                              rotate={"180deg"}
+                              iconColor={"#0D3984"}
+                            />
+                            <hr />
+                          </div>
+                        </span>
+                      </TripHour>
+                      <TripAirport>
+                        <div>
+                          <p>
+                            {singleFlightResult[0]}{" "}
+                            <b>({singleFlightResult[3]})</b>
+                          </p>
+                          <p>{`${
+                            parseDuration(
+                              singleFlightResult[2][flightResultIndex]
+                                .itineraries[0].segments[0].duration
+                            ).hours
+                          }hr ${
+                            parseDuration(
+                              singleFlightResult[2][flightResultIndex]
+                                .itineraries[0].segments[0].duration
+                            ).minutes
+                          }min`}</p>
+                          <p>
+                            {singleFlightResult[1]}{" "}
+                            <b>({singleFlightResult[4]})</b>
+                          </p>
+                        </div>
+                        <div>
+                          <span>
+                            <h4>CHECK IN:</h4>{" "}
+                            <p>
+                              {
+                                singleFlightResult[2][flightResultIndex]
+                                  .travelerPricings[0].travelerType
+                              }
+                            </p>{" "}
+                          </span>
+                          <span>
+                            <h4>BAGGAGE:</h4> <p>1</p>
+                          </span>
+                        </div>
+                      </TripAirport>
+                    </TripDetailTime>
+                  </TripDetailBody>
+
+                  {/* stopover usi */}
+                  {
+                    flightStopOver === 1 &&
                   <TripDetailBody>
                     <TripDetailClass>
                       <span>
@@ -778,8 +886,14 @@ export default function TripInfo() {
                       </TripAirport>
                     </TripDetailTime>
                   </TripDetailBody>
+                  }
+                  </>
+                 
                 )}
               </FlightDetailWrapper>
+
+
+
 
               {/* for flight Return */}
               {/* Flight Detail section */}
@@ -829,9 +943,11 @@ export default function TripInfo() {
                     </div>
                   </span>
                 </TripDetailTile>
+               
                 {/* body */}
                 {showtripReturn && (
-                  <TripDetailBody>
+                 <>
+                   <TripDetailBody>
                     <TripDetailClass>
                       <span>
                         <AirlineFlightLogo
@@ -932,6 +1048,112 @@ export default function TripInfo() {
                       </TripAirport>
                     </TripDetailTime>
                   </TripDetailBody>
+              
+              {/* stopover ui */}
+                  {
+                    flightStopOver === 1 &&
+                   <TripDetailBody>
+                    <TripDetailClass>
+                      <span>
+                        <AirlineFlightLogo
+                          dictionaries={singleFlightResult[9]}
+                          data={singleFlightResult[2][flightResultIndex]}
+                          keyWord={
+                            singleFlightResult[2][flightResultIndex]
+                              .validatingAirlineCodes[0]
+                          }
+                          detail={true}
+                        />
+                      </span>
+                      <span>
+                        <a href="#">
+                          {
+                            singleFlightResult[2][flightResultIndex]
+                              .travelerPricings[0].fareDetailsBySegment[0].cabin
+                          }
+                        </a>
+                      </span>
+                    </TripDetailClass>
+                    <TripDetailTime>
+                      <TripHour>
+                        <span>
+                          <div>
+                            <h4>
+                              {new Date(
+                                singleFlightResult[2][
+                                  flightResultIndex
+                                ].itineraries[1].segments[0].departure.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </h4>
+                            <h4>
+                              {" "}
+                              {new Date(
+                                singleFlightResult[2][
+                                  flightResultIndex
+                                ].itineraries[1].segments[0].arrival.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </h4>
+                          </div>
+                          <div>
+                            <hr />
+                            <FlightIcon
+                              rotate={"360deg"}
+                              iconColor={"#FF6805"}
+                            />
+                            <hr />
+                          </div>
+                        </span>
+                      </TripHour>
+                      <TripAirport>
+                        <div>
+                          <p>
+                            {singleFlightResult[1]}{" "}
+                            <b>({singleFlightResult[4]})</b>
+                          </p>
+                          <p>
+                            {" "}
+                            {`${
+                              parseDuration(
+                                singleFlightResult[2][flightResultIndex]
+                                  .itineraries[1].segments[0].duration
+                              ).hours
+                            }hr ${
+                              parseDuration(
+                                singleFlightResult[2][flightResultIndex]
+                                  .itineraries[1].segments[0].duration
+                              ).minutes
+                            }min`}
+                          </p>
+                          <p>
+                            {singleFlightResult[0]}{" "}
+                            <b>({singleFlightResult[3]})</b>
+                          </p>
+                        </div>
+                        <div>
+                          <span>
+                            <h4>CHECK IN:</h4>{" "}
+                            <p>
+                              {" "}
+                              {
+                                singleFlightResult[2][flightResultIndex]
+                                  .travelerPricings[0].travelerType
+                              }
+                            </p>{" "}
+                          </span>
+                          <span>
+                            <h4>BAGGAGE:</h4> <p>1</p>
+                          </span>
+                        </div>
+                      </TripAirport>
+                    </TripDetailTime>
+                  </TripDetailBody>
+                  }</>
                 )}
               </FlightDetailWrapper>
             </TripInfoContent>

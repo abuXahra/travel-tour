@@ -23,7 +23,7 @@ export default function LocationDropdown({
 }) {
   return (
     <LocationDropdownWrapper>
-      <LocationDropdownInput>
+      {/* <LocationDropdownInput>
         <FaSearchStyled />
         <input
           type="text"
@@ -31,7 +31,7 @@ export default function LocationDropdown({
           value={searchInputValue}
           onChange={onChange}
         />
-      </LocationDropdownInput>
+      </LocationDropdownInput> */}
 
       <LocationDropdownSearchResult>
         <h3>Recent Search</h3>

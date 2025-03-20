@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const domain = "http://localhost:5000";
+// const domain = "http://localhost:5000";
 // const domain = "https://manzo-travels-be.vercel.app";
-// const domain = "https://manzo-travels-be.onrender.com";
+const domain = "https://manzo-travels-be.onrender.com";
 // const domain = "https://backend.manzotravels.com";
 
 export const useAuthStore = create((set) => ({

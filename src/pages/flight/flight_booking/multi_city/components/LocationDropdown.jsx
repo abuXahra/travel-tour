@@ -20,7 +20,7 @@ const LocationDropdown = ({
 }) => {
   return (
     <LocationDropdownWrapper>
-      <LocationDropdownInput>
+      {/* <LocationDropdownInput>
         <FaSearchStyled />
         <input
           type="text"
@@ -28,7 +28,7 @@ const LocationDropdown = ({
           value={searchInputValue}
           onChange={onChange}
         />
-      </LocationDropdownInput>
+      </LocationDropdownInput> */}
 
       <LocationDropdownSearchResult>
         <h3>Recent Searches</h3>

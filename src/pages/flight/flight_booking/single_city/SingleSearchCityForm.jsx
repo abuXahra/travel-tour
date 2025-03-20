@@ -42,6 +42,11 @@ import { SingleAndMulticityWrapper } from "./SingleSearchCityForm.style";
 import FlightRadioHeader from "../../../../components/booking_icons/flight_radio_header/FlightRadioHeader";
 import FlightSlide from "../../../../components/Flight/flight_packages/flight_slider/FlightSlider";
 import Loader from "../../../../components/loader/Loader";
+
+
+
+
+
 const defaultCityList = [
   {
     code: "LOS",
@@ -101,18 +106,23 @@ export default function SingleSearchCityForm({
   showSingleForm,
   showMultiCityForm,
   showReturnDate,
+  locationError
 }) {
   const navigate = useNavigate();
+
+
 
   //  query parameters
   let queryParams;
   let searchParams;
 
+  const todayDate = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD (2025-02-29)
+
   // roundTrip is selected by default
   const [kickOff, setKickOff] = useState("");
   const [destination, setDestination] = useState();
-  const [departDate, setDepartDate] = useState();
-  const [returnDate, setreturnDate] = useState();
+  const [departDate, setDepartDate] = useState(todayDate);
+  const [returnDate, setreturnDate] = useState(todayDate);
   const [flightClass, setFlightClass] = useState("ECONOMY");
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
@@ -140,9 +150,9 @@ export default function SingleSearchCityForm({
   const [showFlightInputs, setshowFlightInputs] = useState(false);
 
   // passange count event handler Event handler
-  const handleKickOff = (e) => {
-    setKickOff(e.target.value);
-  };
+  // const handleKickOff = (e) => {
+  //   setKickOff(e.target.value);
+  // };
 
   const handleDestination = (e) => {
     setDestination(e.target.value);
@@ -302,11 +312,25 @@ export default function SingleSearchCityForm({
   // TakeOff Search airport handler
   const onChangeTakeOffHandler = (e) => {
     setSearchTakeOffInputValue(e.target.value);
+    setTakeOffAirport((e.target.value))
+
+    if(e.target.value.length > 0){
+      setShowTakeOffAirports(true)
+    }else{
+      setShowTakeOffAirports(false);
+    }
   };
 
-  // destionaton Search airport handler
+  // destination Search airport handler
   const onChangeDestinationHandler = (e) => {
     setSearchDestinationInputValue(e.target.value);
+    setDestinationAirport(e.target.value);
+
+    if(e.target.value.length > 0 ){
+      setShowDestinationAirports(true);
+    }else{
+      setShowDestinationAirports(false);
+    }
   };
 
   // show/hide takeoff and destination down airport Lists
@@ -324,15 +348,16 @@ export default function SingleSearchCityForm({
   };
 
   // show/hide flightInputs
-
   const handleShowFlightInputsA = () => {
     setShowTakeOffAirports(!showTakeOffAirports);
+    setShowDestinationAirports(false);
     setshowFlightInputs(true);
     setShowFlightType(true);
   };
 
   const handleShowFlightInputsB = () => {
     setShowDestinationAirports(!showDestinationAirports);
+    setShowTakeOffAirports(false);
     setshowFlightInputs(true);
     setShowFlightType(true);
   };
@@ -404,6 +429,14 @@ export default function SingleSearchCityForm({
     };
   }
   const bookflights = async () => {
+
+    // destination location
+    if( takeOffAirport === destinationAirport){
+       locationError();
+      return;
+    }
+
+
     setLoader(true);
     console.log(searchParams);
     const res = await flightOffersSearch(searchParams);
@@ -463,7 +496,7 @@ export default function SingleSearchCityForm({
           multiCity={multiCity}
         />
       )}
-
+  
       {showSingleForm && (
         <FlightForm>
           <FlightInputContainer>
@@ -474,7 +507,7 @@ export default function SingleSearchCityForm({
                   type="text"
                   placeholder="From"
                   value={takeOffAirport}
-                  onChange={handleKickOff}
+                  onChange={(e)=>onChangeTakeOffHandler(e)}
                 />
                 <span>
                   <MdFlightTakeoff />
@@ -485,9 +518,9 @@ export default function SingleSearchCityForm({
               {showTakeOffAirports && (
                 <TakeOffWrapper>
                   <LocationDropdown
-                    onChange={onChangeTakeOffHandler}
+                    // onChange={onChangeTakeOffHandler}
+                    // searchInputValue={searchTakeOffInputValue}
                     items={takeOffAportList}
-                    searchInputValue={searchTakeOffInputValue}
                     setAirportSelected={setTakeOffAirport}
                     setCityCode={setOriginLocationCode}
                     onCloseDropdwon={onCloseTakOffDropdwon}
@@ -508,7 +541,7 @@ export default function SingleSearchCityForm({
                   type="text"
                   placeholder="To"
                   value={destinationAirport}
-                  onChange={handleDestination}
+                  onChange={(e) => onChangeDestinationHandler(e)}
                 />
                 <span>
                   <MdFlightLand />
@@ -519,9 +552,9 @@ export default function SingleSearchCityForm({
               {showDestinationAirports && (
                 <DestinationWrapper>
                   <LocationDropdown
-                    onChange={onChangeDestinationHandler}
+                    // onChange={onChangeDestinationHandler}
                     items={destinationAriporList}
-                    searchInputValue={searchDestinationInputValue}
+                    // searchInputValue={searchDestinationInputValue}
                     setAirportSelected={setDestinationAirport}
                     setCityCode={setDestinationLocationCode}
                     onCloseDropdwon={onCloseDestinationDropdwon}
@@ -544,7 +577,7 @@ export default function SingleSearchCityForm({
                   value={departDate}
                 />
               </FlightDepatWrapContent>
-
+             
               {showReturnDate && (
                 <FlightDepatWrapContent>
                   <Label for="depart">Returning</Label>
@@ -641,13 +674,17 @@ export default function SingleSearchCityForm({
               </FlightDepatWrapContent>
 
               <div>
-                <Button onClick={() => bookflights()} text={"Search Flight"} />
+                <Button onClick={()=>bookflights()} text={"Search Flight"} />
               </div>
             </FlightDepartWrapper>
           )}
         </FlightForm>
       )}
       {showMultiCityForm && <MulticitySearchForm />}
+      
     </SingleAndMulticityWrapper>
+        
+      
+ 
   );
 }

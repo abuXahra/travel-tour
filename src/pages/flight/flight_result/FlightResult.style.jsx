@@ -322,12 +322,6 @@ export const FlightDetailDNR = styled.div`
         border-bottom: 1px solid #8080804a;
         padding-bottom: 10px;
         /* margin-bottom: 20px; */
-
-        div{
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
     }
 
 
@@ -335,6 +329,16 @@ export const FlightDetailDNR = styled.div`
         width: 100%;
     }
 
+`
+
+
+export const FlightTitleWrapper = styled.div`
+        
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            width: 70%;
+        
 `
 
 export const DNRDetail = styled.div`

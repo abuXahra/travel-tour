@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import HeroSection from "../../../components/hero/HeroSection";
 import heroImage from "../../../images/travelunsplash.jpg";
+
 import {
   BodyContent,
   ContentMain,
@@ -43,9 +44,15 @@ import FlightStatus from "./flight_status/FlightStatus";
 import Content from "../../../components/homepage_content/Content";
 import { useAuthStore } from "../../../store/store";
 import Loader from "../../../components/loader/Loader";
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/ReactToastify.css"
+
 
 export default function FlightBooking() {
   const { loader } = useAuthStore();
+
+  // Error Message if the depart and destination location is the same
+  const locationError = (toastMessage) => toast.error('Change destination location')
 
   // Show/Hide Form
   const [showSingleMultCity, setShowSingleMultCity] = useState(true);
@@ -193,7 +200,7 @@ export default function FlightBooking() {
 
   return (
     <FlightWrapper>
-      {loader && <Loader text={"Searching for Flight"} />}
+      {loader && <Loader text={"Retrieving Flights, Please Wait..."} />}
 
       {/* hero section with form */}
       <HeroSection heroImage={heroImage}>
@@ -243,6 +250,7 @@ export default function FlightBooking() {
                     showSingleForm={showSingleForm}
                     showMultiCityForm={showMultiCityForm}
                     showReturnDate={showReturnDate}
+                    locationError={locationError}
                   />
                 )}
 
@@ -268,6 +276,19 @@ export default function FlightBooking() {
       <BodyContent>
         <Content />
       </BodyContent>
+ {/* ===================Toast Message ================= */}
+            <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick={false}
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
     </FlightWrapper>
   );
 }
