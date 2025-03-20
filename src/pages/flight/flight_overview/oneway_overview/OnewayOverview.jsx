@@ -49,6 +49,12 @@ import PayStack from "@paystack/inline-js";
 import axios from "axios";
 
 export default function OnewayOverview() {
+
+    
+       // user defined variable for stopover   ===============================================================
+       const [flightStopOver, setFlightStopOver] = useState(1);
+
+
   const popup = new PayStack();
   const navigate = useNavigate();
   const {
@@ -354,7 +360,7 @@ export default function OnewayOverview() {
             <span>
               <Button
                 text={"Back"}
-                onClick={() => navigate("/oneway-customization")}
+                onClick={() => navigate(`/oneway-customization/${oneWayFlightResultIndex}`)}
               />
             </span>
             <h5>Proceed with your booking</h5>
@@ -484,6 +490,112 @@ export default function OnewayOverview() {
             </FlightTimeContainer>
           </FlightContainer>
 
+
+
+            {/* ONEWAY STOPOVER UI */}
+            { flightStopOver === 1 &&
+               <FlightContainer>
+   
+               <FlightHeader>
+                 <h5>{DepartName}</h5>
+                 <FlightIcon
+                   IconSize={"13px"}
+                   rotate={"90deg"}
+                   iconColor={"black"}
+                 />
+                 <h5>{ReturnName}</h5>
+                 <p>{DepartFullTimeAndDate}</p>
+               </FlightHeader>
+   
+               <FlightTimeContainer>
+                 {/* Departure */}
+                 <ContainerWrapper>
+                   <ContainerHeader>
+                     <b>Departure</b>
+                   </ContainerHeader>
+                   <Containerbody>
+                     <div>
+                       <ContainerTime>
+                         <b>{DepartStartTime}</b> {DepartCode}
+                       </ContainerTime>
+                       <span>{ReturnName}</span>
+                     </div>
+                     <div>
+                       <span>
+                         <FaCheckCircle />
+                       </span>
+                       <span>{DepartPeriodOfHours}</span>
+                       <span>{DepartStops}-stop</span>
+                     </div>
+                   </Containerbody>
+                 </ContainerWrapper>
+   
+                 {/* Arrival */}
+                 <ContainerWrapper>
+                   <ContainerHeader>
+                     <b>Arrival</b>
+                   </ContainerHeader>
+                   <Containerbody>
+                     <div>
+                       <ContainerTime>
+                         <b>{DepartEndTime}</b> {ReturnCode}
+                       </ContainerTime>
+                       <span>{ReturnName}</span>
+                     </div>
+                     <div>
+                       <span
+                         style={{
+                           color: "red",
+                           fontStyle: "italic",
+                           fontWeight: "bold",
+                           fontSize: "9px",
+                         }}
+                       >
+                         {DepartCarrierName}
+                       </span>
+                       <img
+                         src={`https://images.wakanow.com/Images/flight-logos/${data?.itineraries?.[0]?.segments?.[0]?.operating?.carrierCode}.gif`}
+                         height={20}
+                         width={40}
+                         alt=""
+                         srcset=""
+                       />
+                       <img
+                         src={flightLogo}
+                         height={20}
+                         width={40}
+                         alt=""
+                         srcset=""
+                       />
+                     </div>
+                   </Containerbody>
+                 </ContainerWrapper>
+   
+                 {/* Class/ Baggage */}
+                 <ContainerWrapper>
+                   <ContainerHeader>
+                     <b>Class/Checked Baggage Allowance </b>
+                   </ContainerHeader>
+                   <Containerbody>
+                     <div>
+                       <ContainerTime>Economy (F)</ContainerTime>
+                       <span>
+                         Adult: {oneWayFlightResult?.[6]} piece(s), upto 23kg each
+                       </span>
+                       <span>
+                         Child: {oneWayFlightResult?.[7]} piece(s), upto 23kg each
+                       </span>
+                       <span>
+                         Infant: {oneWayFlightResult?.[8]} piece(s), upto 23kg
+                       </span>
+                     </div>
+                     <div>
+                     </div>
+                   </Containerbody>
+                 </ContainerWrapper>
+               </FlightTimeContainer>
+             </FlightContainer>
+            }
           {/* Passengers Detail */}
           <h3>Passenger Detail</h3>
           <PDetailWrapper>

@@ -500,7 +500,7 @@ export default function OnewayTripinfo() {
             <span>
               <Button
                 text={"Back"}
-                onClick={() => navigate("/flight-result")}
+                onClick={() => navigate("/oneway-result")}
               />
             </span>
             <h2>Proceed with your booking</h2>
