@@ -29,6 +29,8 @@ import {
   AgreeWrapper,
   ButtonWrapper,
   ErrorMessage,
+  OverviewBody,
+  HorizontalSpacing,
 } from "./MulticityOverview.style";
 import Button from "../../../../components/button/Button";
 import Timeline from "../../../../components/timeline/Timeline";
@@ -48,6 +50,9 @@ import {
 import PaymentModes from "../../../../components/payment_mode/PaymentModes";
 
 export default function MulticityOverview() {
+
+  // user defined variable for stopover   ===============================================================
+  const [flightStopOver, setFlightStopOver] = useState(1);
   const popup = new PayStack();
   const navigate = useNavigate();
   const { flightResultIndex } = useParams();
@@ -311,10 +316,10 @@ export default function MulticityOverview() {
             <span>
               <Button
                 text={"Back"}
-                onClick={() => navigate("/flight-result")}
+                onClick={() => navigate(`/multicity-customization/${flightResultIndex}`)}
               />
             </span>
-            <h2>Proceed with your booking</h2>
+            <h3>Proceed with your booking</h3>
           </OverviewHeaderTitle>
           {/* Timeline: Trip info steps */}
           <Timeline currentStep={4} />
@@ -323,7 +328,7 @@ export default function MulticityOverview() {
 
       {/* Body */}
       {/* Main Content */}
-      <TripMinContent>
+      <OverviewBody>
         {/* User info content */}
         <OverviewContent>
           <h3 style={{ marginBottom: "-10px" }}>Trip Summary</h3>
@@ -344,13 +349,13 @@ export default function MulticityOverview() {
                 </FlightIconWrapper>
 
                 <FlightHeader>
-                  <h2>{multiCityFlightResult?.[0][index]?.from}</h2>
+                  <h5>{multiCityFlightResult?.[0][index]?.from}</h5>
                   <FlightIcon
                     IconSize={"13px"}
                     rotate={"90deg"}
                     iconColor={"black"}
                   />
-                  <h2>{multiCityFlightResult?.[0][index]?.to}</h2>
+                  <h5>{multiCityFlightResult?.[0][index]?.to}</h5>
                   <p>
                     {new Date(
                       data?.segments?.[0]?.departure?.at
@@ -488,6 +493,163 @@ export default function MulticityOverview() {
                     </Containerbody>
                   </ContainerWrapper>
                 </FlightTimeContainer>
+
+                {/* Multicity Stopover ui */}
+                {
+                  flightStopOver === 1 &&
+
+                  <>
+                  <FlightHeader>
+                  <h5>{multiCityFlightResult?.[0][index]?.from}</h5>
+                  <FlightIcon
+                    IconSize={"13px"}
+                    rotate={"90deg"}
+                    iconColor={"black"}
+                  />
+                  <h5>{multiCityFlightResult?.[0][index]?.to}</h5>
+                  <p>
+                    {new Date(
+                      data?.segments?.[0]?.departure?.at
+                    ).toLocaleString("en-US", {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                </FlightHeader>
+                  <FlightTimeContainer>
+                  {/* Departure */}
+                  <ContainerWrapper>
+                    <ContainerHeader>
+                      <b>Departure</b>
+                    </ContainerHeader>
+                    <Containerbody>
+                      <div>
+                        <ContainerTime>
+                          <b>
+                            {new Date(
+                              data?.segments?.[0]?.departure?.at
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </b>{" "}
+                          (
+                          {
+                            multiCityFlightResult?.[0][index]
+                              ?.originLocationCode
+                          }
+                          )
+                        </ContainerTime>
+                        <span>{multiCityFlightResult?.[0][index]?.from}</span>
+                      </div>
+                      <div>
+                        <span>
+                          <FaCheckCircle />
+                        </span>
+                        <span>{`${
+                          parseDuration(data?.segments?.[0]?.duration).hours
+                        }hr ${
+                          parseDuration(data?.segments?.[0]?.duration).minutes
+                        }min`}</span>
+                        <span>{data?.segments[0]?.numberOfStops}-stop</span>
+                      </div>
+                    </Containerbody>
+                  </ContainerWrapper>
+
+                  {/* Arrival */}
+                  <ContainerWrapper>
+                    <ContainerHeader>
+                      <b>Arrival</b>
+                    </ContainerHeader>
+                    <Containerbody>
+                      <div>
+                        <ContainerTime>
+                          <b>
+                            {new Date(
+                              data?.segments?.[0]?.arrival.at
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </b>{" "}
+                          (
+                          {
+                            multiCityFlightResult?.[0][index]
+                              ?.destinationLocationCode
+                          }
+                          )
+                        </ContainerTime>
+                        <span>{multiCityFlightResult?.[0][index]?.to}</span>
+                      </div>
+                      <div>
+                        <span
+                          style={{
+                            color: "red",
+                            fontStyle: "italic",
+                            fontWeight: "bold",
+                            fontSize: "9px",
+                          }}
+                        >
+                          {data?.segments[0]?.operating &&
+                            multiCityFlightResult?.[2]?.dictionaries?.carriers[
+                              data?.segments[0]?.operating?.carrierCode
+                            ]}
+                        </span>
+                        <img
+                          src={`https://images.wakanow.com/Images/flight-logos/${
+                            data?.segments?.[0]?.operating?.carrierCode
+                              ? data?.segments?.[0]?.operating?.carrierCode
+                              : data?.segments?.[0]?.operating?.carrierCode
+                          }.gif`}
+                          height={20}
+                          width={40}
+                          alt=""
+                          srcset=""
+                        />
+                        {/* <img
+                          src={flightLogo}
+                          height={20}
+                          width={40}
+                          alt=""
+                          srcset=""
+                        /> */}
+                      </div>
+                    </Containerbody>
+                  </ContainerWrapper>
+
+                  {/* Class/ Baggage */}
+                  <ContainerWrapper>
+                    <ContainerHeader>
+                      <b>Class/Checked Baggage Allowance </b>
+                    </ContainerHeader>
+                    <Containerbody>
+                      <div>
+                        <ContainerTime>Economy (F)</ContainerTime>
+                        <span>
+                          Adult: {multiCityFlightResult?.[2].adults} piece(s),
+                          upto 23kg each
+                        </span>
+                        <span>
+                          Child: {multiCityFlightResult?.[2].children} piece(s),
+                          upto 23kg each
+                        </span>
+                        <span>
+                          Infant: {multiCityFlightResult?.[2].infants} piece(s),
+                          upto 23kg
+                        </span>
+                      </div>
+                      <div></div>
+                    </Containerbody>
+                  </ContainerWrapper>
+                </FlightTimeContainer>
+
+                {/* Horizontal Spacing */}
+                <HorizontalSpacing>
+                  <hr/>
+                </HorizontalSpacing> 
+                </>
+                }
               </FlightContainer>
             )
           )}
@@ -1018,7 +1180,7 @@ export default function MulticityOverview() {
             </ButtonWrapper>
           </form>
         </OverviewContent>
-      </TripMinContent>
+      </OverviewBody>
     </OverviewWrapper>
   );
 }

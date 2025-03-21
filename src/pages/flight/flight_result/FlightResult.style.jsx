@@ -321,6 +321,7 @@ export const FlightDetailDNR = styled.div`
         align-items: center;
         border-bottom: 1px solid #8080804a;
         padding-bottom: 10px;
+        gap: 30px;
         /* margin-bottom: 20px; */
     }
 

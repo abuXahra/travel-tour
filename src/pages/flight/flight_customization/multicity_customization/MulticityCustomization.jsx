@@ -33,6 +33,7 @@ import {
 
 import { useNavigate, useParams } from "react-router-dom";
 
+
 import flightLogo from "../../../../images/aire-peace.png";
 import { FaTimes } from "react-icons/fa";
 import { FaTruckFieldUn } from "react-icons/fa6";
@@ -48,6 +49,12 @@ import { useAuthStore } from "../../../../store/store";
 
 export default function MulticityCustomization() {
   const navigate = useNavigate();
+
+
+      
+      // user defined variable for stopover   ===============================================================
+      const [flightStopOver, setFlightStopOver] = useState(1);
+
 
   const { multiCityFlightResult, travelDetail, flightPriceLookup } =
     useAuthStore();
@@ -122,10 +129,10 @@ export default function MulticityCustomization() {
             <span>
               <Button
                 text={"Back"}
-                onClick={() => navigate("/flight-result")}
+                onClick={() => navigate(`/multicity-trip-info/${multiCityFlightResultIndex}`)}
               />
             </span>
-            <h2>Proceed with your booking</h2>
+            <h3>Proceed with your booking</h3>
           </CustomizeHeaderTitle>
           {/* Timeline: Trip info steps */}
           <Timeline currentStep={3} />
@@ -214,7 +221,7 @@ export default function MulticityCustomization() {
                 onClick={() => setShowTripSummary(!showTripSummary)}
               >
                 <span>
-                  <h2>Trip Summary</h2>
+                  <h5>Trip Summary</h5>
                 </span>
                 <span>
                   <div>
@@ -228,7 +235,9 @@ export default function MulticityCustomization() {
                   {multiCityFlightResult[1][
                     multiCityFlightResultIndex
                   ].itineraries.map((data, index) => (
-                    <TripDetailBody mb={"20px"}>
+                    <>
+
+<TripDetailBody mb={"20px"}>
                       <TripDetailClass>
                         <span>
                           <AirlineFlightLogo
@@ -256,7 +265,7 @@ export default function MulticityCustomization() {
                         <TripHour>
                           <span>
                             <div>
-                              <h4>
+                              <h5>
                                 {" "}
                                 {new Date(
                                   data.segments[0].departure.at
@@ -264,8 +273,8 @@ export default function MulticityCustomization() {
                                   hour: "2-digit",
                                   minute: "2-digit",
                                 })}
-                              </h4>
-                              <h4>
+                              </h5>
+                              <h5>
                                 {" "}
                                 {new Date(
                                   data.segments[0].arrival.at
@@ -273,7 +282,7 @@ export default function MulticityCustomization() {
                                   hour: "2-digit",
                                   minute: "2-digit",
                                 })}
-                              </h4>
+                              </h5>
                             </div>
                             <div>
                               <hr />
@@ -306,7 +315,7 @@ export default function MulticityCustomization() {
                           </div>
                           <div>
                             <span>
-                              <h4>BAGGAGE:</h4>{" "}
+                              <h5>BAGGAGE:</h5>{" "}
                               <p>
                                 {" "}
                                 {
@@ -317,7 +326,7 @@ export default function MulticityCustomization() {
                               </p>
                             </span>
                             <span>
-                              <h4>CHECK IN:</h4> <p>20KG</p>
+                              <h5>CHECK IN:</h5> <p>20KG</p>
                             </span>
                           </div>
                           <div style={{ fontSize: "12px" }}>
@@ -343,6 +352,128 @@ export default function MulticityCustomization() {
                         </TripAirport>
                       </TripDetailTime>
                     </TripDetailBody>
+                    
+                    {/* multicity stopover ui */}
+                    {
+                      flightStopOver === 1 &&
+                      <TripDetailBody mb={"20px"}>
+                      <TripDetailClass>
+                        <span>
+                          <AirlineFlightLogo
+                            dictionaries={
+                              multiCityFlightResult?.[2]?.dictionaries
+                            }
+                            data={multiCityFlightResult[1][index]}
+                            keyWord={
+                              multiCityFlightResult[1][
+                                multiCityFlightResultIndex
+                              ].validatingAirlineCodes[0]
+                            }
+                            detail={true}
+                          />
+                        </span>
+                        <span>
+                          {" "}
+                          {
+                            multiCityFlightResult[1][multiCityFlightResultIndex]
+                              .travelerPricings[0].fareDetailsBySegment[0].cabin
+                          }
+                        </span>
+                      </TripDetailClass>
+                      <TripDetailTime>
+                        <TripHour>
+                          <span>
+                            <div>
+                              <h5>
+                                {" "}
+                                {new Date(
+                                  data.segments[0].departure.at
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </h5>
+                              <h5>
+                                {" "}
+                                {new Date(
+                                  data.segments[0].arrival.at
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </h5>
+                            </div>
+                            <div>
+                              <hr />
+                              <FlightIcon
+                                rotate={"180deg"}
+                                iconColor={"#0D3984"}
+                              />
+                              <hr />
+                            </div>
+                          </span>
+                        </TripHour>
+                        <TripAirport>
+                          <div>
+                            <p>
+                              <b>({location[index].originLocationCode})</b>
+                              {location[index]?.from}
+                            </p>
+                            <p>{`${
+                              parseDuration(data.segments[0].duration).hours
+                            }hr ${
+                              parseDuration(data.segments[0].duration).minutes
+                            }min`}</p>
+                            <p>
+                              <b>
+                                {" "}
+                                ({location[index].destinationLocationCode})
+                              </b>
+                              {location[index]?.to}
+                            </p>
+                          </div>
+                          <div>
+                            <span>
+                              <h5>BAGGAGE:</h5>{" "}
+                              <p>
+                                {" "}
+                                {
+                                  multiCityFlightResult[1][
+                                    multiCityFlightResultIndex
+                                  ].travelerPricings[0].travelerType
+                                }
+                              </p>
+                            </span>
+                            <span>
+                              <h5>CHECK IN:</h5> <p>20KG</p>
+                            </span>
+                          </div>
+                          <div style={{ fontSize: "12px" }}>
+                            <p>
+                              {new Date(
+                                data.segments[0].departure.at
+                              ).toLocaleDateString("en-US", {
+                                weekday: "long",
+                                month: "long",
+                                day: "numeric",
+                              })}
+                            </p>
+                            <p>
+                              {" "}
+                              {data.segments[0].numberOfStops} Stops.{" "}
+                              {`${
+                                parseDuration(data.segments[0].duration).hours
+                              }hr ${
+                                parseDuration(data.segments[0].duration).minutes
+                              }min`}
+                            </p>
+                          </div>
+                        </TripAirport>
+                      </TripDetailTime>
+                    </TripDetailBody> 
+                    }
+                    </>
+                    
                   ))}
                 </div>
               )}
@@ -355,7 +486,7 @@ export default function MulticityCustomization() {
                 onClick={() => setShowTravelDetail(!showTravelDetail)}
               >
                 <span>
-                  <h2>Travel Detail</h2>
+                  <h5>Travel Detail</h5>
                 </span>
                 <span>
                   <div>
@@ -391,7 +522,7 @@ export default function MulticityCustomization() {
 
           {/* Trip Addons */}
           <CustomizeContent>
-            <h2>Manzo Travel Addons Services</h2>
+            <h4>Manzo Travel Addons Services</h4>
             <p>Include manzo addon services in your trip</p>
           </CustomizeContent>
 

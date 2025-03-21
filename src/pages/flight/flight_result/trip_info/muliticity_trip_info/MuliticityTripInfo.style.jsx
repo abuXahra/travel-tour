@@ -265,6 +265,17 @@ export const TripDetailTile = styled.div`
             cursor: pointer;
         }
 
+        span{
+            font-weight: normal;
+            font-size: 13px;
+
+            p{
+                font-weight: normal;
+                font-size: 10px;
+            }
+
+        }
+
         @media (max-width:768px) {
 
         flex-direction: column;
@@ -304,7 +315,7 @@ export const TripDetailTime = styled.div`
     width: 100%;
     background-color: white;
     border-radius: 10px;
-    padding: 25px;
+    padding: 20px;
     color: black;
     display: flex;
     gap: 20px;
@@ -314,7 +325,7 @@ export const TripDetailTime = styled.div`
 export const TripHour = styled.div`
         span{
             display: flex;
-      
+            font-size: 12px;
 
             div{
                 display: flex;
@@ -325,13 +336,15 @@ export const TripHour = styled.div`
                     rotate: 90deg;
                     border: 1px solid  #0D3984; 
                 }
+
+                p{
+
+                }
             }
 
 
-            & div:nth-child(1){
-                & h4:nth-child(1){
-                    margin-bottom: 50px;
-                }
+            div:nth-child(1){
+                width: 50px;
             }
         }
 `
@@ -349,11 +362,11 @@ export const TripAirport = styled.div`
         display: flex;
         flex-direction: column;
         gap: 20px;
-        font-size: 16px;
+        font-size: 12px;
 
 
         & span:nth-child(1){
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             
         }
     }
@@ -368,7 +381,7 @@ export const TripAirport = styled.div`
         display: flex;
         flex-direction: column;
         gap: 10px;
-        font-size: 16px;
+        font-size: 12px;
 
 
         & span:nth-child(1){

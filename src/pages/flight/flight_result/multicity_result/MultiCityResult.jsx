@@ -42,6 +42,13 @@ export default function FlightResult() {
 
   // const flightData = JSON.parse(myObject);
 
+
+
+  
+    // user defined variable for stopover   ===============================================================
+    const [flightStopOver, setFlightStopOver] = useState(1);
+
+
   const navigate = useNavigate();
   let location = multiCityFlightResult[0];
   // console.log(location);
@@ -115,8 +122,8 @@ export default function FlightResult() {
   const [oneWay, setOneWay] = useState("One Way");
   const [multiCity, setMultiCity] = useState("Multi City");
 
-  const [showSingleForm, setShowSingleForm] = useState(true);
-  const [showMultiCityForm, setShowMultiCityForm] = useState(false);
+  const [showSingleForm, setShowSingleForm] = useState(false);
+  const [showMultiCityForm, setShowMultiCityForm] = useState(true);
 
   // ===========Show/Hide Single City and Multi City Search Form
 
@@ -335,6 +342,8 @@ export default function FlightResult() {
             ))}
         </FlightResultMain>
       </FlightResultContent>
+
+
       {/* FLIGHT DETAIL SECTION */}
       {showViewDetailCard && (
         <FLightDetail>
@@ -351,10 +360,10 @@ export default function FlightResult() {
                 <span>
                   <div>
                     <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
-                    <h3>
+                    <h5>
                       Flight From {location[index]?.from} -{" "}
                       {location[index]?.to}
-                    </h3>
+                    </h5>
                   </div>
                   <b>Outbound</b>
                 </span>
@@ -430,8 +439,89 @@ export default function FlightResult() {
                     </span>
                   </DNRDetailBaggage>
                 </DNRDetail>
+
+
+                {/* MULTICITY STOPOVER UI==================================================================== */}
+                {
+                  flightStopOver === 1 &&
+                  <DNRDetail>
+                  <DNRDetailFlightImage>
+                    <img
+                      src={`https://images.wakanow.com/Images/flight-logos/${multiCityFlightResult[1][index]?.validatingAirlineCodes[0]}.gif`}
+                      alt={
+                        multiCityFlightResult[1][index]
+                          ?.validatingAirlineCodes[0]
+                      }
+                    />
+                  </DNRDetailFlightImage>
+
+                  <DNRDetailTime>
+                    <span>
+                      <h3>
+                        {new Date(
+                          data.segments[0].departure.at
+                        ).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </h3>
+                      {/* Lagos */}
+                    </span>
+                    <span>
+                      {`${parseDuration(data.segments[0].duration).hours}hr ${
+                        parseDuration(data.segments[0].duration).minutes
+                      }min`}
+                      <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
+                      {data.segments[0].numberOfStops}-Stop
+                    </span>
+                    <span>
+                      <h3>
+                        {new Date(
+                          data.segments[0].arrival.at
+                        ).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </h3>
+                      {/* Abuja */}
+                    </span>
+                  </DNRDetailTime>
+
+                  <DNRDetailAirport>
+                    <div>
+                      {location[index]?.from} (
+                      {location[index].originLocationCode})
+                    </div>
+                    <div>
+                      {location[index]?.to} (
+                      {location[index].destinationLocationCode})
+                    </div>
+                  </DNRDetailAirport>
+                  <DNRDetailBaggage>
+                    <span>
+                      <h3>Airline</h3>
+                      <AirlineFlightLogo
+                        dictionaries={multiCityFlightResult?.[2]?.dictionaries}
+                        data={multiCityFlightResult[1][index]}
+                        keyWord={
+                          multiCityFlightResult[1][index]
+                            ?.validatingAirlineCodes[0]
+                        }
+                        only={true}
+                      />
+                    </span>
+                    <span>
+                      <h3>Baggage</h3>
+                      100kg
+                    </span>
+                  </DNRDetailBaggage>
+                </DNRDetail>
+                }
               </FlightDetailDNR>
             ))}
+        
+        
+        
             {/* flight return */}
             {/* <FlightDetailDNR>
               <span>

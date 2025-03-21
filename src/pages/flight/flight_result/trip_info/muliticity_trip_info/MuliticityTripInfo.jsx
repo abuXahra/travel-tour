@@ -45,6 +45,15 @@ import AirlineFlightLogo from "../../../../../components/Flight/AirlineFlightLog
 import { useAuthStore } from "../../../../../store/store";
 
 export default function MuliticityTripInfo() {
+
+
+  
+  
+    
+      // user defined variable for stopover   ===============================================================
+      const [flightStopOver, setFlightStopOver] = useState(1);
+
+
   // navigation
   const navigate = useNavigate();
 
@@ -485,10 +494,10 @@ export default function MuliticityTripInfo() {
             <span>
               <Button
                 text={"Back"}
-                onClick={() => navigate("/flight-result")}
+                onClick={() => navigate("/multi-city-result")}
               />
             </span>
-            <h2>Proceed with your booking</h2>
+            <h3>Proceed with your booking</h3>
           </TripInfoHeaderTitle>
 
           {/* timeline: Trip info steps */}
@@ -614,9 +623,9 @@ export default function MuliticityTripInfo() {
                 >
                   <span>
                     {" "}
-                    <h2>{location[index]?.from}</h2>{" "}
-                    <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />{" "}
-                    <h2>{location[index]?.to}</h2>{" "}
+                    <h5>{location[index]?.from}</h5>{" "}
+                    <FlightIcon IconSize={"10px"} rotate={"90deg"} iconColor={"#0D3984"} />{" "}
+                    <h5>{location[index]?.to}</h5>{" "}
                   </span>
                   <span>
                     <p>
@@ -641,6 +650,7 @@ export default function MuliticityTripInfo() {
                 </TripDetailTile>
                 {/* body */}
                 {showtripDepart && (
+                  <>
                   <TripDetailBody>
                     <TripDetailClass>
                       <span>
@@ -662,7 +672,7 @@ export default function MuliticityTripInfo() {
                           {
                             multiCityFlightResult[1][multiCityFlightResultIndex]
                               .travelerPricings[0].fareDetailsBySegment[0].cabin
-                          }
+                          } 
                         </a>
                       </span>
                     </TripDetailClass>
@@ -670,7 +680,7 @@ export default function MuliticityTripInfo() {
                       <TripHour>
                         <span>
                           <div>
-                            <h4>
+                            <h5>
                               {" "}
                               {new Date(
                                 data.segments[0].departure.at
@@ -678,8 +688,8 @@ export default function MuliticityTripInfo() {
                                 hour: "2-digit",
                                 minute: "2-digit",
                               })}
-                            </h4>
-                            <h4>
+                            </h5>
+                            <h5>
                               {" "}
                               {new Date(
                                 data.segments[0].arrival.at
@@ -687,11 +697,12 @@ export default function MuliticityTripInfo() {
                                 hour: "2-digit",
                                 minute: "2-digit",
                               })}
-                            </h4>
+                            </h5>
                           </div>
                           <div>
                             <hr />
                             <FlightIcon
+                            IconSize={'10px'}
                               rotate={"180deg"}
                               iconColor={"#0D3984"}
                             />
@@ -717,7 +728,7 @@ export default function MuliticityTripInfo() {
                         </div>
                         <div>
                           <span>
-                            <h4>BAGGAGE:</h4>{" "}
+                            <h5>BAGGAGE:</h5>{" "}
                             <p>
                               {" "}
                               {
@@ -728,12 +739,110 @@ export default function MuliticityTripInfo() {
                             </p>
                           </span>
                           <span>
-                            <h4>CHECK IN:</h4> <p>20KG</p>{" "}
+                            <h5>CHECK IN:</h5> <p>20KG</p>{" "}
                           </span>
                         </div>
                       </TripAirport>
                     </TripDetailTime>
                   </TripDetailBody>
+
+                  {/* MULTI-CITY STOPOVER UI */}
+                  { flightStopOver === 1 &&
+                    <TripDetailBody>
+                    <TripDetailClass>
+                      <span>
+                        <AirlineFlightLogo
+                          dictionaries={
+                            multiCityFlightResult?.[2]?.dictionaries
+                          }
+                          data={multiCityFlightResult[1][index]}
+                          keyWord={
+                            multiCityFlightResult[1][multiCityFlightResultIndex]
+                              .validatingAirlineCodes[0]
+                          }
+                          detail={true}
+                        />
+                      </span>
+                      <span>
+                        <a href="#">
+                          {" "}
+                          {
+                            multiCityFlightResult[1][multiCityFlightResultIndex]
+                              .travelerPricings[0].fareDetailsBySegment[0].cabin
+                          } 
+                        </a>
+                      </span>
+                    </TripDetailClass>
+                    <TripDetailTime>
+                      <TripHour>
+                        <span>
+                          <div>
+                            <h5>
+                              {" "}
+                              {new Date(
+                                data.segments[0].departure.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </h5>
+                            <h5>
+                              {" "}
+                              {new Date(
+                                data.segments[0].arrival.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </h5>
+                          </div>
+                          <div>
+                            <hr />
+                            <FlightIcon
+                            IconSize={'10px'}
+                              rotate={"180deg"}
+                              iconColor={"#0D3984"}
+                            />
+                            <hr />
+                          </div>
+                        </span>
+                      </TripHour>
+                      <TripAirport>
+                        <div>
+                          <p>
+                            <b>({location[index].originLocationCode})</b>
+                            {location[index]?.from}
+                          </p>
+                          <p>{`${
+                            parseDuration(data.segments[0].duration).hours
+                          }hr ${
+                            parseDuration(data.segments[0].duration).minutes
+                          }min`}</p>
+                          <p>
+                            <b> ({location[index].destinationLocationCode})</b>
+                            {location[index]?.to}
+                          </p>
+                        </div>
+                        <div>
+                          <span>
+                            <h5>BAGGAGE:</h5>{" "}
+                            <p>
+                              {" "}
+                              {
+                                multiCityFlightResult[1][
+                                  multiCityFlightResultIndex
+                                ].travelerPricings[0].travelerType
+                              }
+                            </p>
+                          </span>
+                          <span>
+                            <h5>CHECK IN:</h5> <p>20KG</p>{" "}
+                          </span>
+                        </div>
+                      </TripAirport>
+                    </TripDetailTime>
+                  </TripDetailBody>
+                  }</>
                 )}
               </FlightDetailWrapper>
             ))}

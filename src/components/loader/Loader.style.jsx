@@ -10,7 +10,7 @@ export const LoaderWrapper = styled.div`
     flex-direction: column;
     justify-content: center;   
     align-items: center;
-    color: blue;
+    color: #0d3984cf;
     z-index: 9999;
     margin-top: -120px;
     

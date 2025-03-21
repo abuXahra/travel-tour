@@ -189,7 +189,10 @@ export const FlightInputWrapper = styled.div`
     }
 
     @media (max-width:768px) {
-        input{ font-size: 12px;}
+        input{ 
+            font-size: 12px;
+            padding-right: 40px;
+        }
     }
 
     

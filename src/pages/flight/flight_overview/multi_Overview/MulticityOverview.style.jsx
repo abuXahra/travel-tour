@@ -5,13 +5,12 @@ import styled from "styled-components";
 
 
 export const OverviewWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: #0d398420;
-    padding-bottom: 40px;
-    height: auto;
-    /* position: relative; */
+width: 100%;
+display: flex;
+flex-direction: column;
+background-color: #0d398420;
+height: auto;
+
 
         
     @media (max-width:768px) {
@@ -24,22 +23,22 @@ export const OverviewWrapper = styled.div`
 `
 
 
-export const TermsDetail = styled.div`
+// export const TermsDetail = styled.div`
 
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: ${({alignItems})=> alignItems || 'center'};;
-    gap: 20px;
-    padding: 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    overflow: auto;
-    background-color: #000000b9;
-`
+//     width: 100%;
+//     height: 100vh;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: ${({alignItems})=> alignItems || 'center'};;
+//     gap: 20px;
+//     padding: 20px;
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     overflow: auto;
+//     background-color: #000000b9;
+// `
 
 
 export const TermsDetailButton = styled.div`
@@ -98,6 +97,7 @@ export const OverviewHeaderTitle = styled.div`
 
 export const OverviewBody = styled.div`
     width: 100%;
+    flex-direction: column;
     margin-top: -170px;
     display: flex;
     gap: 20px;
@@ -243,7 +243,7 @@ export const TripMinContent = styled.div`
 
 
 export const OverviewContent = styled.div`
-      width: ${({ wd }) => wd || "85%"};
+      width: ${({ wd }) => wd || "100%"};
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -253,6 +253,7 @@ export const OverviewContent = styled.div`
       @media (max-width:768px) {
         padding: 20px;
         width: ${({ swd }) => swd || "100%"};
+        border-radius: 0px;
    }
 `
 
@@ -557,3 +558,16 @@ export const ErrorMessage  = styled.div`
     margin-top: 10px;
     font-size: 12px;
 `
+
+export const  HorizontalSpacing = styled.div`
+ height: 40px;
+    width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  hr{
+    border: 1px solid #0D3984;
+  }
+  `
