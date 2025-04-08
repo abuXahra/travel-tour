@@ -47,10 +47,10 @@ import {
   RadioItem,
   RadioItemWrapper,
 } from "../../flight_booking/FlightBooking.style";
+import iataAirports from "../../../../flightDB/IATA_airports.json";
 import PaymentModes from "../../../../components/payment_mode/PaymentModes";
 
 export default function MulticityOverview() {
-
   // user defined variable for stopover   ===============================================================
   const [flightStopOver, setFlightStopOver] = useState(1);
   const popup = new PayStack();
@@ -178,6 +178,15 @@ export default function MulticityOverview() {
 
   const [paymentMode, setPaymentMode] = useState(paystack);
 
+  const filterIataAirport = (iataCode) => {
+    const newFilterData = iataAirports.find((item) => {
+      return (
+        item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase())
+      );
+    });
+
+    return newFilterData;
+  };
   const handlePaymentMode = (type) => {
     if (type === paystack) {
       setPaymentMode(paystack);
@@ -316,7 +325,9 @@ export default function MulticityOverview() {
             <span>
               <Button
                 text={"Back"}
-                onClick={() => navigate(`/multicity-customization/${flightResultIndex}`)}
+                onClick={() =>
+                  navigate(`/multicity-customization/${flightResultIndex}`)
+                }
               />
             </span>
             <h3>Proceed with your booking</h3>
@@ -347,309 +358,178 @@ export default function MulticityOverview() {
                   />
                   <p>Outbound Flight</p>
                 </FlightIconWrapper>
-
-                <FlightHeader>
-                  <h5>{multiCityFlightResult?.[0][index]?.from}</h5>
-                  <FlightIcon
-                    IconSize={"13px"}
-                    rotate={"90deg"}
-                    iconColor={"black"}
-                  />
-                  <h5>{multiCityFlightResult?.[0][index]?.to}</h5>
-                  <p>
-                    {new Date(
-                      data?.segments?.[0]?.departure?.at
-                    ).toLocaleString("en-US", {
-                      weekday: "long",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                </FlightHeader>
-
-                <FlightTimeContainer>
-                  {/* Departure */}
-                  <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Departure</b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                        <ContainerTime>
-                          <b>
-                            {new Date(
-                              data?.segments?.[0]?.departure?.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </b>{" "}
-                          (
-                          {
-                            multiCityFlightResult?.[0][index]
-                              ?.originLocationCode
-                          }
-                          )
-                        </ContainerTime>
-                        <span>{multiCityFlightResult?.[0][index]?.from}</span>
-                      </div>
-                      <div>
-                        <span>
-                          <FaCheckCircle />
-                        </span>
-                        <span>{`${
-                          parseDuration(data?.segments?.[0]?.duration).hours
-                        }hr ${
-                          parseDuration(data?.segments?.[0]?.duration).minutes
-                        }min`}</span>
-                        <span>{data?.segments[0]?.numberOfStops}-stop</span>
-                      </div>
-                    </Containerbody>
-                  </ContainerWrapper>
-
-                  {/* Arrival */}
-                  <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Arrival</b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                        <ContainerTime>
-                          <b>
-                            {new Date(
-                              data?.segments?.[0]?.arrival.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </b>{" "}
-                          (
-                          {
-                            multiCityFlightResult?.[0][index]
-                              ?.destinationLocationCode
-                          }
-                          )
-                        </ContainerTime>
-                        <span>{multiCityFlightResult?.[0][index]?.to}</span>
-                      </div>
-                      <div>
-                        <span
-                          style={{
-                            color: "red",
-                            fontStyle: "italic",
-                            fontWeight: "bold",
-                            fontSize: "9px",
-                          }}
-                        >
-                          {data?.segments[0]?.operating &&
-                            multiCityFlightResult?.[2]?.dictionaries?.carriers[
-                              data?.segments[0]?.operating?.carrierCode
-                            ]}
-                        </span>
-                        <img
-                          src={`https://images.wakanow.com/Images/flight-logos/${
-                            data?.segments?.[0]?.operating?.carrierCode
-                              ? data?.segments?.[0]?.operating?.carrierCode
-                              : data?.segments?.[0]?.operating?.carrierCode
-                          }.gif`}
-                          height={20}
-                          width={40}
-                          alt=""
-                          srcset=""
-                        />
-                        {/* <img
-                          src={flightLogo}
-                          height={20}
-                          width={40}
-                          alt=""
-                          srcset=""
-                        /> */}
-                      </div>
-                    </Containerbody>
-                  </ContainerWrapper>
-
-                  {/* Class/ Baggage */}
-                  <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Class/Checked Baggage Allowance </b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                        <ContainerTime>Economy (F)</ContainerTime>
-                        <span>
-                          Adult: {multiCityFlightResult?.[2].adults} piece(s),
-                          upto 23kg each
-                        </span>
-                        <span>
-                          Child: {multiCityFlightResult?.[2].children} piece(s),
-                          upto 23kg each
-                        </span>
-                        <span>
-                          Infant: {multiCityFlightResult?.[2].infants} piece(s),
-                          upto 23kg
-                        </span>
-                      </div>
-                      <div></div>
-                    </Containerbody>
-                  </ContainerWrapper>
-                </FlightTimeContainer>
-
-                {/* Multicity Stopover ui */}
-                {
-                  flightStopOver === 1 &&
-
+                {data.segments?.map((flightData, Index) => (
                   <>
-                  <FlightHeader>
-                  <h5>{multiCityFlightResult?.[0][index]?.from}</h5>
-                  <FlightIcon
-                    IconSize={"13px"}
-                    rotate={"90deg"}
-                    iconColor={"black"}
-                  />
-                  <h5>{multiCityFlightResult?.[0][index]?.to}</h5>
-                  <p>
-                    {new Date(
-                      data?.segments?.[0]?.departure?.at
-                    ).toLocaleString("en-US", {
-                      weekday: "long",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                </FlightHeader>
-                  <FlightTimeContainer>
-                  {/* Departure */}
-                  <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Departure</b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                        <ContainerTime>
-                          <b>
-                            {new Date(
-                              data?.segments?.[0]?.departure?.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </b>{" "}
-                          (
+                    <FlightHeader>
+                      <h5>{`${
+                        filterIataAirport(flightData?.departure?.iataCode)
+                          ?.Airport_name
+                      },  ${
+                        filterIataAirport(flightData?.departure?.iataCode)
+                          ?.Location_served
+                      }`}</h5>
+                      <FlightIcon
+                        IconSize={"13px"}
+                        rotate={"90deg"}
+                        iconColor={"black"}
+                      />
+                      <h5>{`${
+                        filterIataAirport(flightData?.arrival?.iataCode)
+                          ?.Airport_name
+                      },  ${
+                        filterIataAirport(flightData?.arrival?.iataCode)
+                          ?.Location_served
+                      }`}</h5>
+                      <p>
+                        {new Date(flightData?.departure?.at).toLocaleString(
+                          "en-US",
                           {
-                            multiCityFlightResult?.[0][index]
-                              ?.originLocationCode
+                            weekday: "long",
+                            month: "long",
+                            day: "numeric",
                           }
-                          )
-                        </ContainerTime>
-                        <span>{multiCityFlightResult?.[0][index]?.from}</span>
-                      </div>
-                      <div>
-                        <span>
-                          <FaCheckCircle />
-                        </span>
-                        <span>{`${
-                          parseDuration(data?.segments?.[0]?.duration).hours
-                        }hr ${
-                          parseDuration(data?.segments?.[0]?.duration).minutes
-                        }min`}</span>
-                        <span>{data?.segments[0]?.numberOfStops}-stop</span>
-                      </div>
-                    </Containerbody>
-                  </ContainerWrapper>
+                        )}
+                      </p>
+                    </FlightHeader>
 
-                  {/* Arrival */}
-                  <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Arrival</b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                        <ContainerTime>
-                          <b>
-                            {new Date(
-                              data?.segments?.[0]?.arrival.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </b>{" "}
-                          (
-                          {
-                            multiCityFlightResult?.[0][index]
-                              ?.destinationLocationCode
-                          }
-                          )
-                        </ContainerTime>
-                        <span>{multiCityFlightResult?.[0][index]?.to}</span>
-                      </div>
-                      <div>
-                        <span
-                          style={{
-                            color: "red",
-                            fontStyle: "italic",
-                            fontWeight: "bold",
-                            fontSize: "9px",
-                          }}
-                        >
-                          {data?.segments[0]?.operating &&
-                            multiCityFlightResult?.[2]?.dictionaries?.carriers[
-                              data?.segments[0]?.operating?.carrierCode
-                            ]}
-                        </span>
-                        <img
-                          src={`https://images.wakanow.com/Images/flight-logos/${
-                            data?.segments?.[0]?.operating?.carrierCode
-                              ? data?.segments?.[0]?.operating?.carrierCode
-                              : data?.segments?.[0]?.operating?.carrierCode
-                          }.gif`}
-                          height={20}
-                          width={40}
-                          alt=""
-                          srcset=""
-                        />
-                        {/* <img
+                    <FlightTimeContainer>
+                      {/* Departure */}
+                      <ContainerWrapper>
+                        <ContainerHeader>
+                          <b>Departure</b>
+                        </ContainerHeader>
+                        <Containerbody>
+                          <div>
+                            <ContainerTime>
+                              <b>
+                                {new Date(
+                                  flightData?.departure?.at
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </b>{" "}
+                              ({flightData?.departure?.iataCode})
+                            </ContainerTime>
+                            <span>
+                              {`${
+                                filterIataAirport(
+                                  flightData?.departure?.iataCode
+                                )?.Airport_name
+                              },  ${
+                                filterIataAirport(
+                                  flightData?.departure?.iataCode
+                                )?.Location_served
+                              }`}
+                            </span>
+                          </div>
+                          <div>
+                            <span>
+                              <FaCheckCircle />
+                            </span>
+                            <span>{`${
+                              parseDuration(flightData?.duration).hours
+                            }hr ${
+                              parseDuration(flightData?.duration).minutes
+                            }min`}</span>
+                            <span>{flightData?.numberOfStops}-stop</span>
+                          </div>
+                        </Containerbody>
+                      </ContainerWrapper>
+
+                      {/* Arrival */}
+                      <ContainerWrapper>
+                        <ContainerHeader>
+                          <b>Arrival</b>
+                        </ContainerHeader>
+                        <Containerbody>
+                          <div>
+                            <ContainerTime>
+                              <b>
+                                {new Date(
+                                  flightData?.arrival.at
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </b>{" "}
+                              ({flightData?.arrival?.iataCode})
+                            </ContainerTime>
+                            <span>{`${
+                              filterIataAirport(flightData?.arrival?.iataCode)
+                                ?.Airport_name
+                            },  ${
+                              filterIataAirport(flightData?.arrival?.iataCode)
+                                ?.Location_served
+                            }`}</span>
+                          </div>
+                          <div>
+                            <span
+                              style={{
+                                color: "red",
+                                fontStyle: "italic",
+                                fontWeight: "bold",
+                                fontSize: "9px",
+                              }}
+                            >
+                              {flightData?.operating &&
+                                multiCityFlightResult?.[2]?.dictionaries
+                                  ?.carriers[
+                                  flightData?.operating?.carrierCode
+                                ]}
+                            </span>
+                            <img
+                              src={`https://images.wakanow.com/Images/flight-logos/${
+                                flightData?.operating?.carrierCode
+                                  ? flightData?.operating?.carrierCode
+                                  : flightData?.operating?.carrierCode
+                              }.gif`}
+                              height={20}
+                              width={40}
+                              alt=""
+                              srcset=""
+                            />
+                            {/* <img
                           src={flightLogo}
                           height={20}
                           width={40}
                           alt=""
                           srcset=""
                         /> */}
-                      </div>
-                    </Containerbody>
-                  </ContainerWrapper>
+                          </div>
+                        </Containerbody>
+                      </ContainerWrapper>
 
-                  {/* Class/ Baggage */}
-                  <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Class/Checked Baggage Allowance </b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                        <ContainerTime>Economy (F)</ContainerTime>
-                        <span>
-                          Adult: {multiCityFlightResult?.[2].adults} piece(s),
-                          upto 23kg each
-                        </span>
-                        <span>
-                          Child: {multiCityFlightResult?.[2].children} piece(s),
-                          upto 23kg each
-                        </span>
-                        <span>
-                          Infant: {multiCityFlightResult?.[2].infants} piece(s),
-                          upto 23kg
-                        </span>
-                      </div>
-                      <div></div>
-                    </Containerbody>
-                  </ContainerWrapper>
-                </FlightTimeContainer>
-
-                {/* Horizontal Spacing */}
-                <HorizontalSpacing>
-                  <hr/>
-                </HorizontalSpacing> 
-                </>
-                }
+                      {/* Class/ Baggage */}
+                      <ContainerWrapper>
+                        <ContainerHeader>
+                          <b>Class/Checked Baggage Allowance </b>
+                        </ContainerHeader>
+                        <Containerbody>
+                          <div>
+                            <ContainerTime>Economy (F)</ContainerTime>
+                            <span>
+                              Adult: {multiCityFlightResult?.[2].adults}{" "}
+                              piece(s), upto 23kg each
+                            </span>
+                            <span>
+                              Child: {multiCityFlightResult?.[2].children}{" "}
+                              piece(s), upto 23kg each
+                            </span>
+                            <span>
+                              Infant: {multiCityFlightResult?.[2].infants}{" "}
+                              piece(s), upto 23kg
+                            </span>
+                          </div>
+                          <div></div>
+                        </Containerbody>
+                      </ContainerWrapper>
+                    </FlightTimeContainer>
+                    <HorizontalSpacing>
+                      <hr />
+                    </HorizontalSpacing>
+                  </>
+                ))}
               </FlightContainer>
             )
           )}

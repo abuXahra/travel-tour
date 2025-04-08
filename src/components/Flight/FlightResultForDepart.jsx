@@ -97,12 +97,17 @@ const FlightResultForDepart = ({
                     keyWord={data.itineraries[0].segments[0].departure.iataCode}
                   /> */}
                 </span>
-                <span style={{textAlign: 'center'}}>
-                <p style={{fontSize: "8px"}}>{data.itineraries[0].segments[0].numberOfStops}-Stop</p>
+                <span style={{ textAlign: "center" }}>
+                  <p style={{ fontSize: "8px" }}>
+                    {data.itineraries[0].segments[0].numberOfStops}-Stopover
+                  </p>
+                  <p style={{ fontSize: "8px" }}>
+                    {data.itineraries[0].segments.length - 1}-Layover
+                  </p>
                   <MdFlightStyled rotateIcon={"90deg"} IconColor={"#0D3984"}>
                     <MdFlight />
                   </MdFlightStyled>
-                  <p style={{fontSize: "8px"}}>{`${
+                  <p style={{ fontSize: "8px" }}>{`${
                     parseDuration(data.itineraries[0].segments[0].duration)
                       .hours
                   }hr ${
@@ -129,11 +134,15 @@ const FlightResultForDepart = ({
             </DnRWrapper>
           </FlightCardContent>
 
-          <div style={{display: "flex", flexDirection: "column"}}>
-          <b style={{ color: "black", fontSize: "14px", textAlign: "center" }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <b
+              style={{ color: "black", fontSize: "14px", textAlign: "center" }}
+            >
               Price: {money.format(data.price.total)}
             </b>
-            <span style={{ color: "green", fontSize: "12px",  textAlign: "center"   }}>
+            <span
+              style={{ color: "green", fontSize: "12px", textAlign: "center" }}
+            >
               (Penalties upon Refunds)
             </span>
           </div>

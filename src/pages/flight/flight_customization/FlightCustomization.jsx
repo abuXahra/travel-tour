@@ -40,6 +40,7 @@ import { FlightAddons } from "../../../data/object/flightAddons";
 import { IoIosArrowDown } from "react-icons/io";
 import AirlineCodeLookup from "../../../components/Flight/AirlineCodeLookup";
 import AirlineFlightLogo from "../../../components/Flight/AirlineFlightLogo";
+import iataAirports from "../../../flightDB/IATA_airports.json";
 import { useAuthStore } from "../../../store/store";
 import { EditIcon } from "./multicity_customization/MulticityCustomization.style";
 import { FiEdit } from "react-icons/fi";
@@ -54,12 +55,8 @@ export default function FlightCustomization() {
     style: "currency",
   });
 
-
-
-    // user defined variable for stopover   ===============================================================
-    const [flightStopOver, setFlightStopOver] = useState(1);
-
-
+  // user defined variable for stopover   ===============================================================
+  const [flightStopOver, setFlightStopOver] = useState(1);
 
   const navigate = useNavigate();
 
@@ -81,6 +78,22 @@ export default function FlightCustomization() {
     setShowTerms(true);
     setTermsTitle(title);
     setTermsBody(terms);
+  };
+
+  const filterIataAirport = (iataCode) => {
+    const newFilterData = iataAirports.find((item) => {
+      return (
+        (item.Airport_name &&
+          item.Airport_name.toLowerCase().includes(iataCode.toLowerCase())) ||
+        (item.Location_served &&
+          item.Location_served.toLowerCase().includes(
+            iataCode.toLowerCase()
+          )) ||
+        (item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase()))
+      );
+    });
+
+    return newFilterData;
   };
 
   useEffect(() => {
@@ -251,366 +264,149 @@ export default function FlightCustomization() {
                 {/* Body */}
                 {showTripSummary && (
                   <div>
-                    <TripDetailBody mb={"20px"}>
-                      <TripDetailClass>
-                        <span>
-                          <AirlineFlightLogo
-                            dictionaries={singleFlightResult[9]}
-                            data={singleFlightResult[2][flightResultIndex]}
-                            keyWord={
-                              singleFlightResult[2][flightResultIndex]
-                                .validatingAirlineCodes[0]
-                            }
-                            detail={true}
-                          />
-                        </span>
-                        <span>
-                          <a href="#">
-                            {
-                              singleFlightResult[2][flightResultIndex]
-                                .travelerPricings[0].fareDetailsBySegment[0]
-                                .cabin
-                            }
-                          </a>
-                        </span>
-                      </TripDetailClass>
-                      <TripDetailTime>
-                        <TripHour>
-                          <span>
-                            <div>
-                              <h5>
-                                {new Date(
-                                  singleFlightResult[2][
-                                    flightResultIndex
-                                  ].itineraries[0].segments[0].departure.at
-                                ).toLocaleTimeString("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </h5>
-                              <h5>
-                                {" "}
-                                {new Date(
-                                  singleFlightResult[2][
-                                    flightResultIndex
-                                  ].itineraries[0].segments[0].arrival.at
-                                ).toLocaleTimeString("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </h5>
-                            </div>
-                            <div>
-                              <hr />
-                              <FlightIcon
-                                rotate={"180deg"}
-                                iconColor={"#0D3984"}
-                              />
-                              <hr />
-                            </div>
-                          </span>
-                        </TripHour>
-                        <TripAirport>
-                          <div>
-                            <p>
-                              {singleFlightResult[0]}{" "}
-                              <b>({singleFlightResult[3]})</b>
-                            </p>
-                            <p>
-                              {singleFlightResult[1]}{" "}
-                              <b>({singleFlightResult[4]})</b>
-                            </p>
-                          </div>
-                          <div>
-                            <span>
-                              <h4>BAGGAGE:</h4> <p>ADULT</p>
-                            </span>
-                            <span>
-                              <h4>CHECK IN:</h4> <p>20KG</p>
-                            </span>
-                          </div>
-                          <div style={{ fontSize: "12px" }}>
-                            <p>
-                              {" "}
-                              {new Date(
-                                singleFlightResult[2][
-                                  flightResultIndex
-                                ].itineraries[0].segments[0].departure.at
-                              ).toLocaleDateString("en-US", {
-                                weekday: "long",
-                                month: "long",
-                                day: "numeric",
-                              })}
-                            </p>
-                            <p>
-                              {
-                                singleFlightResult[2][flightResultIndex]
-                                  .itineraries[0].segments[0].numberOfStops
-                              }{" "}
-                              Stops.{" "}
-                              {`${
-                                parseDuration(
-                                  singleFlightResult[2][flightResultIndex]
-                                    .itineraries[0].segments[0].duration
-                                ).hours
-                              }hr ${
-                                parseDuration(
-                                  singleFlightResult[2][flightResultIndex]
-                                    .itineraries[0].segments[0].duration
-                                ).minutes
-                              }min`}
-                            </p>
-                          </div>
-                        </TripAirport>
-                      </TripDetailTime>
-                    </TripDetailBody>
-
-                    {/* STOPOVER UI FOR DEPARTURE */}
-                    {
-                    flightStopOver === 1 &&
-                    <TripDetailBody mb={"20px"}>
-                    <TripDetailClass>
-                      <span>
-                        <AirlineFlightLogo
-                          dictionaries={singleFlightResult[9]}
-                          data={singleFlightResult[2][flightResultIndex]}
-                          keyWord={
-                            singleFlightResult[2][flightResultIndex]
-                              .validatingAirlineCodes[0]
-                          }
-                          detail={true}
-                        />
-                      </span>
-                      <span>
-                        <a href="#">
-                          {
-                            singleFlightResult[2][flightResultIndex]
-                              .travelerPricings[0].fareDetailsBySegment[0]
-                              .cabin
-                          }
-                        </a>
-                      </span>
-                    </TripDetailClass>
-                    <TripDetailTime>
-                      <TripHour>
-                        <span>
-                          <div>
-                            <h5>
-                              {new Date(
-                                singleFlightResult[2][
-                                  flightResultIndex
-                                ].itineraries[0].segments[0].departure.at
-                              ).toLocaleTimeString("en-US", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </h5>
-                            <h5>
-                              {" "}
-                              {new Date(
-                                singleFlightResult[2][
-                                  flightResultIndex
-                                ].itineraries[0].segments[0].arrival.at
-                              ).toLocaleTimeString("en-US", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </h5>
-                          </div>
-                          <div>
-                            <hr />
-                            <FlightIcon
-                              rotate={"180deg"}
-                              iconColor={"#0D3984"}
-                            />
-                            <hr />
-                          </div>
-                        </span>
-                      </TripHour>
-                      <TripAirport>
-                        <div>
-                          <p>
-                            {singleFlightResult[0]}{" "}
-                            <b>({singleFlightResult[3]})</b>
-                          </p>
-                          <p>
-                            {singleFlightResult[1]}{" "}
-                            <b>({singleFlightResult[4]})</b>
-                          </p>
-                        </div>
-                        <div>
-                          <span>
-                            <h4>BAGGAGE:</h4> <p>ADULT</p>
-                          </span>
-                          <span>
-                            <h4>CHECK IN:</h4> <p>20KG</p>
-                          </span>
-                        </div>
-                        <div style={{ fontSize: "12px" }}>
-                          <p>
-                            {" "}
-                            {new Date(
-                              singleFlightResult[2][
-                                flightResultIndex
-                              ].itineraries[0].segments[0].departure.at
-                            ).toLocaleDateString("en-US", {
-                              weekday: "long",
-                              month: "long",
-                              day: "numeric",
-                            })}
-                          </p>
-                          <p>
-                            {
-                              singleFlightResult[2][flightResultIndex]
-                                .itineraries[0].segments[0].numberOfStops
-                            }{" "}
-                            Stops.{" "}
-                            {`${
-                              parseDuration(
-                                singleFlightResult[2][flightResultIndex]
-                                  .itineraries[0].segments[0].duration
-                              ).hours
-                            }hr ${
-                              parseDuration(
-                                singleFlightResult[2][flightResultIndex]
-                                  .itineraries[0].segments[0].duration
-                              ).minutes
-                            }min`}
-                          </p>
-                        </div>
-                      </TripAirport>
-                    </TripDetailTime>
-                  </TripDetailBody>
-                }
-
-                <hr style={{border: "1px solid #0d39843b", marginBottom: "20px"}} />
-
-                    {/* Flight Return */}
-                    <TripDetailBody mb={"20px"}>
-                      <TripDetailClass>
-                        <span>
-                          <AirlineFlightLogo
-                            dictionaries={singleFlightResult[9]}
-                            data={singleFlightResult[2][flightResultIndex]}
-                            keyWord={
-                              singleFlightResult[2][flightResultIndex]
-                                .validatingAirlineCodes[0]
-                            }
-                            detail={true}
-                          />
-                        </span>
-                        <span>
-                          {" "}
-                          {
-                            singleFlightResult[2][flightResultIndex]
-                              .travelerPricings[0].fareDetailsBySegment[0].cabin
-                          }
-                        </span>
-                      </TripDetailClass>
-                      <TripDetailTime>
-                        <TripHour>
-                          <span>
-                            <div>
-                              <h5>
-                                {new Date(
-                                  singleFlightResult[2][
-                                    flightResultIndex
-                                  ].itineraries[1].segments[0].departure.at
-                                ).toLocaleTimeString("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </h5>
-                              <h5>
-                                {" "}
-                                {new Date(
-                                  singleFlightResult[2][
-                                    flightResultIndex
-                                  ].itineraries[1].segments[0].arrival.at
-                                ).toLocaleTimeString("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </h5>
-                            </div>
-                            <div>
-                              <hr />
-                              <FlightIcon
-                                rotate={"360deg"}
-                                iconColor={"#FF6805"}
-                              />
-                              <hr />
-                            </div>
-                          </span>
-                        </TripHour>
-                        <TripAirport>
-                          <div>
-                            <p>
-                              {singleFlightResult[1]}{" "}
-                              <b>({singleFlightResult[4]})</b>
-                            </p>
-                            {/* <p>1h 15m</p> */}
-                            <p>
-                              {singleFlightResult[0]}{" "}
-                              <b>({singleFlightResult[3]})</b>
-                            </p>
-                          </div>
-                          <div>
-                            <span>
-                              <h5>BAGGAGE:</h5> <p>ADULT</p>
-                            </span>
-                            <span>
-                              <h5>CHECK IN:</h5> <p>20KG</p>
-                            </span>
-                          </div>
-                          <div style={{ fontSize: "12px" }}>
-                            <p>
-                              {" "}
-                              {new Date(
-                                singleFlightResult[2][
-                                  flightResultIndex
-                                ].itineraries[1].segments[0].departure.at
-                              ).toLocaleDateString("en-US", {
-                                weekday: "long",
-                                month: "long",
-                                day: "numeric",
-                              })}
-                            </p>
-                            <p>
-                              {
-                                singleFlightResult[2][flightResultIndex]
-                                  .itineraries[1].segments[0].numberOfStops
-                              }{" "}
-                              Stops.{" "}
-                              {`${
-                                parseDuration(
-                                  singleFlightResult[2][flightResultIndex]
-                                    .itineraries[1].segments[0].duration
-                                ).hours
-                              }hr ${
-                                parseDuration(
-                                  singleFlightResult[2][flightResultIndex]
-                                    .itineraries[1].segments[0].duration
-                                ).minutes
-                              }min`}
-                            </p>
-                          </div>
-                        </TripAirport>
-                      </TripDetailTime>
-                    </TripDetailBody>
-                    
-                    {/* UI FOR STOPOVER */}
-                    {
-                    flightStopOver === 1 &&
-                        <TripDetailBody mb={"20px"}>
+                    {singleFlightResult[2][
+                      flightResultIndex
+                    ].itineraries[0].segments?.map((flightData, Index) => (
+                      <TripDetailBody mb={"20px"}>
                         <TripDetailClass>
                           <span>
                             <AirlineFlightLogo
                               dictionaries={singleFlightResult[9]}
                               data={singleFlightResult[2][flightResultIndex]}
                               keyWord={
+                                flightData?.operating?.carrierCode
+                                  ? flightData?.operating?.carrierCode
+                                  : singleFlightResult[2][flightResultIndex]
+                                      .validatingAirlineCodes[0]
+                              }
+                              detail={true}
+                            />
+                          </span>
+                          <span>
+                            <a href="#">
+                              {
                                 singleFlightResult[2][flightResultIndex]
-                                  .validatingAirlineCodes[0]
+                                  .travelerPricings[0].fareDetailsBySegment[0]
+                                  .cabin
+                              }
+                            </a>
+                          </span>
+                        </TripDetailClass>
+                        <TripDetailTime>
+                          <TripHour>
+                            <span>
+                              <div>
+                                <h5>
+                                  {new Date(
+                                    flightData?.departure?.at
+                                  ).toLocaleTimeString("en-US", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </h5>
+                                <h5>
+                                  {" "}
+                                  {new Date(
+                                    flightData?.arrival.at
+                                  ).toLocaleTimeString("en-US", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </h5>
+                              </div>
+                              <div>
+                                <hr />
+                                <FlightIcon
+                                  rotate={"180deg"}
+                                  iconColor={"#0D3984"}
+                                />
+                                <hr />
+                              </div>
+                            </span>
+                          </TripHour>
+                          <TripAirport>
+                            <div>
+                              <p>
+                                {`${
+                                  filterIataAirport(
+                                    flightData?.departure?.iataCode
+                                  )?.Airport_name
+                                },  ${
+                                  filterIataAirport(
+                                    flightData?.departure?.iataCode
+                                  )?.Location_served
+                                }`}{" "}
+                                <b>({flightData?.departure?.iataCode})</b>
+                              </p>
+                              <p>
+                                {`${
+                                  filterIataAirport(
+                                    flightData?.arrival?.iataCode
+                                  )?.Airport_name
+                                },  ${
+                                  filterIataAirport(
+                                    flightData?.arrival?.iataCode
+                                  )?.Location_served
+                                }`}{" "}
+                                <b>({flightData?.arrival?.iataCode})</b>
+                              </p>
+                            </div>
+                            <div>
+                              <span>
+                                <h4>BAGGAGE:</h4> <p>ADULT</p>
+                              </span>
+                              <span>
+                                <h4>CHECK IN:</h4> <p>20KG</p>
+                              </span>
+                            </div>
+                            <div style={{ fontSize: "12px" }}>
+                              <p>
+                                {" "}
+                                {new Date(
+                                  flightData?.departure?.at
+                                ).toLocaleDateString("en-US", {
+                                  weekday: "long",
+                                  month: "long",
+                                  day: "numeric",
+                                })}
+                              </p>
+
+                              <p>
+                                {flightData?.numberOfStops} Stops.{" "}
+                                {`${
+                                  parseDuration(flightData?.duration).hours
+                                }hr ${
+                                  parseDuration(flightData?.duration).minutes
+                                }min`}
+                              </p>
+                            </div>
+                          </TripAirport>
+                        </TripDetailTime>
+                      </TripDetailBody>
+                    ))}
+
+                    <hr
+                      style={{
+                        border: "1px solid #0d39843b",
+                        marginBottom: "20px",
+                      }}
+                    />
+
+                    {/* Flight Return */}
+                    {singleFlightResult[2][
+                      flightResultIndex
+                    ].itineraries[1].segments?.map((flightData, Index) => (
+                      <TripDetailBody mb={"20px"}>
+                        <TripDetailClass>
+                          <span>
+                            <AirlineFlightLogo
+                              dictionaries={singleFlightResult[9]}
+                              data={singleFlightResult[2][flightResultIndex]}
+                              keyWord={
+                                flightData?.operating?.carrierCode
+                                  ? flightData?.operating?.carrierCode
+                                  : singleFlightResult[2][flightResultIndex]
+                                      .validatingAirlineCodes[0]
                               }
                               detail={true}
                             />
@@ -619,7 +415,8 @@ export default function FlightCustomization() {
                             {" "}
                             {
                               singleFlightResult[2][flightResultIndex]
-                                .travelerPricings[0].fareDetailsBySegment[0].cabin
+                                .travelerPricings[0].fareDetailsBySegment[0]
+                                .cabin
                             }
                           </span>
                         </TripDetailClass>
@@ -629,9 +426,7 @@ export default function FlightCustomization() {
                               <div>
                                 <h5>
                                   {new Date(
-                                    singleFlightResult[2][
-                                      flightResultIndex
-                                    ].itineraries[1].segments[0].departure.at
+                                    flightData?.departure?.at
                                   ).toLocaleTimeString("en-US", {
                                     hour: "2-digit",
                                     minute: "2-digit",
@@ -640,9 +435,7 @@ export default function FlightCustomization() {
                                 <h5>
                                   {" "}
                                   {new Date(
-                                    singleFlightResult[2][
-                                      flightResultIndex
-                                    ].itineraries[1].segments[0].arrival.at
+                                    flightData?.arrival.at
                                   ).toLocaleTimeString("en-US", {
                                     hour: "2-digit",
                                     minute: "2-digit",
@@ -662,13 +455,28 @@ export default function FlightCustomization() {
                           <TripAirport>
                             <div>
                               <p>
-                                {singleFlightResult[1]}{" "}
-                                <b>({singleFlightResult[4]})</b>
+                                {`${
+                                  filterIataAirport(
+                                    flightData?.departure?.iataCode
+                                  )?.Airport_name
+                                },  ${
+                                  filterIataAirport(
+                                    flightData?.departure?.iataCode
+                                  )?.Location_served
+                                }`}{" "}
+                                <b>({flightData?.departure?.iataCode})</b>
                               </p>
-                              {/* <p>1h 15m</p> */}
                               <p>
-                                {singleFlightResult[0]}{" "}
-                                <b>({singleFlightResult[3]})</b>
+                                {`${
+                                  filterIataAirport(
+                                    flightData?.arrival?.iataCode
+                                  )?.Airport_name
+                                },  ${
+                                  filterIataAirport(
+                                    flightData?.arrival?.iataCode
+                                  )?.Location_served
+                                }`}{" "}
+                                <b>({flightData?.arrival?.iataCode})</b>
                               </p>
                             </div>
                             <div>
@@ -683,38 +491,27 @@ export default function FlightCustomization() {
                               <p>
                                 {" "}
                                 {new Date(
-                                  singleFlightResult[2][
-                                    flightResultIndex
-                                  ].itineraries[1].segments[0].departure.at
+                                  flightData?.departure?.at
                                 ).toLocaleDateString("en-US", {
                                   weekday: "long",
                                   month: "long",
                                   day: "numeric",
                                 })}
                               </p>
+
                               <p>
-                                {
-                                  singleFlightResult[2][flightResultIndex]
-                                    .itineraries[1].segments[0].numberOfStops
-                                }{" "}
-                                Stops.{" "}
+                                {flightData?.numberOfStops} Stops.{" "}
                                 {`${
-                                  parseDuration(
-                                    singleFlightResult[2][flightResultIndex]
-                                      .itineraries[1].segments[0].duration
-                                  ).hours
+                                  parseDuration(flightData?.duration).hours
                                 }hr ${
-                                  parseDuration(
-                                    singleFlightResult[2][flightResultIndex]
-                                      .itineraries[1].segments[0].duration
-                                  ).minutes
+                                  parseDuration(flightData?.duration).minutes
                                 }min`}
                               </p>
                             </div>
                           </TripAirport>
                         </TripDetailTime>
                       </TripDetailBody>
-                    }
+                    ))}
                   </div>
                 )}
               </FlightDetailWrapper>

@@ -46,14 +46,12 @@ import {
 import PaymentModes from "../../../../components/payment_mode/PaymentModes";
 import { useAuthStore } from "../../../../store/store";
 import PayStack from "@paystack/inline-js";
+import iataAirports from "../../../../flightDB/IATA_airports.json";
 import axios from "axios";
 
 export default function OnewayOverview() {
-
-    
-       // user defined variable for stopover   ===============================================================
-       const [flightStopOver, setFlightStopOver] = useState(1);
-
+  // user defined variable for stopover   ===============================================================
+  const [flightStopOver, setFlightStopOver] = useState(1);
 
   const popup = new PayStack();
   const navigate = useNavigate();
@@ -234,6 +232,22 @@ export default function OnewayOverview() {
   const [isChecked, setIsChecked] = useState(false);
   const [isValid, setIsValid] = useState(true);
 
+  const filterIataAirport = (iataCode) => {
+    const newFilterData = iataAirports.find((item) => {
+      return (
+        (item.Airport_name &&
+          item.Airport_name.toLowerCase().includes(iataCode.toLowerCase())) ||
+        (item.Location_served &&
+          item.Location_served.toLowerCase().includes(
+            iataCode.toLowerCase()
+          )) ||
+        (item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase()))
+      );
+    });
+
+    return newFilterData;
+  };
+
   // Handler for checkbox change
   const handleCheckboxChange = (event) => {
     setIsChecked(event.target.checked);
@@ -360,7 +374,9 @@ export default function OnewayOverview() {
             <span>
               <Button
                 text={"Back"}
-                onClick={() => navigate(`/oneway-customization/${oneWayFlightResultIndex}`)}
+                onClick={() =>
+                  navigate(`/oneway-customization/${oneWayFlightResultIndex}`)
+                }
               />
             </span>
             <h5>Proceed with your booking</h5>
@@ -390,212 +406,175 @@ export default function OnewayOverview() {
               <p>Outbound Flight</p>
             </FlightIconWrapper>
 
-            <FlightHeader>
-              <h5>{DepartName}</h5>
-              <FlightIcon
-                IconSize={"13px"}
-                rotate={"90deg"}
-                iconColor={"black"}
-              />
-              <h5>{ReturnName}</h5>
-              <p>{DepartFullTimeAndDate}</p>
-            </FlightHeader>
+            {data?.itineraries?.[0]?.segments?.map((flightData, Index) => (
+              <>
+                <FlightHeader>
+                  <h5>{`${
+                    filterIataAirport(flightData?.departure?.iataCode)
+                      ?.Airport_name
+                  },  ${
+                    filterIataAirport(flightData?.departure?.iataCode)
+                      ?.Location_served
+                  }`}</h5>
+                  <FlightIcon
+                    IconSize={"13px"}
+                    rotate={"90deg"}
+                    iconColor={"black"}
+                  />
+                  <h5>
+                    {" "}
+                    {`${
+                      filterIataAirport(flightData?.arrival?.iataCode)
+                        ?.Airport_name
+                    },  ${
+                      filterIataAirport(flightData?.arrival?.iataCode)
+                        ?.Location_served
+                    }`}
+                  </h5>
+                  <p>
+                    {new Date(flightData?.departure?.at).toLocaleString(
+                      "en-US",
+                      {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
+                  </p>
+                </FlightHeader>
 
-            <FlightTimeContainer>
-              {/* Departure */}
-              <ContainerWrapper>
-                <ContainerHeader>
-                  <b>Departure</b>
-                </ContainerHeader>
-                <Containerbody>
-                  <div>
-                    <ContainerTime>
-                      <b>{DepartStartTime}</b> {DepartCode}
-                    </ContainerTime>
-                    <span>{ReturnName}</span>
-                  </div>
-                  <div>
-                    <span>
-                      <FaCheckCircle />
-                    </span>
-                    <span>{DepartPeriodOfHours}</span>
-                    <span>{DepartStops}-stop</span>
-                  </div>
-                </Containerbody>
-              </ContainerWrapper>
+                <FlightTimeContainer>
+                  {/* Departure */}
+                  <ContainerWrapper>
+                    <ContainerHeader>
+                      <b>Departure</b>
+                    </ContainerHeader>
+                    <Containerbody>
+                      <div>
+                        <ContainerTime>
+                          <b>
+                            {new Date(
+                              flightData?.departure?.at
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </b>{" "}
+                          {flightData?.departure?.iataCode}
+                        </ContainerTime>
+                        <span>{`${
+                          filterIataAirport(flightData?.departure?.iataCode)
+                            ?.Airport_name
+                        },  ${
+                          filterIataAirport(flightData?.departure?.iataCode)
+                            ?.Location_served
+                        }`}</span>
+                      </div>
+                      <div>
+                        <span>
+                          <FaCheckCircle />
+                        </span>
+                        <span>{`${
+                          parseDuration(flightData?.duration).hours
+                        }hr ${
+                          parseDuration(flightData?.duration).minutes
+                        }min`}</span>
+                        <span>{flightData?.numberOfStops}-stop</span>
+                      </div>
+                    </Containerbody>
+                  </ContainerWrapper>
 
-              {/* Arrival */}
-              <ContainerWrapper>
-                <ContainerHeader>
-                  <b>Arrival</b>
-                </ContainerHeader>
-                <Containerbody>
-                  <div>
-                    <ContainerTime>
-                      <b>{DepartEndTime}</b> {ReturnCode}
-                    </ContainerTime>
-                    <span>{ReturnName}</span>
-                  </div>
-                  <div>
-                    <span
-                      style={{
-                        color: "red",
-                        fontStyle: "italic",
-                        fontWeight: "bold",
-                        fontSize: "9px",
-                      }}
-                    >
-                      {DepartCarrierName}
-                    </span>
-                    <img
-                      src={`https://images.wakanow.com/Images/flight-logos/${data?.itineraries?.[0]?.segments?.[0]?.operating?.carrierCode}.gif`}
-                      height={20}
-                      width={40}
-                      alt=""
-                      srcset=""
-                    />
-                    <img
-                      src={flightLogo}
-                      height={20}
-                      width={40}
-                      alt=""
-                      srcset=""
-                    />
-                  </div>
-                </Containerbody>
-              </ContainerWrapper>
+                  {/* Arrival */}
+                  <ContainerWrapper>
+                    <ContainerHeader>
+                      <b>Arrival</b>
+                    </ContainerHeader>
+                    <Containerbody>
+                      <div>
+                        <ContainerTime>
+                          <b>
+                            {new Date(
+                              flightData?.arrival?.at
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </b>{" "}
+                          {flightData?.arrival?.iataCode}
+                        </ContainerTime>
+                        <span>{`${
+                          filterIataAirport(flightData?.arrival?.iataCode)
+                            ?.Airport_name
+                        },  ${
+                          filterIataAirport(flightData?.arrival?.iataCode)
+                            ?.Location_served
+                        }`}</span>
+                      </div>
+                      <div>
+                        <span
+                          style={{
+                            color: "red",
+                            fontStyle: "italic",
+                            fontWeight: "bold",
+                            fontSize: "9px",
+                          }}
+                        >
+                          {flightData?.operating &&
+                            oneWayFlightResult?.[9]?.carriers[
+                              flightData?.operating?.carrierCode
+                            ]}
+                        </span>
+                        <img
+                          src={`https://images.wakanow.com/Images/flight-logos/${
+                            flightData?.operating?.carrierCode
+                              ? flightData?.operating?.carrierCode
+                              : oneWayFlightResult?.[2][oneWayFlightResultIndex]
+                                  .validatingAirlineCodes[0]
+                          }.gif`}
+                          height={20}
+                          width={40}
+                          alt=""
+                          srcset=""
+                        />
+                        {/* <img
+                                     src={flightLogo}
+                                     height={20}
+                                     width={40}
+                                     alt=""
+                                     srcset=""
+                                   /> */}
+                      </div>
+                    </Containerbody>
+                  </ContainerWrapper>
 
-              {/* Class/ Baggage */}
-              <ContainerWrapper>
-                <ContainerHeader>
-                  <b>Class/Checked Baggage Allowance </b>
-                </ContainerHeader>
-                <Containerbody>
-                  <div>
-                    <ContainerTime>Economy (F)</ContainerTime>
-                    <span>
-                      Adult: {oneWayFlightResult?.[6]} piece(s), upto 23kg each
-                    </span>
-                    <span>
-                      Child: {oneWayFlightResult?.[7]} piece(s), upto 23kg each
-                    </span>
-                    <span>
-                      Infant: {oneWayFlightResult?.[8]} piece(s), upto 23kg
-                    </span>
-                  </div>
-                  <div>
-                  </div>
-                </Containerbody>
-              </ContainerWrapper>
-            </FlightTimeContainer>
+                  {/* Class/ Baggage */}
+                  <ContainerWrapper>
+                    <ContainerHeader>
+                      <b>Class/Checked Baggage Allowance </b>
+                    </ContainerHeader>
+                    <Containerbody>
+                      <div>
+                        <ContainerTime>Economy (F)</ContainerTime>
+                        <span>
+                          Adult: {oneWayFlightResult?.[6]} piece(s), upto 23kg
+                          each
+                        </span>
+                        <span>
+                          Child: {oneWayFlightResult?.[7]} piece(s), upto 23kg
+                          each
+                        </span>
+                        <span>
+                          Infant: {oneWayFlightResult?.[8]} piece(s), upto 23kg
+                        </span>
+                      </div>
+                      <div></div>
+                    </Containerbody>
+                  </ContainerWrapper>
+                </FlightTimeContainer>
+              </>
+            ))}
           </FlightContainer>
 
-
-
-            {/* ONEWAY STOPOVER UI */}
-            { flightStopOver === 1 &&
-               <FlightContainer>
-   
-               <FlightHeader>
-                 <h5>{DepartName}</h5>
-                 <FlightIcon
-                   IconSize={"13px"}
-                   rotate={"90deg"}
-                   iconColor={"black"}
-                 />
-                 <h5>{ReturnName}</h5>
-                 <p>{DepartFullTimeAndDate}</p>
-               </FlightHeader>
-   
-               <FlightTimeContainer>
-                 {/* Departure */}
-                 <ContainerWrapper>
-                   <ContainerHeader>
-                     <b>Departure</b>
-                   </ContainerHeader>
-                   <Containerbody>
-                     <div>
-                       <ContainerTime>
-                         <b>{DepartStartTime}</b> {DepartCode}
-                       </ContainerTime>
-                       <span>{ReturnName}</span>
-                     </div>
-                     <div>
-                       <span>
-                         <FaCheckCircle />
-                       </span>
-                       <span>{DepartPeriodOfHours}</span>
-                       <span>{DepartStops}-stop</span>
-                     </div>
-                   </Containerbody>
-                 </ContainerWrapper>
-   
-                 {/* Arrival */}
-                 <ContainerWrapper>
-                   <ContainerHeader>
-                     <b>Arrival</b>
-                   </ContainerHeader>
-                   <Containerbody>
-                     <div>
-                       <ContainerTime>
-                         <b>{DepartEndTime}</b> {ReturnCode}
-                       </ContainerTime>
-                       <span>{ReturnName}</span>
-                     </div>
-                     <div>
-                       <span
-                         style={{
-                           color: "red",
-                           fontStyle: "italic",
-                           fontWeight: "bold",
-                           fontSize: "9px",
-                         }}
-                       >
-                         {DepartCarrierName}
-                       </span>
-                       <img
-                         src={`https://images.wakanow.com/Images/flight-logos/${data?.itineraries?.[0]?.segments?.[0]?.operating?.carrierCode}.gif`}
-                         height={20}
-                         width={40}
-                         alt=""
-                         srcset=""
-                       />
-                       <img
-                         src={flightLogo}
-                         height={20}
-                         width={40}
-                         alt=""
-                         srcset=""
-                       />
-                     </div>
-                   </Containerbody>
-                 </ContainerWrapper>
-   
-                 {/* Class/ Baggage */}
-                 <ContainerWrapper>
-                   <ContainerHeader>
-                     <b>Class/Checked Baggage Allowance </b>
-                   </ContainerHeader>
-                   <Containerbody>
-                     <div>
-                       <ContainerTime>Economy (F)</ContainerTime>
-                       <span>
-                         Adult: {oneWayFlightResult?.[6]} piece(s), upto 23kg each
-                       </span>
-                       <span>
-                         Child: {oneWayFlightResult?.[7]} piece(s), upto 23kg each
-                       </span>
-                       <span>
-                         Infant: {oneWayFlightResult?.[8]} piece(s), upto 23kg
-                       </span>
-                     </div>
-                     <div>
-                     </div>
-                   </Containerbody>
-                 </ContainerWrapper>
-               </FlightTimeContainer>
-             </FlightContainer>
-            }
           {/* Passengers Detail */}
           <h3>Passenger Detail</h3>
           <PDetailWrapper>
