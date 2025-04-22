@@ -445,6 +445,7 @@ export default function SingleSearchCityForm({
         children,
         infants,
         res.flightRightsDictionaries,
+        flightClass,
       ]);
       // setFlightSearch(res.data.data);
       if (showReturnDate) {

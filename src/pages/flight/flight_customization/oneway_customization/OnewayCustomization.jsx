@@ -261,7 +261,12 @@ export default function OnewayCustomization() {
                             detail={true}
                           />
                         </span>
-                        <span>Economy</span>
+                        <span>
+                          {
+                            oneWayFlightResult[2][oneWayFlightResultIndex]
+                              .travelerPricings[0].fareDetailsBySegment[0].cabin
+                          }
+                        </span>
                       </TripDetailClass>
                       <TripDetailTime>
                         <TripHour>

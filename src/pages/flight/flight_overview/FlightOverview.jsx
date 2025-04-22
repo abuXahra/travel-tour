@@ -47,6 +47,7 @@ import iataAirports from "../../../flightDB/IATA_airports.json";
 import PayStack from "@paystack/inline-js";
 import Loader from "../../../components/loader/Loader";
 import Overlay from "../../../components/overlay/Overlay";
+import CryptoJS from "crypto-js";
 
 export default function FlightOverview() {
   // user defined variable for stopover   ===============================================================
