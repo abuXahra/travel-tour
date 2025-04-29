@@ -63,7 +63,7 @@ export default function FlightResult() {
   const navigate = useNavigate();
 
   // user defined variable for stopover   ===============================================================
-  const [flightStopOver, setFlightStopOver] = useState(1);
+  const [flightStopOver, setFlightStopOver] = useState(0);
   
 
   useEffect(() => {

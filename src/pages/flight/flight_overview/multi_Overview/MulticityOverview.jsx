@@ -53,6 +53,8 @@ export default function MulticityOverview() {
 
   // user defined variable for stopover   ===============================================================
   const [flightStopOver, setFlightStopOver] = useState(1);
+
+  
   const popup = new PayStack();
   const navigate = useNavigate();
   const { flightResultIndex } = useParams();
