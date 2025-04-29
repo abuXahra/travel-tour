@@ -51,6 +51,7 @@ import {
 } from "../../hotel/hotel_booking/HotelBooking.style";
 import HotelCard from "../../../components/hotel_components/hotel_card/HotelCard";
 import { hotelList } from "../../../data/object/hotelList";
+import iataAirports from "../../../flightDB/IATA_airports.json";
 import { useAuthStore } from "../../../store/store";
 
 export default function FlightFlightSuccess() {
@@ -76,6 +77,15 @@ export default function FlightFlightSuccess() {
       .catch((err) => {
         console.error("Failed to copy text: ", err);
       });
+  };
+  const filterIataAirport = (iataCode) => {
+    const newFilterData = iataAirports.find((item) => {
+      return (
+        item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase())
+      );
+    });
+
+    return newFilterData;
   };
   // Cacula for duration
   function parseDuration(duration) {
@@ -356,64 +366,99 @@ export default function FlightFlightSuccess() {
               </span>
             </TripDetailTile>
             {/* body */}
-
-            <TripDetailBody>
-              <TripDetailClass>
-                <span>
-                  <img
-                    src={`https://images.wakanow.com/Images/flight-logos/${
-                      flight?.itineraries?.[0]?.segments?.[0]?.operating
-                        ?.carrierCode
-                        ? flight?.itineraries?.[0]?.segments?.[0]?.operating
-                            ?.carrierCode
-                        : flight?.itineraries?.[0]?.segments?.[0]?.carrierCode
-                    }.gif`}
-                    alt=""
-                    srcset=""
-                  />{" "}
-                  <h4>{DepartCarrierName}</h4> <p>.</p>{" "}
-                </span>
-                <span>
-                  <a href="#">Economy</a>
-                </span>
-              </TripDetailClass>
-              <TripDetailTime>
-                <TripHour>
+            {flight?.itineraries?.[0]?.segments?.map((flightData, Index) => (
+              <TripDetailBody>
+                <TripDetailClass>
                   <span>
-                    <div>
-                      <h4>{DepartStartTime}</h4>
-                      <h4>{DepartEndTime}</h4>
-                    </div>
-                    <div>
-                      <hr />
-                      <FlightIcon rotate={"180deg"} iconColor={"#0D3984"} />
-                      <hr />
-                    </div>
+                    <img
+                      src={`https://images.wakanow.com/Images/flight-logos/${
+                        flightData?.operating?.carrierCode
+                          ? flightData?.operating?.carrierCode
+                          : flightData?.carrierCode
+                      }.gif`}
+                      alt=""
+                      srcset=""
+                    />{" "}
+                    <h4>
+                      {flightData?.operating
+                        ? data?.littelFlightInfo?.[0].dictionaries.carriers[
+                            flightData?.operating?.carrierCode
+                          ]
+                        : data?.littelFlightInfo?.[0].dictionaries.carriers[
+                            flightData?.carrierCode
+                          ]}
+                    </h4>{" "}
+                    <p>.</p>{" "}
                   </span>
-                </TripHour>
-                <TripAirport>
-                  <div>
-                    <p>
-                      <b>({DepartCode}) </b>
-                      {DepartName}
-                    </p>
-                    <p>1h 15m</p>
-                    <p>
-                      <b>({ReturnCode})</b>
-                      {ReturnName}
-                    </p>
-                  </div>
-                  <div>
+                  <span>
+                    <a href="#">Economy</a>
+                  </span>
+                </TripDetailClass>
+                <TripDetailTime>
+                  <TripHour>
                     <span>
-                      <h4>BAGGAGE:</h4> <p>ADULT</p>
+                      <div>
+                        <h4>
+                          {new Date(
+                            flightData?.departure?.at
+                          ).toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </h4>
+                        <h4>
+                          {new Date(flightData?.arrival?.at).toLocaleTimeString(
+                            "en-US",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </h4>
+                      </div>
+                      <div>
+                        <hr />
+                        <FlightIcon rotate={"180deg"} iconColor={"#0D3984"} />
+                        <hr />
+                      </div>
                     </span>
-                    <span>
-                      <h4>CHECK IN:</h4> <p>20KG</p>{" "}
-                    </span>
-                  </div>
-                </TripAirport>
-              </TripDetailTime>
-            </TripDetailBody>
+                  </TripHour>
+                  <TripAirport>
+                    <div>
+                      <p>
+                        <b>({flightData?.departure?.iataCode}) </b>
+                        {` ${
+                          filterIataAirport(flightData?.departure?.iataCode)
+                            ?.Airport_name
+                        },  ${
+                          filterIataAirport(flightData?.departure?.iataCode)
+                            ?.Location_served
+                        }`}
+                      </p>
+                      <p>1h 15m</p>
+                      <p>
+                        <b>({flightData?.arrival?.iataCode})</b>
+                        {`${
+                          filterIataAirport(flightData?.arrival?.iataCode)
+                            ?.Airport_name
+                        },  ${
+                          filterIataAirport(flightData?.arrival?.iataCode)
+                            ?.Location_served
+                        }`}
+                      </p>
+                    </div>
+                    <div>
+                      <span>
+                        <h4>BAGGAGE:</h4> <p>ADULT</p>
+                      </span>
+                      <span>
+                        <h4>CHECK IN:</h4> <p>20KG</p>{" "}
+                      </span>
+                    </div>
+                  </TripAirport>
+                </TripDetailTime>
+              </TripDetailBody>
+            ))}
           </FlightDetailWrapper>
 
           {/* for flight Return */}
@@ -437,62 +482,100 @@ export default function FlightFlightSuccess() {
               </span>
             </TripDetailTile>
             {/* body */}
-
-            <TripDetailBody>
-              <TripDetailClass>
-                <span>
-                  <img
-                    src={`https://images.wakanow.com/Images/flight-logos/${
-                      flight?.itineraries?.[1]?.segments?.[0]?.operating
-                        ?.carrierCode
-                        ? flight?.itineraries?.[1]?.segments?.[0]?.operating
-                            ?.carrierCode
-                        : flight?.itineraries?.[1]?.segments?.[0]?.carrierCode
-                    }.gif`}
-                    alt=""
-                    srcset=""
-                  />{" "}
-                  <h4>{ReturnCarrierName}</h4> <p>.</p>{" "}
-                </span>
-                <span>
-                  <a href="#">Economy</a>
-                </span>
-              </TripDetailClass>
-              <TripDetailTime>
-                <TripHour>
+            {flight?.itineraries?.[1]?.segments?.map((flightData, Index) => (
+              <TripDetailBody>
+                <TripDetailClass>
                   <span>
-                    <div>
-                      <h4>{ReturnStartTime}</h4>
-                      <h4>{ReturnEndTime}</h4>
-                    </div>
-                    <div>
-                      <hr />
-                      <FlightIcon rotate={"360deg"} iconColor={"#FF6805"} />
-                      <hr />
-                    </div>
+                    <img
+                      src={`https://images.wakanow.com/Images/flight-logos/${
+                        flightData?.operating?.carrierCode
+                          ? flightData?.operating?.carrierCode
+                          : flightData?.carrierCode
+                      }.gif`}
+                      alt=""
+                      srcset=""
+                    />{" "}
+                    <h4>
+                      {" "}
+                      {flightData?.operating
+                        ? data?.littelFlightInfo?.[0].dictionaries.carriers[
+                            flightData?.operating?.carrierCode
+                          ]
+                        : data?.littelFlightInfo?.[0].dictionaries.carriers[
+                            flightData?.carrierCode
+                          ]}
+                    </h4>{" "}
+                    <p>.</p>{" "}
                   </span>
-                </TripHour>
-                <TripAirport>
-                  <div>
-                    <p>
-                      <b>({ReturnCode}) </b> {ReturnName}
-                    </p>
-                    <p>1h 15m</p>
-                    <p>
-                      <b>({DepartCode})</b> {DepartName}
-                    </p>
-                  </div>
-                  <div>
+                  <span>
+                    <a href="#">Economy</a>
+                  </span>
+                </TripDetailClass>
+                <TripDetailTime>
+                  <TripHour>
                     <span>
-                      <h4>BAGGAGE:</h4> <p>ADULT</p>
+                      <div>
+                        <h4>
+                          {new Date(
+                            flightData?.departure?.at
+                          ).toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </h4>
+                        <h4>
+                          {new Date(flightData?.arrival?.at).toLocaleTimeString(
+                            "en-US",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </h4>
+                      </div>
+                      <div>
+                        <hr />
+                        <FlightIcon rotate={"360deg"} iconColor={"#FF6805"} />
+                        <hr />
+                      </div>
                     </span>
-                    <span>
-                      <h4>CHECK IN:</h4> <p>20KG</p>{" "}
-                    </span>
-                  </div>
-                </TripAirport>
-              </TripDetailTime>
-            </TripDetailBody>
+                  </TripHour>
+                  <TripAirport>
+                    <div>
+                      <p>
+                        <b>({flightData?.departure?.iataCode}) </b>
+                        {` ${
+                          filterIataAirport(flightData?.departure?.iataCode)
+                            ?.Airport_name
+                        },  ${
+                          filterIataAirport(flightData?.departure?.iataCode)
+                            ?.Location_served
+                        }`}
+                      </p>
+                      <p>1h 15m</p>
+                      <p>
+                        <b>({flightData?.arrival?.iataCode})</b>
+                        {`${
+                          filterIataAirport(flightData?.arrival?.iataCode)
+                            ?.Airport_name
+                        },  ${
+                          filterIataAirport(flightData?.arrival?.iataCode)
+                            ?.Location_served
+                        }`}
+                      </p>
+                    </div>
+                    <div>
+                      <span>
+                        <h4>BAGGAGE:</h4> <p>ADULT</p>
+                      </span>
+                      <span>
+                        <h4>CHECK IN:</h4> <p>20KG</p>{" "}
+                      </span>
+                    </div>
+                  </TripAirport>
+                </TripDetailTime>
+              </TripDetailBody>
+            ))}
           </FlightDetailWrapper>
 
           {/* Trip Total Price */}

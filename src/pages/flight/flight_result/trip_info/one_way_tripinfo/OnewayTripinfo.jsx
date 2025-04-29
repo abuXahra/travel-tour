@@ -42,15 +42,14 @@ import { IoIosArrowDown } from "react-icons/io";
 import flightLogo from "../../../../../images/aire-peace.png";
 import FlightIcon from "../../../../../components/flight_icon/FlightIcon";
 import AirlineFlightLogo from "../../../../../components/Flight/AirlineFlightLogo";
+import iataAirports from "../../../../../flightDB/IATA_airports.json";
 import { useAuthStore } from "../../../../../store/store";
 
 export default function OnewayTripinfo() {
   const [data, setData] = useState({});
 
-
-       // user defined variable for stopover   ===============================================================
-        const [flightStopOver, setFlightStopOver] = useState(1);
-
+  // user defined variable for stopover   ===============================================================
+  const [flightStopOver, setFlightStopOver] = useState(1);
 
   // navigation
   const navigate = useNavigate();
@@ -119,6 +118,23 @@ export default function OnewayTripinfo() {
     ChildrenData: [],
     InfantData: [],
   });
+
+  const filterIataAirport = (iataCode) => {
+    const newFilterData = iataAirports.find((item) => {
+      return (
+        (item.Airport_name &&
+          item.Airport_name.toLowerCase().includes(iataCode.toLowerCase())) ||
+        (item.Location_served &&
+          item.Location_served.toLowerCase().includes(
+            iataCode.toLowerCase()
+          )) ||
+        (item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase()))
+      );
+    });
+
+    return newFilterData;
+  };
+
   const handleSelectTitleChange = (data, event, index) => {
     const newTitle = event.target.value;
 
@@ -646,108 +662,23 @@ export default function OnewayTripinfo() {
               </TripDetailTile>
               {/* body */}
               {showtripDepart && (
-               <>
-               <TripDetailBody>
-                  <TripDetailClass>
-                    <span>
-                      <AirlineFlightLogo
-                        dictionaries={oneWayFlightResult[9]}
-                        data={oneWayFlightResult[2][oneWayFlightResultIndex]}
-                        keyWord={
-                          oneWayFlightResult[2][oneWayFlightResultIndex]
-                            .validatingAirlineCodes[0]
-                        }
-                        detail={true}
-                      />
-                    </span>
-                    <span>
-                      <a href="#">
-                        {
-                          oneWayFlightResult[2][oneWayFlightResultIndex]
-                            .travelerPricings[0].fareDetailsBySegment[0].cabin
-                        }
-                      </a>
-                    </span>
-                  </TripDetailClass>
-                  <TripDetailTime>
-                    <TripHour>
-                      <span>
-                        <div>
-                          <h5>
-                            {new Date(
-                              oneWayFlightResult[2][
-                                oneWayFlightResultIndex
-                              ].itineraries[0].segments[0].departure.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </h5>
-                          <h5>
-                            {" "}
-                            {new Date(
-                              oneWayFlightResult[2][
-                                oneWayFlightResultIndex
-                              ].itineraries[0].segments[0].arrival.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </h5>
-                        </div>
-                        <div>
-                          <hr />
-                          <FlightIcon rotate={"180deg"} iconColor={"#0D3984"} />
-                          <hr />
-                        </div>
-                      </span>
-                    </TripHour>
-                    <TripAirport>
-                      <div>
-                        <p>
-                          {oneWayFlightResult[0]}{" "}
-                          <b>({oneWayFlightResult[3]})</b>
-                        </p>
-                        <p>{`${
-                          parseDuration(
-                            oneWayFlightResult[2][oneWayFlightResultIndex]
-                              .itineraries[0].segments[0].duration
-                          ).hours
-                        }hr ${
-                          parseDuration(
-                            oneWayFlightResult[2][oneWayFlightResultIndex]
-                              .itineraries[0].segments[0].duration
-                          ).minutes
-                        }min`}</p>
-                        <p>
-                          {oneWayFlightResult[1]}{" "}
-                          <b>({oneWayFlightResult[4]})</b>
-                        </p>
-                      </div>
-                      <div>
-                        <span>
-                          <h5>BAGGAGE:</h5> <p>ADULT</p>
-                        </span>
-                        <span>
-                          <h5>CHECK IN:</h5> <p>20KG</p>{" "}
-                        </span>
-                      </div>
-                    </TripAirport>
-                  </TripDetailTime>
-                </TripDetailBody>
-
-
-                    {/* ONEWAY STOPOVER UI */}
-                    { flightStopOver && 
-                      <TripDetailBody>
+                <>
+                  {oneWayFlightResult[2][
+                    oneWayFlightResultIndex
+                  ].itineraries[0].segments?.map((flightData, Index) => (
+                    <TripDetailBody>
                       <TripDetailClass>
                         <span>
                           <AirlineFlightLogo
                             dictionaries={oneWayFlightResult[9]}
-                            data={oneWayFlightResult[2][oneWayFlightResultIndex]}
-                            keyWord={
+                            data={
                               oneWayFlightResult[2][oneWayFlightResultIndex]
-                                .validatingAirlineCodes[0]
+                            }
+                            keyWord={
+                              flightData?.operating?.carrierCode
+                                ? flightData?.operating?.carrierCode
+                                : oneWayFlightResult[2][oneWayFlightResultIndex]
+                                    .validatingAirlineCodes[0]
                             }
                             detail={true}
                           />
@@ -756,7 +687,8 @@ export default function OnewayTripinfo() {
                           <a href="#">
                             {
                               oneWayFlightResult[2][oneWayFlightResultIndex]
-                                .travelerPricings[0].fareDetailsBySegment[0].cabin
+                                .travelerPricings[0].fareDetailsBySegment[0]
+                                .cabin
                             }
                           </a>
                         </span>
@@ -767,9 +699,7 @@ export default function OnewayTripinfo() {
                             <div>
                               <h5>
                                 {new Date(
-                                  oneWayFlightResult[2][
-                                    oneWayFlightResultIndex
-                                  ].itineraries[0].segments[0].departure.at
+                                  flightData?.departure?.at
                                 ).toLocaleTimeString("en-US", {
                                   hour: "2-digit",
                                   minute: "2-digit",
@@ -778,9 +708,7 @@ export default function OnewayTripinfo() {
                               <h5>
                                 {" "}
                                 {new Date(
-                                  oneWayFlightResult[2][
-                                    oneWayFlightResultIndex
-                                  ].itineraries[0].segments[0].arrival.at
+                                  flightData?.arrival?.at
                                 ).toLocaleTimeString("en-US", {
                                   hour: "2-digit",
                                   minute: "2-digit",
@@ -789,7 +717,10 @@ export default function OnewayTripinfo() {
                             </div>
                             <div>
                               <hr />
-                              <FlightIcon rotate={"180deg"} iconColor={"#0D3984"} />
+                              <FlightIcon
+                                rotate={"180deg"}
+                                iconColor={"#0D3984"}
+                              />
                               <hr />
                             </div>
                           </span>
@@ -797,23 +728,31 @@ export default function OnewayTripinfo() {
                         <TripAirport>
                           <div>
                             <p>
-                              {oneWayFlightResult[0]}{" "}
-                              <b>({oneWayFlightResult[3]})</b>
+                              {`${
+                                filterIataAirport(
+                                  flightData?.departure?.iataCode
+                                )?.Airport_name
+                              },  ${
+                                filterIataAirport(
+                                  flightData?.departure?.iataCode
+                                )?.Location_served
+                              }`}{" "}
+                              <b>({flightData?.departure?.iataCode})</b>
                             </p>
                             <p>{`${
-                              parseDuration(
-                                oneWayFlightResult[2][oneWayFlightResultIndex]
-                                  .itineraries[0].segments[0].duration
-                              ).hours
+                              parseDuration(flightData?.duration).hours
                             }hr ${
-                              parseDuration(
-                                oneWayFlightResult[2][oneWayFlightResultIndex]
-                                  .itineraries[0].segments[0].duration
-                              ).minutes
+                              parseDuration(flightData?.duration).minutes
                             }min`}</p>
                             <p>
-                              {oneWayFlightResult[1]}{" "}
-                              <b>({oneWayFlightResult[4]})</b>
+                              {`${
+                                filterIataAirport(flightData?.arrival?.iataCode)
+                                  ?.Airport_name
+                              },  ${
+                                filterIataAirport(flightData?.arrival?.iataCode)
+                                  ?.Location_served
+                              }`}{" "}
+                              <b>({flightData?.arrival?.iataCode})</b>
                             </p>
                           </div>
                           <div>
@@ -827,8 +766,9 @@ export default function OnewayTripinfo() {
                         </TripAirport>
                       </TripDetailTime>
                     </TripDetailBody>
-                    }
-              </>)}
+                  ))}
+                </>
+              )}
             </FlightDetailWrapper>
           </TripInfoContent>
 
@@ -1297,13 +1237,13 @@ export default function OnewayTripinfo() {
           ))}
 
           <div>
-          <Button
-            text={"Continue"}
-            onClick={() => {
-              setTravelDetail(TravelData);
-              navigate(`/oneway-customization/${oneWayFlightResultIndex}`);
-            }}
-          />
+            <Button
+              text={"Continue"}
+              onClick={() => {
+                setTravelDetail(TravelData);
+                navigate(`/oneway-customization/${oneWayFlightResultIndex}`);
+              }}
+            />
           </div>
         </TripMinContent>
       </TripInfoBody>

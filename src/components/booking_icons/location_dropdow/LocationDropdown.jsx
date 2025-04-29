@@ -41,8 +41,10 @@ export default function LocationDropdown({
             key={i}
             bottomBorder={""}
             onClick={() => {
-              setAirportSelected(`${item?.name}, ${item?.country}`);
-              setCityCode(item?.code);
+              setAirportSelected(
+                `${item?.Airport_name}, ${item?.Location_served}`
+              );
+              setCityCode(item?.IATA);
               onCloseDropdwon();
             }}
           >
@@ -50,13 +52,13 @@ export default function LocationDropdown({
               <MdFlightTakeoffStyled>{Icon}</MdFlightTakeoffStyled>
               <div>
                 <p>
-                  <b>{`${item?.state}, ${item?.country}`}</b>
+                  <b>{item?.Airport_name}</b>
                 </p>
-                <p>{`${item?.name}, ${item?.city}, ${item?.state}, ${item?.country}`}</p>
+                <p>{item?.Location_served}</p>
               </div>
             </LocationDropdownTakeoff>
             <LocationDropdownAbrreviate>
-              {item?.code}
+              {item?.IATA}
             </LocationDropdownAbrreviate>
           </LocationDropdownLocation>
         ))}

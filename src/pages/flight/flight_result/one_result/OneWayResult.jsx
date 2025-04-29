@@ -46,6 +46,7 @@ import { OneFormWrapper } from "./OneWayResult.style";
 import AirlineCodeLookup from "../../../../components/Flight/AirlineCodeLookup";
 import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../../store/store";
+import iataAirports from "../../../../flightDB/IATA_airports.json";
 import FlightResultForDepart from "../../../../components/Flight/FlightResultForDepart";
 import NoResult from "../../../../components/no_result/NoResult";
 
@@ -53,11 +54,8 @@ export default function OneWayResult() {
   const { oneWayFlightResult } = useAuthStore();
   // const flightData = JSON.parse(myObject);
 
-     // user defined variable for stopover   ===============================================================
-      const [flightStopOver, setFlightStopOver] = useState(1);
-  
-
-
+  // user defined variable for stopover   ===============================================================
+  const [flightStopOver, setFlightStopOver] = useState(1);
 
   const navigate = useNavigate();
   console.log(oneWayFlightResult);
@@ -89,6 +87,22 @@ export default function OneWayResult() {
   const continueBooking = () => {
     navigate(`/oneway-trip-info/${index}`);
     setShowViewDetailCard(false);
+  };
+
+  const filterIataAirport = (iataCode) => {
+    const newFilterData = iataAirports.find((item) => {
+      return (
+        (item.Airport_name &&
+          item.Airport_name.toLowerCase().includes(iataCode.toLowerCase())) ||
+        (item.Location_served &&
+          item.Location_served.toLowerCase().includes(
+            iataCode.toLowerCase()
+          )) ||
+        (item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase()))
+      );
+    });
+
+    return newFilterData;
   };
 
   const [showFlightInputs, setshowFlightInputs] = useState(false);
@@ -259,213 +273,138 @@ export default function OneWayResult() {
           <FLightDetailContent>
             {/* flight departure */}
             <FlightDetailDNR>
-              <span>
-                <div>
-                  <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
-                  <h3>{`Flight From ${oneWayFlightResult[0]} - ${oneWayFlightResult[1]}`}</h3>
-                </div>
-                <b>Outbound</b>
-              </span>
+              {oneWayFlightResult[2][index].itineraries[0].segments?.map(
+                (flightData, Index) => (
+                  <>
+                    <span>
+                      <div>
+                        {/* <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} /> */}
+                        <h4>{`Flight From ${` ${
+                          filterIataAirport(flightData?.departure?.iataCode)
+                            ?.Airport_name
+                        },  ${
+                          filterIataAirport(flightData?.departure?.iataCode)
+                            ?.Location_served
+                        }`} -- ${`${
+                          filterIataAirport(flightData?.arrival?.iataCode)
+                            ?.Airport_name
+                        },  ${
+                          filterIataAirport(flightData?.arrival?.iataCode)
+                            ?.Location_served
+                        }`}`}</h4>
+                      </div>
+                      <b>Outbound</b>
+                    </span>
 
-              <DNRDetail>
-                <DNRDetailFlightImage>
-                  <img
-                    src={`https://images.wakanow.com/Images/flight-logos/${oneWayFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
-                    alt={oneWayFlightResult[2][index].validatingAirlineCodes[0]}
-                  />
-                </DNRDetailFlightImage>
+                    <DNRDetail>
+                      <DNRDetailFlightImage>
+                        <img
+                          src={`https://images.wakanow.com/Images/flight-logos/${
+                            flightData?.operating?.carrierCode
+                              ? flightData?.operating?.carrierCode
+                              : oneWayFlightResult[2][index]
+                                  .validatingAirlineCodes[0]
+                          }.gif`}
+                          alt={
+                            oneWayFlightResult[2][index]
+                              .validatingAirlineCodes[0]
+                          }
+                        />
+                      </DNRDetailFlightImage>
 
-                <DNRDetailTime>
-                  <span>
-                    <h5>
-                      {new Date(
-                        oneWayFlightResult[2][
-                          index
-                        ].itineraries[0].segments[0].departure.at
-                      ).toLocaleTimeString("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </h5>
-                    <p>
-                      {oneWayFlightResult[0]}
-                    </p>
-                    {/* <AirlineCodeLookup
+                      <DNRDetailTime>
+                        <span>
+                          <h5>
+                            {new Date(
+                              flightData?.departure.at
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </h5>
+                          <p>{`${
+                            filterIataAirport(flightData?.departure?.iataCode)
+                              ?.Airport_name
+                          },  ${
+                            filterIataAirport(flightData?.departure?.iataCode)
+                              ?.Location_served
+                          }`}</p>
+                          {/* <AirlineCodeLookup
                       keyWord={
                         oneWayFlightResult[2][index].itineraries[0].segments[0]
                           .departure.iataCode
                       }
                     /> */}
-                  </span>
-                  <span>
-                  <p> {`${
-                      parseDuration(
-                        oneWayFlightResult[2][index].itineraries[0].segments[0]
-                          .duration
-                      ).hours
-                    }hr ${
-                      parseDuration(
-                        oneWayFlightResult[2][index].itineraries[0].segments[0]
-                          .duration
-                      ).minutes
-                    }min`}</p>
-                    <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
-                   <p>{
-                      oneWayFlightResult[2][index].itineraries[0].segments[0]
-                        .numberOfStops
-                    }
-                    -Stop</p>
-                  </span>
-                  <span>
-                    <h5>
-                      {" "}
-                      {new Date(
-                        oneWayFlightResult[2][
-                          index
-                        ].itineraries[0].segments[0].arrival.at
-                      ).toLocaleTimeString("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </h5>
-                    <p>
-                      {oneWayFlightResult[1]}
-                    </p>
-                    {/* <AirlineCodeLookup
+                        </span>
+                        <span>
+                          <p>
+                            {" "}
+                            {`${parseDuration(flightData?.duration).hours}hr ${
+                              parseDuration(flightData?.duration).minutes
+                            }min`}
+                          </p>
+                          <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
+                          <p>
+                            {flightData?.numberOfStops}
+                            -Stop
+                          </p>
+                        </span>
+                        <span>
+                          <h5>
+                            {" "}
+                            {new Date(
+                              flightData?.arrival.at
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </h5>
+                          <p>{`${
+                            filterIataAirport(flightData?.arrival?.iataCode)
+                              ?.Airport_name
+                          },  ${
+                            filterIataAirport(flightData?.arrival?.iataCode)
+                              ?.Location_served
+                          }`}</p>
+                          {/* <AirlineCodeLookup
                       keyWord={
                         oneWayFlightResult[2][index].itineraries[0].segments[0]
                           .arrival.iataCode
                       }
                     /> */}
-                  </span>
-                </DNRDetailTime>
+                        </span>
+                      </DNRDetailTime>
 
-                <DNRDetailAirport>
-                  <div>Airport ({oneWayFlightResult[3]})</div>
-                  <div>Airport ({oneWayFlightResult[4]})</div>
-                </DNRDetailAirport>
-                <DNRDetailBaggage>
-                  <span>
-                    <h5>Airline</h5>
+                      <DNRDetailAirport>
+                        <div>Airport ({flightData?.departure?.iataCode})</div>
+                        <div>Airport ({flightData?.arrival?.iataCode})</div>
+                      </DNRDetailAirport>
+                      <DNRDetailBaggage>
+                        <span>
+                          <h5>Airline</h5>
 
-                    <AirlineFlightLogo
-                      dictionaries={oneWayFlightResult[9]}
-                      data={oneWayFlightResult[2][index]}
-                      keyWord={
-                        oneWayFlightResult[2][index].validatingAirlineCodes[0]
-                      }
-                      only={true}
-                    />
-                  </span>
-                  <span>
-                    <h5>Baggage</h5>
-                    100kg
-                  </span>
-                </DNRDetailBaggage>
-              </DNRDetail>
-
-
-
-              {/* STOPOVER UI FOR ONEWAY */}
-              {flightStopOver === 1 && 
-                <DNRDetail>
-                <DNRDetailFlightImage>
-                  <img
-                    src={`https://images.wakanow.com/Images/flight-logos/${oneWayFlightResult[2][index].validatingAirlineCodes[0]}.gif`}
-                    alt={oneWayFlightResult[2][index].validatingAirlineCodes[0]}
-                  />
-                </DNRDetailFlightImage>
-
-                <DNRDetailTime>
-                  <span>
-                    <h5>
-                      {new Date(
-                        oneWayFlightResult[2][
-                          index
-                        ].itineraries[0].segments[0].departure.at
-                      ).toLocaleTimeString("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </h5>
-                    <p>
-                      {oneWayFlightResult[0]}
-                    </p>
-                    {/* <AirlineCodeLookup
-                      keyWord={
-                        oneWayFlightResult[2][index].itineraries[0].segments[0]
-                          .departure.iataCode
-                      }
-                    /> */}
-                  </span>
-                  <span>
-                  <p> {`${
-                      parseDuration(
-                        oneWayFlightResult[2][index].itineraries[0].segments[0]
-                          .duration
-                      ).hours
-                    }hr ${
-                      parseDuration(
-                        oneWayFlightResult[2][index].itineraries[0].segments[0]
-                          .duration
-                      ).minutes
-                    }min`}</p>
-                    <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
-                   <p>{
-                      oneWayFlightResult[2][index].itineraries[0].segments[0]
-                        .numberOfStops
-                    }
-                    -Stop</p>
-                  </span>
-                  <span>
-                    <h5>
-                      {" "}
-                      {new Date(
-                        oneWayFlightResult[2][
-                          index
-                        ].itineraries[0].segments[0].arrival.at
-                      ).toLocaleTimeString("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </h5>
-                    <p>
-                      {oneWayFlightResult[1]}
-                    </p>
-                    {/* <AirlineCodeLookup
-                      keyWord={
-                        oneWayFlightResult[2][index].itineraries[0].segments[0]
-                          .arrival.iataCode
-                      }
-                    /> */}
-                  </span>
-                </DNRDetailTime>
-
-                <DNRDetailAirport>
-                  <div>Airport ({oneWayFlightResult[3]})</div>
-                  <div>Airport ({oneWayFlightResult[4]})</div>
-                </DNRDetailAirport>
-                <DNRDetailBaggage>
-                  <span>
-                    <h5>Airline</h5>
-
-                    <AirlineFlightLogo
-                      dictionaries={oneWayFlightResult[9]}
-                      data={oneWayFlightResult[2][index]}
-                      keyWord={
-                        oneWayFlightResult[2][index].validatingAirlineCodes[0]
-                      }
-                      only={true}
-                    />
-                  </span>
-                  <span>
-                    <h5>Baggage</h5>
-                    100kg
-                  </span>
-                </DNRDetailBaggage>
-              </DNRDetail>
-              }
-
+                          <AirlineFlightLogo
+                            dictionaries={oneWayFlightResult[9]}
+                            data={oneWayFlightResult[2][index]}
+                            keyWord={
+                              flightData?.operating?.carrierCode
+                                ? flightData?.operating?.carrierCode
+                                : oneWayFlightResult[2][index]
+                                    .validatingAirlineCodes[0]
+                            }
+                            only={true}
+                          />
+                        </span>
+                        <span>
+                          <h5>Baggage</h5>
+                          100kg
+                        </span>
+                      </DNRDetailBaggage>
+                    </DNRDetail>
+                    <br />
+                  </>
+                )
+              )}
             </FlightDetailDNR>
           </FLightDetailContent>
 

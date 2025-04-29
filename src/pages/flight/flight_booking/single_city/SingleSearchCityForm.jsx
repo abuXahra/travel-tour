@@ -38,55 +38,60 @@ import { FaCircle } from "react-icons/fa";
 import { useAuthStore } from "../../../../store/store";
 import MulticitySearchForm from "../multi_city/MulticitySearchForm";
 import cityList from "../../../../flightDB/airports.json";
+import iataAirports from "../../../../flightDB/IATA_airports.json";
 import { SingleAndMulticityWrapper } from "./SingleSearchCityForm.style";
 import FlightRadioHeader from "../../../../components/booking_icons/flight_radio_header/FlightRadioHeader";
 import FlightSlide from "../../../../components/Flight/flight_packages/flight_slider/FlightSlider";
 import Loader from "../../../../components/loader/Loader";
 
-
-
-
-
 const defaultCityList = [
   {
-    code: "LOS",
-    lat: "6.575",
-    lon: "3.3222",
-    name: "Lagos Murtala Muhammed Airport",
-    city: "Ikeja",
-    state: "Lagos",
-    country: "Nigeria",
-    woeid: "12515073",
-    tz: "Africa/Lagos",
-    phone: "",
-    type: "Airports",
-    email: "",
-    url: "",
-    runway_length: "12795",
-    elev: "135",
-    icao: "DNMM",
-    direct_flights: "42",
-    carriers: "37",
+    IATA: "LOS",
+    ICAO: "DNMM",
+    Airport_name: "Murtala Muhammed International Airport",
+    Location_served: "Lagos,\u00a0Nigeria",
+    Time: "UTC+01:00",
+    DST: null,
   },
   {
-    code: "ABV",
-    lat: "9.0056",
-    lon: "7.2661",
-    name: "Abuja International Airport",
-    city: "Gwagwa",
-    state: "Abuja Capital Territory",
-    country: "Nigeria",
-    woeid: "12515056",
-    tz: "Africa/Lagos",
-    phone: "",
-    type: "Airports",
-    email: "",
-    url: "",
-    runway_length: "11808",
-    elev: "1122",
-    icao: "DNAA",
-    direct_flights: "9",
-    carriers: "12",
+    IATA: "ABV",
+    ICAO: "DNAA",
+    Airport_name: "Nnamdi Azikiwe International Airport",
+    Location_served: "Abuja,\u00a0Nigeria",
+    Time: "UTC+01:00",
+    DST: null,
+  },
+  {
+    IATA: "DXB",
+    ICAO: "OMDB",
+    Airport_name: "Dubai International Airport",
+    Location_served: "Dubai,\u00a0United Arab Emirates",
+    Time: "UTC+04:00",
+    DST: null,
+  },
+  {
+    IATA: "LHR",
+    ICAO: "EGLL",
+    Airport_name: "Heathrow Airport",
+    Location_served: "London,\u00a0England, United Kingdom",
+    Time: "UTC\u00b100:00",
+    DST: "Mar-Oct",
+  },
+  {
+    IATA: "KAN",
+    ICAO: "DNKN",
+    Airport_name: "Mallam Aminu Kano International Airport",
+    Location_served: "Kano,\u00a0Nigeria",
+    Time: "UTC+01:00",
+    DST: null,
+  },
+  {
+    IATA: "LGA",
+    ICAO: "KLGA",
+    Airport_name: "LaGuardia Airport",
+    Location_served: "New York City,\u00a0New York, United States",
+    Time: "UTC\u221205:00",
+    DST: "Mar-Nov",
   },
 ];
 
@@ -106,17 +111,15 @@ export default function SingleSearchCityForm({
   showSingleForm,
   showMultiCityForm,
   showReturnDate,
-  locationError
+  locationError,
 }) {
   const navigate = useNavigate();
-
-
 
   //  query parameters
   let queryParams;
   let searchParams;
 
-  const todayDate = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD (2025-02-29)
+  const todayDate = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD (2025-02-29)
 
   // roundTrip is selected by default
   const [kickOff, setKickOff] = useState("");
@@ -239,20 +242,18 @@ export default function SingleSearchCityForm({
   useEffect(() => {
     if (originLocation !== "") {
       // airports(originLocation, 0);
-      const newFilterData = cityList.filter((item) => {
+      const newFilterData = iataAirports.filter((item) => {
         if (
-          (item.name &&
-            item.name.toLowerCase().includes(originLocation.toLowerCase())) ||
-          (item.city &&
-            item.city.toLowerCase().includes(originLocation.toLowerCase())) ||
-          (item.state &&
-            item.state.toLowerCase().includes(originLocation.toLowerCase())) ||
-          (item.country &&
-            item.country
-              .toLowerCase()
-              .includes(originLocation.toLowerCase())) ||
-          (item.code &&
-            item.code.toLowerCase().includes(originLocation.toLowerCase()))
+          (item.Airport_name &&
+            item.Airport_name.toLowerCase().includes(
+              originLocation.toLowerCase()
+            )) ||
+          (item.Location_served &&
+            item.Location_served.toLowerCase().includes(
+              originLocation.toLowerCase()
+            )) ||
+          (item.IATA &&
+            item.IATA.toLowerCase().includes(originLocation.toLowerCase()))
         ) {
           return item;
         }
@@ -262,26 +263,18 @@ export default function SingleSearchCityForm({
   }, [originLocation]);
   useEffect(() => {
     if (destinationLocation !== "") {
-      const newFilterData = cityList.filter((item) => {
+      const newFilterData = iataAirports.filter((item) => {
         if (
-          (item.name &&
-            item.name
-              .toLowerCase()
-              .includes(destinationLocation.toLowerCase())) ||
-          (item.city &&
-            item.city
-              .toLowerCase()
-              .includes(destinationLocation.toLowerCase())) ||
-          (item.state &&
-            item.state
-              .toLowerCase()
-              .includes(destinationLocation.toLowerCase())) ||
-          (item.country &&
-            item.country
-              .toLowerCase()
-              .includes(destinationLocation.toLowerCase())) ||
-          (item.code &&
-            item.code.toLowerCase().includes(destinationLocation.toLowerCase()))
+          (item.Airport_name &&
+            item.Airport_name.toLowerCase().includes(
+              destinationLocation.toLowerCase()
+            )) ||
+          (item.Location_served &&
+            item.Location_served.toLowerCase().includes(
+              destinationLocation.toLowerCase()
+            )) ||
+          (item.IATA &&
+            item.IATA.toLowerCase().includes(destinationLocation.toLowerCase()))
         ) {
           // airports(destinationLocation, 1);
           return item;
@@ -312,11 +305,11 @@ export default function SingleSearchCityForm({
   // TakeOff Search airport handler
   const onChangeTakeOffHandler = (e) => {
     setSearchTakeOffInputValue(e.target.value);
-    setTakeOffAirport((e.target.value))
+    setTakeOffAirport(e.target.value);
 
-    if(e.target.value.length > 0){
-      setShowTakeOffAirports(true)
-    }else{
+    if (e.target.value.length > 0) {
+      setShowTakeOffAirports(true);
+    } else {
       setShowTakeOffAirports(false);
     }
   };
@@ -326,9 +319,9 @@ export default function SingleSearchCityForm({
     setSearchDestinationInputValue(e.target.value);
     setDestinationAirport(e.target.value);
 
-    if(e.target.value.length > 0 ){
+    if (e.target.value.length > 0) {
       setShowDestinationAirports(true);
-    }else{
+    } else {
       setShowDestinationAirports(false);
     }
   };
@@ -429,13 +422,11 @@ export default function SingleSearchCityForm({
     };
   }
   const bookflights = async () => {
-
     // destination location
-    if( takeOffAirport === destinationAirport){
-       locationError();
+    if (takeOffAirport === destinationAirport) {
+      locationError();
       return;
     }
-
 
     setLoader(true);
     console.log(searchParams);
@@ -454,6 +445,7 @@ export default function SingleSearchCityForm({
         children,
         infants,
         res.flightRightsDictionaries,
+        flightClass,
       ]);
       // setFlightSearch(res.data.data);
       if (showReturnDate) {
@@ -496,7 +488,7 @@ export default function SingleSearchCityForm({
           multiCity={multiCity}
         />
       )}
-  
+
       {showSingleForm && (
         <FlightForm>
           <FlightInputContainer>
@@ -507,7 +499,7 @@ export default function SingleSearchCityForm({
                   type="text"
                   placeholder="From"
                   value={takeOffAirport}
-                  onChange={(e)=>onChangeTakeOffHandler(e)}
+                  onChange={(e) => onChangeTakeOffHandler(e)}
                 />
                 <span>
                   <MdFlightTakeoff />
@@ -577,7 +569,7 @@ export default function SingleSearchCityForm({
                   value={departDate}
                 />
               </FlightDepatWrapContent>
-             
+
               {showReturnDate && (
                 <FlightDepatWrapContent>
                   <Label for="depart">Returning</Label>
@@ -592,11 +584,13 @@ export default function SingleSearchCityForm({
 
               <FlightDepatWrapContent>
                 <FlightPassengerWrapper>
-                  <FlightPassengerClass onClick={() => setShowPassenger(!showPassenger)}>
+                  <FlightPassengerClass
+                    onClick={() => setShowPassenger(!showPassenger)}
+                  >
                     <span>Passenger and Class</span>
                     <div>
-                        <span id="passengerValue">{totalPassengers}</span>{" "}
-                        passenger and <span id="classValue">{flightClass}</span>{" "}
+                      <span id="passengerValue">{totalPassengers}</span>{" "}
+                      passenger and <span id="classValue">{flightClass}</span>{" "}
                     </div>
                   </FlightPassengerClass>
                   {/* Passengers */}{" "}
@@ -674,17 +668,13 @@ export default function SingleSearchCityForm({
               </FlightDepatWrapContent>
 
               <div>
-                <Button onClick={()=>bookflights()} text={"Search Flight"} />
+                <Button onClick={() => bookflights()} text={"Search Flight"} />
               </div>
             </FlightDepartWrapper>
           )}
         </FlightForm>
       )}
       {showMultiCityForm && <MulticitySearchForm />}
-      
     </SingleAndMulticityWrapper>
-        
-      
- 
   );
 }

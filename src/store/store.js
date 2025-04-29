@@ -1,9 +1,11 @@
 import { create } from "zustand";
 import axios from "axios";
-
-// const domain = "http://localhost:5000";
+import iataAirports from "../../src/flightDB/IATA_airports.json";
+import CryptoJS from "crypto-js";
+const SECRET_KEY = "your_secret_key"; // Do NOT store this in the frontend
+const domain = "http://localhost:5000";
 // const domain = "https://manzo-travels-be.vercel.app";
-const domain = "https://manzo-travels-be.onrender.com";
+// const domain = "https://manzo-travels-be.onrender.com";
 // const domain = "https://backend.manzotravels.com";
 
 export const useAuthStore = create((set) => ({
@@ -21,6 +23,21 @@ export const useAuthStore = create((set) => ({
   setOneWayFlightResult: (obj) => set({ oneWayFlightResult: obj }),
   setTravelDetail: (obj) => set({ travelDetail: obj }),
   setHotelResult: (obj) => set({ hotelResult: obj }),
+  filterIataAirport: (iataCode) => {
+    const newFilterData = iataAirports.find((item) => {
+      return (
+        (item.Airport_name &&
+          item.Airport_name.toLowerCase().includes(iataCode.toLowerCase())) ||
+        (item.Location_served &&
+          item.Location_served.toLowerCase().includes(
+            iataCode.toLowerCase()
+          )) ||
+        (item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase()))
+      );
+    });
+    // console.log("newFilterData", newFilterData);
+    return Promise.resolve(newFilterData);
+  },
   airportAndCitySearch: async (keyWord) => {
     try {
       const res = await axios.post(
@@ -90,13 +107,21 @@ export const useAuthStore = create((set) => ({
     littelFlightInfo
   ) => {
     try {
-      const res = await axios.post(
-        `${domain}/api/v1/flights/flightCreateOrders`,
-        {
+      // Convert to string and hash it
+      const hash = CryptoJS.AES.encrypt(
+        JSON.stringify({
           flight: Flight,
           travelers: Traveler,
           transactionReference,
           littelFlightInfo,
+        }),
+        SECRET_KEY
+      ).toString();
+
+      const res = await axios.post(
+        `${domain}/api/v1/flights/flightCreateOrders`,
+        {
+          hashedData: hash,
         }
       );
       // console.log("vfbsbvfksbjhvfsbvjhf", res?.data);
