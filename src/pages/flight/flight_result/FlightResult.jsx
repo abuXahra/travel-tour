@@ -65,10 +65,6 @@ export default function FlightResult() {
 
   // user defined variable for stopover   ===============================================================
   const [flightStopOver, setFlightStopOver] = useState(0);
-<<<<<<< HEAD
-  
-=======
->>>>>>> 35bd01488465a4b0f5c4d52d9b7cac0f05b5850e
 
   useEffect(() => {
     if (!singleFlightResult[0]) {
