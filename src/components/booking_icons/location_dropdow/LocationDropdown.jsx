@@ -36,7 +36,7 @@ export default function LocationDropdown({
       <LocationDropdownSearchResult>
         <h3>Recent Search</h3>
 
-        {items?.slice(0, 10).map((item, i) => (
+        {items?.slice(0, 30).map((item, i) => (
           <LocationDropdownLocation
             key={i}
             bottomBorder={""}
