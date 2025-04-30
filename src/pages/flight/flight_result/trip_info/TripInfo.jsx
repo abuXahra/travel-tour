@@ -126,13 +126,7 @@ export default function TripInfo() {
   const filterIataAirport = (iataCode) => {
     const newFilterData = iataAirports.find((item) => {
       return (
-        (item.Airport_name &&
-          item.Airport_name.toLowerCase().includes(iataCode.toLowerCase())) ||
-        (item.Location_served &&
-          item.Location_served.toLowerCase().includes(
-            iataCode.toLowerCase()
-          )) ||
-        (item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase()))
+        item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase())
       );
     });
 

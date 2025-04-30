@@ -235,13 +235,7 @@ export default function OnewayOverview() {
   const filterIataAirport = (iataCode) => {
     const newFilterData = iataAirports.find((item) => {
       return (
-        (item.Airport_name &&
-          item.Airport_name.toLowerCase().includes(iataCode.toLowerCase())) ||
-        (item.Location_served &&
-          item.Location_served.toLowerCase().includes(
-            iataCode.toLowerCase()
-          )) ||
-        (item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase()))
+        item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase())
       );
     });
 
@@ -316,7 +310,7 @@ export default function OnewayOverview() {
 
     if (priceChecked) {
       popup.newTransaction({
-        key: "pk_test_eb4cdcb0e9bd59a140958352025d6f25edc89db7",
+        key: process.env.REACT_APP_PAYSTACK_KEY,
         // key: "pk_test_4d7c8fea9dc4783cdc375f4d268de759e8537ab5",
         email: travelDetail?.AdultData?.[0]?.email,
         amount: Number(parseInt(Price) + "00"),

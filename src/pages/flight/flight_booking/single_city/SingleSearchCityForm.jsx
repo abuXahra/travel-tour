@@ -242,44 +242,39 @@ export default function SingleSearchCityForm({
   useEffect(() => {
     if (originLocation !== "") {
       // airports(originLocation, 0);
-      const newFilterData = iataAirports.filter((item) => {
-        if (
-          (item.Airport_name &&
-            item.Airport_name.toLowerCase().includes(
-              originLocation.toLowerCase()
-            )) ||
-          (item.Location_served &&
-            item.Location_served.toLowerCase().includes(
-              originLocation.toLowerCase()
-            )) ||
-          (item.IATA &&
-            item.IATA.toLowerCase().includes(originLocation.toLowerCase()))
-        ) {
-          return item;
-        }
-      });
+      const searchTerm = originLocation.toLowerCase();
+      // First, try to match IATA codes
+      let newFilterData = iataAirports.filter((item) =>
+        item.IATA?.toLowerCase().startsWith(searchTerm)
+      );
+
+      // If no IATA matches, fall back to other fields
+      if (newFilterData.length === 0) {
+        newFilterData = iataAirports.filter((item) =>
+          ["Location_served", "Airport_name"].some((key) =>
+            item[key]?.toLowerCase().startsWith(searchTerm)
+          )
+        );
+      }
       setTakeOffAportList(newFilterData);
     }
   }, [originLocation]);
   useEffect(() => {
     if (destinationLocation !== "") {
-      const newFilterData = iataAirports.filter((item) => {
-        if (
-          (item.Airport_name &&
-            item.Airport_name.toLowerCase().includes(
-              destinationLocation.toLowerCase()
-            )) ||
-          (item.Location_served &&
-            item.Location_served.toLowerCase().includes(
-              destinationLocation.toLowerCase()
-            )) ||
-          (item.IATA &&
-            item.IATA.toLowerCase().includes(destinationLocation.toLowerCase()))
-        ) {
-          // airports(destinationLocation, 1);
-          return item;
-        }
-      });
+      const searchTerm = destinationLocation.toLowerCase();
+      // First, try to match IATA codes
+      let newFilterData = iataAirports.filter((item) =>
+        item.IATA?.toLowerCase().startsWith(searchTerm)
+      );
+
+      // If no IATA matches, fall back to other fields
+      if (newFilterData.length === 0) {
+        newFilterData = iataAirports.filter((item) =>
+          ["Location_served", "Airport_name"].some((key) =>
+            item[key]?.toLowerCase().startsWith(searchTerm)
+          )
+        );
+      }
       setDestinationAriporList(newFilterData);
     }
   }, [destinationLocation]);

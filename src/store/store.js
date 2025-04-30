@@ -3,9 +3,9 @@ import axios from "axios";
 import iataAirports from "../../src/flightDB/IATA_airports.json";
 import CryptoJS from "crypto-js";
 const SECRET_KEY = "your_secret_key"; // Do NOT store this in the frontend
-const domain = "http://localhost:5000";
+// const domain = "http://localhost:5000";
 // const domain = "https://manzo-travels-be.vercel.app";
-// const domain = "https://manzo-travels-be.onrender.com";
+const domain = "https://manzo-travels-be.onrender.com";
 // const domain = "https://backend.manzotravels.com";
 
 export const useAuthStore = create((set) => ({
@@ -115,7 +115,7 @@ export const useAuthStore = create((set) => ({
           transactionReference,
           littelFlightInfo,
         }),
-        SECRET_KEY
+        process.env.REACT_APP_SECRET_KEY
       ).toString();
 
       const res = await axios.post(
