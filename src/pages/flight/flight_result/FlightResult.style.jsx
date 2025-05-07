@@ -39,7 +39,7 @@ export const FlightResultContent = styled.div`
     align-items: start;
     padding: 10px 40px;
     font-weight: normal;
-    gap: 10px;
+    /* gap: 10px; */
 
     
     @media (max-width:768px) {
@@ -48,25 +48,21 @@ export const FlightResultContent = styled.div`
 `
 
 
-export const ResultSidebar = styled.div` //not in use currently
-    width: 25%;
-    height: auto;
-    border: 1px solid #0D3984;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 50px;
-    background-color: white;
-    display: none;
-`
+
 
 
 export const FlightResultMain = styled.div`
-    width: 100%;
+    width: 75%;
     height: auto;
     display: flex;
     flex-direction: column;
     border-radius: 10px;
     padding: 20px;
+    gap: 10px;
+
+    @media (max-width:768px) {
+        width: 100%;
+    }
 `
 
 
@@ -118,12 +114,13 @@ export const ResultCounterRight=styled.div`
 export const FlightCard = styled.div`
  background-color: white;
  box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
- border-radius: 20px;
- padding: 25px;
+ border-radius: 10px;
+ border: 1px solid #0D3984;
+ padding: 15px;
  display: flex;
  gap: 10px;
  flex-direction: column;
- margin-bottom: 40px;
+ margin-bottom: 20px;
 
  p{
     font-size: 13px;
@@ -182,59 +179,10 @@ export const DnRWrapper = styled.div`
  display: flex;
  flex-direction: column;
  gap: 10px;
- div{
-    width: 100%;
-    display: flex;
-    background-color: #0d398413;
-    border-radius: 20px;
-    padding: 20px 50px;
-    gap: 20px;
-    justify-content: space-between;
-
-    span{
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap:5px;
-        justify-content: center;
-        align-items: start;
-        font-size: 13px;
-    }
-
-    span:nth-child(2){
-        align-items: center;
-        width: 100px;
-    }
- }
-
+ 
 
  @media (max-width:768px) {
         width: 100%;
-    
-div{
-    width: 100%;
-    justify-content: start;
-    padding: 20px 20px;
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-    
-
-    span{
-        width: 100%;
-        justify-content: center;
-        align-items: start;
-        font-size: 9.5px;
-    }
-
-
-    span:nth-child(2){
-        align-items: center;
-        width: 100px;
-    }
- }
-
-
     }
 `
 
@@ -253,7 +201,73 @@ export const DnRHeader = styled.span`
     
 `
 
+export const DnRBody = styled.div`
+    width: 100%;
+    display: flex;
+    background-color: #0d398413;
+    border-radius: 10px;
+    padding: 20px;
+    gap: 20px;
+    justify-content: space-between;
 
+    @media (max-width:768px) {
+        width: 100%;
+        }
+`
+    
+export const DnRBodyChildA = styled.span`
+        width: 40%;
+        display: flex;
+        flex-direction: column;
+        gap:5px;
+        justify-content: center;
+        align-items: start;
+        p{
+            font-size: 10px;
+         }
+`
+
+export const DnRBodyChildB = styled.span`
+        width: 20%;
+        display: flex;
+        flex-direction: column;
+        gap:5px;
+        justify-content: center;
+        align-items: center;
+        font-size: 10px;`
+
+export const DnRBodyChildC = styled.span`
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            gap:5px;
+            justify-content: center;
+            align-items: start;
+            p{
+        font-size: 10px;
+     }
+`
+
+
+export const PriceWrapper = styled.span`
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    p{
+        color: black;
+        font-size: 14px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    span{
+        color: green; 
+        font-size: 12px; 
+        text-align: center;
+    }
+`
 
 export const MdFlightStyled = styled.b`
     color: ${({IconColor})=>IconColor || "#0D3984"};
@@ -356,7 +370,7 @@ export const DNRDetailFlightImage = styled.div`
         padding: 10px 0;
         border-bottom: 1px solid #8080804a;
         img{
-            width: 60px;
+            width: 40px;
             border-radius: 20px;
         }
 `
@@ -451,4 +465,22 @@ export const FlightDetailButton = styled.div`
     @media (max-width:768px) {
         width: 100%; 
     }
+`
+
+
+export const LayoverWrapper = styled.div`
+    padding: 5px;
+    width: 100%;
+    background-color: #0D3984;
+    font-size: 10px;
+    color: white;
+    text-align: center;
+`
+
+
+export const FlightMainHeader = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `

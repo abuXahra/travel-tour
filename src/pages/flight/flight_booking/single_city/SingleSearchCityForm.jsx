@@ -43,6 +43,8 @@ import { SingleAndMulticityWrapper } from "./SingleSearchCityForm.style";
 import FlightRadioHeader from "../../../../components/booking_icons/flight_radio_header/FlightRadioHeader";
 import FlightSlide from "../../../../components/Flight/flight_packages/flight_slider/FlightSlider";
 import Loader from "../../../../components/loader/Loader";
+import DateRangePickerCalender from "../../../../components/DateRangePickerCalender";
+import { CheckboxWrapper } from "../multi_city/MultiCity.style";
 
 const defaultCityList = [
   {
@@ -168,6 +170,9 @@ export default function SingleSearchCityForm({
   const handleReturnDate = (e) => {
     setreturnDate(e.target.value);
   };
+
+
+  console.log('==============================\n Depart Date: ', departDate, '\n Depart Date: ' , returnDate, '\n====================================')
 
   const handleIncrement = (type) => {
     if (type === "adults" && adults < 9) {
@@ -324,9 +329,9 @@ export default function SingleSearchCityForm({
   // show/hide takeoff and destination down airport Lists
   const [showTakeOffAirports, setShowTakeOffAirports] = useState(false);
   const [showDestinationAirports, setShowDestinationAirports] = useState(false);
+  const [showFlexibleDate, setShowFlexibleDate] = useState(false);
 
-  // Mr Bobai -
-
+  
   const onCloseTakOffDropdwon = () => {
     setShowTakeOffAirports(false);
   };
@@ -341,6 +346,7 @@ export default function SingleSearchCityForm({
     setShowDestinationAirports(false);
     setshowFlightInputs(true);
     setShowFlightType(true);
+    setShowFlexibleDate(true);
   };
 
   const handleShowFlightInputsB = () => {
@@ -348,6 +354,7 @@ export default function SingleSearchCityForm({
     setShowTakeOffAirports(false);
     setshowFlightInputs(true);
     setShowFlightType(true);
+    setShowFlexibleDate(true);
   };
   if (showReturnDate) {
     searchParams = {
@@ -464,6 +471,23 @@ export default function SingleSearchCityForm({
       setLoader(false);
     }
   };
+
+
+
+
+
+  // Checkbox Validation: Terms and Agreement
+      // State for form values
+      const [isChecked, setIsChecked] = useState(false);
+    
+    
+      // Handler for checkbox change
+      const handleCheckboxChange = (event) => {
+        setIsChecked(event.target.checked);
+      };
+
+
+
   return (
     <SingleAndMulticityWrapper>
       {showFlightType && (
@@ -564,6 +588,15 @@ export default function SingleSearchCityForm({
                   value={departDate}
                 />
               </FlightDepatWrapContent>
+
+              {/* Date range picker */}
+{/*               
+              <FlightDepatWrapContent>
+                  <DateRangePickerCalender
+                    setDepartDate={setDepartDate}
+                    setReturnDate={setreturnDate}
+                  />
+              </FlightDepatWrapContent> */}
 
               {showReturnDate && (
                 <FlightDepatWrapContent>
@@ -667,6 +700,20 @@ export default function SingleSearchCityForm({
               </div>
             </FlightDepartWrapper>
           )}
+  
+  {/* Checkbox for flight result multiple date */}
+  {
+    showFlexibleDate &&
+    <CheckboxWrapper>
+                  <input
+                     type="checkbox"
+                     id="terms"
+                     checked={isChecked}
+                     onChange={handleCheckboxChange}
+                  />
+                  <p>My dates are flexible(+/- 3days)</p>
+                </CheckboxWrapper>
+  }            
         </FlightForm>
       )}
       {showMultiCityForm && <MulticitySearchForm />}

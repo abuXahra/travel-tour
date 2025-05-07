@@ -229,7 +229,8 @@ export default function FlightBooking() {
               stopOverBtBorder={stopOverBtBorder}
               showItems={true}
             />
-            <FormWrapperContainer>
+
+            <FormWrapperContainer bgColor=''> {/*bg to change background color from blue*/}
               <FormWrapper>
                 {/*================ Single City & Multi City Search Form ============== */}
 

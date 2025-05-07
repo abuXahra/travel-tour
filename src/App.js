@@ -59,6 +59,7 @@ import OnewaySucess from "./pages/flight/flight_success_page/oneway_sucess/Onewa
 import FlightEdit from "./pages/flight/flight_edit/roundtrip_edit/FlightEdit";
 import Loader from "./components/loader/Loader";
 import NoResult from "./components/no_result/NoResult";
+import DateRangePickerCalender from "./components/DateRangePickerCalender";
 
 function App() {
   return (
@@ -191,6 +192,7 @@ function App() {
             {/* Loader */}
             <Route path="/loader" element={<Loader />} />
             <Route path="/no-result" element={<NoResult />} />
+            <Route path="/date-result" element={<DateRangePickerCalender />} />
           </Routes>
           {/*hide header for login page */}
           <HideNavbar>

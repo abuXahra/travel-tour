@@ -45,6 +45,7 @@ import iataAirports from "../../../../flightDB/IATA_airports.json";
 import AirlineCodeLookup from "../../../../components/Flight/AirlineCodeLookup";
 import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../../store/store";
+import Overlay from "../../../../components/overlay/Overlay";
 
 export default function TripInfo() {
   const [data, setData] = useState({});
@@ -101,6 +102,7 @@ export default function TripInfo() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
 
+
   // error
   const [titleError, setTitleError] = useState(false);
   const [firstNameError, setFirstNameError] = useState(false);
@@ -119,8 +121,9 @@ export default function TripInfo() {
 
   // title selection handler
   const userTitle = [
-    { title: "Mr.", value: "Mr." },
-    { title: "Mrs", value: "Mrs." },
+    { title: "Select Title", value: "" },
+    { title: "Mr", value: "Mr" },
+    { title: "Mrs", value: "Mrs" },
   ];
 
   const filterIataAirport = (iataCode) => {
@@ -431,51 +434,74 @@ export default function TripInfo() {
   const handledSubmit = (e) => {
     e.preventDefault();
 
+    e.preventDefault();
+
+        e.preventDefault();
+        let isValid = true;
+
     // title validation
     if (!selectedTitleValue) {
       setTitleError(true);
+      isValid = false;
     }
 
     // last name validation
-    if (lastName === "" || null) {
+    if (!lastName) {
       setLastNameError(true);
+      isValid = false;
     }
 
     // first name validation
-    if (firstName === "" || null) {
+    if (!firstName) {
       setFirstNameError(true);
+      isValid = false;
     }
 
     // middle name validation
-    if (middleName === "" || null) {
+    if (!middleName ) {
       setMiddleNameError(true);
+      isValid = false;
     }
 
     // dob validation
-    if (dob === "" || null) {
+    if (!dob ) {
       setDobError(true);
+      isValid = false;
     }
 
     // country  validation
-    if (selectedCountryValue === "" || null) {
+    if (!selectedCountryValue) {
       setCountryError(true);
+      isValid = false;
     }
 
     // Gender  validation
-    if (selectedGender === "" || null) {
+    if (!selectedGender) {
       setGenderError(true);
+      isValid = false;
     }
 
     // phone validation
-    if (phone === "" || null) {
+    if (!phone) {
       setPhoneError(true);
+      isValid = false;
     }
 
     // email validation
-    if (email === "" || null) {
+    if (!email) {
       setEmailError(true);
+      isValid = false;
     }
+
+    if (isValid) {
+      setTravelDetail(TravelData);
+    navigate(`/flight-customization/${flightResultIndex}`)
+    }
+    
   };
+
+
+
 
   const [showtripDepart, setShowtripDepart] = useState(false);
   const [showtripReturn, setShowtripReturn] = useState(false);
@@ -511,6 +537,10 @@ export default function TripInfo() {
   };
   console.log(TravelData);
   // let carrierCode = singleFlightResult[9].carriers[keyWord];
+
+
+  const [showTerms, setShowTerms] = useState(false);
+
 
   // console.log(queryParams);
   if (!singleFlightResult || singleFlightResult?.length === 0) {
@@ -712,7 +742,8 @@ export default function TripInfo() {
                                       .validatingAirlineCodes[0]
                               }
                               detail={true}
-                            />
+                            /> 
+                             <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
                           </span>
                           <span>
                             <a href="#">
@@ -807,6 +838,8 @@ export default function TripInfo() {
                             </div>
                           </TripAirport>
                         </TripDetailTime>
+                      <p style={{textAlign: "center", fontSize: "12px"}}><b style={{color: "#FF6805"}}>Layover</b> 1h 30m Layover in Addis Ababa (Addis Ababa) </p> 
+
                       </TripDetailBody>
                     ))}
                   </>
@@ -882,6 +915,7 @@ export default function TripInfo() {
                               }
                               detail={true}
                             />
+                             <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
                           </span>
                           <span>
                             <a href="#">
@@ -977,6 +1011,7 @@ export default function TripInfo() {
                             </div>
                           </TripAirport>
                         </TripDetailTime>
+                        <p style={{textAlign: "center", fontSize: "12px"}}><b style={{color: "#FF6805"}}>Layover</b> 1h 30m Layover in Addis Ababa (Addis Ababa) </p> 
                       </TripDetailBody>
                     ))}
                   </>
@@ -1124,12 +1159,12 @@ export default function TripInfo() {
                     {/* Continue Button */}
                     <ButtonWrapper>
                       <div>
-                        <input type="checkbox" name="terms" id="terms" />
-                        <p>
-                          By proceeding you agree have read and accept our{" "}
-                          <a href="#">Terms and Conditions</a>
-                        </p>
-                      </div>
+                          <input type="checkbox" name="terms" id="terms" />
+                          <p>
+                            By proceeding you agree have read and accept our{" "}
+                            <span style={{cursor: "pointer", fontWeight: "bold"}} onClick={()=>setShowTerms(true)}>Terms and Conditions</span>
+                          </p>
+                        </div>
                     </ButtonWrapper>
                   </FormWrapper>
                 </TripInfoContent>
@@ -1280,7 +1315,7 @@ export default function TripInfo() {
                         <input type="checkbox" name="terms" id="terms" />
                         <p>
                           By proceeding you agree have read and accept our{" "}
-                          <a href="#">Terms and Conditions</a>
+                          <span style={{cursor: "pointer", fontWeight: "bold"}} onClick={()=>setShowTerms(true)}>Terms and Conditions</span>
                         </p>
                       </div>
                       {/* <Button
@@ -1317,7 +1352,7 @@ export default function TripInfo() {
                   </TripPassenger>
 
                   {/* Form */}
-                  <FormWrapper onSubmit={handledSubmit}>
+                  <FormWrapper>
                     <FormContent>
                       {/* Title  */}
 
@@ -1437,13 +1472,7 @@ export default function TripInfo() {
 
                     {/* Continue Button */}
                     <ButtonWrapper>
-                      <div>
-                        <input type="checkbox" name="terms" id="terms" />
-                        <p>
-                          By proceeding you agree have read and accept our{" "}
-                          <a href="#">Terms and Conditions</a>
-                        </p>
-                      </div>
+                
                       {/* <Button
                         text={"Continue"}
                         onClick={() => {
@@ -1458,19 +1487,50 @@ export default function TripInfo() {
                 </TripInfoContent>
               )
             )}
-            <div>
+          <div>
               <Button
                 text={"Continue"}
-                onClick={() => {
-                  setTravelDetail(TravelData);
-                  navigate(`/flight-customization/${flightResultIndex}`);
-                }}
+                onClick={handledSubmit}
               />
             </div>
 
             {/*user trip data  */}
           </TripMinContent>
         </TripInfoBody>
+         
+         
+         { showTerms && 
+         <Overlay
+          btnDisplay2={'none'}
+          text1={'Continue'}
+          contentWidth={'70%'}
+          overlayButtonClick={()=>setShowTerms(false)}
+          closeOverlayOnClick={()=>setShowTerms(false)}
+          >
+            <h3>Terms and Conditions</h3>
+            <hr />
+            <div style={{fontSize: "12px", display: "flex", gap:"10px", flexDirection: "column"}}>
+                <p>Cancellation and Date Change penalty applicable. Penalty amount will depend on the Date and Time of Cancellation or Date Change.</p>
+                
+                <p> All booking/reservations made on Wakanow.com are subject to third party operating Airline's rules and terms of carriage. </p>
+                
+                <p>Wakanow merely acts as a travel agent of third party operating Airlines and SHALL have NO responsibility, whatsoever, for any additional cost (directly or indirectly) incurred by any passenger due to any delay, loss, cancellation, change, inaccurate/insufficient information arising whether during booking reservation or after ticket issuance.</p>
+                <p>All the Arik Air flight bookings/reservations are subject to airline availability and are valid for 1 (one) hour from time of booking to payment confirmation and ticket issuance.</p>
+                <p>All flight fare quoted on www.wakanow.com are subject to availability, and to change at any time by the third party Airline operators</p>
+                <p>Passengers are liable for; all card transactions (whether successful or not) travel details, compliance and adequacy of visa requirements, travel itinerary and names (as appear on passport) provided for bookings</p>
+                <p>Ticket issuance SHALL BE subject to payment confirmation by Wakanow.</p>
+                <p>Please ensure that your International passport has at least 6 (six) months validity prior to its expiration date as Wakanow shall not be liable for any default.</p>
+                <p>For all non-card transactions, please contact us at 07009252669, 01-6329250, 01-2773010 to confirm booking details, travel dates and travel requirements before proceeding to payment.</p>
+                <p>Refund, cancellation and change requests, where applicable, are subject to third party operating airline's policy, plus a service charge of $50</p>
+                <p>Refund settlement in 9 above, shall be pursuant to fund remittance by the operating airline</p>
+                <p>Passengers are advised to arrive at the airport at least 3-5 hours prior to flight departure.</p>
+                <p>First time travelers are advised to have a return flight ticket, confirmed hotel/accommodation and a minimum of $1000 for Personal Travel Allowance (PTA) or Business Travel Allowance (BTA).</p>
+                <p>An original child's Birth Certificate and Consent letter from parent(s) must be presented before the check-in counter at the Airport.</p>
+                <p>All tickets are non-transferable at any time. Some tickets may be non-refundable or non-changeable.</p>
+                <p>Some Airlines may require additional Medical Report/Documents in the case of pregnant passenger(s).</p>
+                <p>The Passenger hereby confirms to have read and understood this booking information notice and has agreed to waive all rights, by law and to hold harmless and absolve Wakanow of all liabilities that may arise thereof.</p>
+            </div>
+          </Overlay>}
       </TripInfoWrapper>
     );
   }

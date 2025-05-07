@@ -139,3 +139,20 @@ export const MultiFlightPassengerWrapper  = styled.div`
 `
 
 
+export const CheckboxWrapper = styled.div`
+    display:  flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 12px;
+
+   input {
+    width: 15px;
+    height:15px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: blue;
+    border-color: blue;
+  }
+
+
+`

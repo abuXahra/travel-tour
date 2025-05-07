@@ -14,6 +14,8 @@ export default function BookingHeaderContent({
   showItems,
 }) {
 
+  // search form header color
+  const formHeaderColor = ''
 
    // FlightItems
    const FlightItems = [
@@ -49,7 +51,7 @@ export default function BookingHeaderContent({
     },
   ]
 
-
+  
 
   return (
     <ContentSubHeader>
@@ -64,12 +66,13 @@ export default function BookingHeaderContent({
             Icon={item.Icon}
             headerBg={item.bgColor}
             bottomBorder={item.border}
+            textColor={formHeaderColor}
       />
       ))
     }  
       </div>}
       <div>
-        <GeneralHeaders backgroundColor={'transparent'} displayInMobile={'flex'} gapInMobile={'15px'}/>
+        <GeneralHeaders  textColor={formHeaderColor} backgroundColor={'transparent'} displayInMobile={'flex'} gapInMobile={'15px'}/>
       </div>
     
               

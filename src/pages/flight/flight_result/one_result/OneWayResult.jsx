@@ -21,10 +21,12 @@ import {
   FlightResultHeader,
   FlightResultMain,
   FlightResultWrapper,
+  LayoverWrapper,
   MdFlightStyled,
   ResultCounter,
   ResultCounterLeft,
   ResultCounterRight,
+  ResultSidebar,
 } from "../FlightResult.style";
 import { MdFlight } from "react-icons/md";
 import { FaCircle, FaTimes } from "react-icons/fa";
@@ -49,6 +51,7 @@ import { useAuthStore } from "../../../../store/store";
 import iataAirports from "../../../../flightDB/IATA_airports.json";
 import FlightResultForDepart from "../../../../components/Flight/FlightResultForDepart";
 import NoResult from "../../../../components/no_result/NoResult";
+import Sidebar from "../../../../components/sidebar/Sidebar";
 
 export default function OneWayResult() {
   const { oneWayFlightResult } = useAuthStore();
@@ -229,9 +232,15 @@ export default function OneWayResult() {
       {/* flight result section */}
       <FlightResultContent>
         {/* Flight Result Main Content */}
+
+        
+               
+           {/* SideBar */}
+                <Sidebar/>
+
         <FlightResultMain>
           {/* Counter Summary */}
-          <ResultCounter>
+          {/* <ResultCounter>
             <ResultCounterLeft>
               <h3>{oneWayFlightResult[2]?.length} results</h3>
               <p>Fares displayed are for all passengers.</p>
@@ -242,7 +251,7 @@ export default function OneWayResult() {
               <span onClick={() => {}}>USD - US Dollar ($)</span>
               <span onClick={() => {}}>Sort and Filter</span>
             </ResultCounterRight>
-          </ResultCounter>
+          </ResultCounter> */}
 
           {/* Flight Result Card  1*/}
           <FlightResultForDepart
@@ -273,7 +282,8 @@ export default function OneWayResult() {
                     <span>
                       <div>
                         {/* <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} /> */}
-                        <h4>{`Flight From ${` ${
+                        <h4>
+                      {`Flight From ${` ${
                           filterIataAirport(flightData?.departure?.iataCode)
                             ?.Airport_name
                         },  ${
@@ -285,7 +295,8 @@ export default function OneWayResult() {
                         },  ${
                           filterIataAirport(flightData?.arrival?.iataCode)
                             ?.Location_served
-                        }`}`}</h4>
+                        }`}`}
+                        </h4>
                       </div>
                       <b>Outbound</b>
                     </span>
@@ -376,7 +387,7 @@ export default function OneWayResult() {
                       <DNRDetailBaggage>
                         <span>
                           <h5>Airline</h5>
-
+                          <div style={{display: "flex", gap: '5px'}}>  
                           <AirlineFlightLogo
                             dictionaries={oneWayFlightResult[9]}
                             data={oneWayFlightResult[2][index]}
@@ -387,7 +398,7 @@ export default function OneWayResult() {
                                     .validatingAirlineCodes[0]
                             }
                             only={true}
-                          />
+                          />- 780 - Economy - Class L</div>
                         </span>
                         <span>
                           <h5>Baggage</h5>
@@ -395,7 +406,9 @@ export default function OneWayResult() {
                         </span>
                       </DNRDetailBaggage>
                     </DNRDetail>
-                    <br />
+                      <br />
+                      <LayoverWrapper><strong>Change of planes</strong> 15h 0m Layover in Istanbul</LayoverWrapper>
+                      <br />
                   </>
                 )
               )}

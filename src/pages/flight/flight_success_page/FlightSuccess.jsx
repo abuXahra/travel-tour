@@ -378,7 +378,7 @@ export default function FlightFlightSuccess() {
                       }.gif`}
                       alt=""
                       srcset=""
-                    />{" "}
+                    />{" "}  
                     <h4>
                       {flightData?.operating
                         ? data?.littelFlightInfo?.[0].dictionaries.carriers[
@@ -387,7 +387,7 @@ export default function FlightFlightSuccess() {
                         : data?.littelFlightInfo?.[0].dictionaries.carriers[
                             flightData?.carrierCode
                           ]}
-                    </h4>{" "}
+                    </h4> {" "}
                     <p>.</p>{" "}
                   </span>
                   <span>

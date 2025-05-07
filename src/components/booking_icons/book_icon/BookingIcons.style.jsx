@@ -3,7 +3,7 @@ import styled from 'styled-components'
 export const BookingIconStyled = styled.button`
     /* background-color:  ${({headerBg})=> headerBg || '#0d3984cf'}; */
     background-color: transparent;
-    color: white;
+    color: ${({textColor}) => textColor || 'white'};
     padding: 10px;
     display: flex;
     gap: 5px;

@@ -275,6 +275,7 @@ export default function FlightCustomization() {
                               }
                               detail={true}
                             />
+                            <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
                           </span>
                           <span>
                             <a href="#">
@@ -404,6 +405,7 @@ export default function FlightCustomization() {
                               }
                               detail={true}
                             />
+                            <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
                           </span>
                           <span>
                             {" "}
@@ -539,6 +541,7 @@ export default function FlightCustomization() {
                           }
                           detail={true}
                         />
+                        <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
                       </span>
                       <span>
                         {
@@ -549,8 +552,7 @@ export default function FlightCustomization() {
                     </TripDetailClass>
                     <TripDetailTime>
                       <CustomizeTripDetail>
-                        <h4>(1) {travelDetail?.AdultData[0]?.firstName}</h4>
-                        <p>ADULT</p>
+                        <h4>(1) {travelDetail?.AdultData[0]?.firstName} {travelDetail?.AdultData[0]?.middleName} {travelDetail?.AdultData[0]?.lastName}</h4>
                         <span>
                           {travelDetail?.AdultData[0]?.selectedGender}
                         </span>

@@ -517,6 +517,7 @@ export default function OnewayOverview() {
                             oneWayFlightResult?.[9]?.carriers[
                               flightData?.operating?.carrierCode
                             ]}
+                             - 780
                         </span>
                         <img
                           src={`https://images.wakanow.com/Images/flight-logos/${
@@ -530,6 +531,7 @@ export default function OnewayOverview() {
                           alt=""
                           srcset=""
                         />
+                       
                         {/* <img
                                      src={flightLogo}
                                      height={20}

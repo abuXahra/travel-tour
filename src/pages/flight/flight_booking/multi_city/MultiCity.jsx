@@ -1,3 +1,5 @@
+
+
 import React, { useState } from 'react'
 import roundtrip from '../../../../images/svg-icon/flight-return-round-svgrepo-com.svg'
 import { ContentMain, ContentSubHeader, DestinationWrapper, FlightDepartWrapper, FlightDepatWrapContent, FlightForm, FlightFormSection, FlightFormSectionContent, FlightFormSectionTitle, FlightInputAndDropDown, FlightInputContainer, FlightInputWrapper, FlightPassengerClass, FlightPassengerContent, FlightPassengerWrapper, FlightType, Flightwrapper, FlightWrapper, Label, LocationDropdownWrapper, PassengerWrapper, RoundTripImg, TakeOffWrapper } from '../../../../pages/flight/flight_booking/FlightBooking.style'
@@ -33,6 +35,8 @@ export default function MultiCity() {
         const [flightClass, setFlightClass] = useState('Guest');
         
         const [showReturnDate, setShowReturnDte] = useState(true);
+
+      
       
         // Flight Type onchange
         const handleTripTypeChange = (event) => {
@@ -204,6 +208,11 @@ export default function MultiCity() {
 
          const [showClass, setShowClass] = useState(false);
 
+         const [swapInputs, setSwapInputs] = useState(false);
+         const handleSwapAirports = () => {
+          setSwapInputs(prev => !prev);
+        };
+
     return (
       <FlightWrapper>
 
@@ -280,9 +289,14 @@ export default function MultiCity() {
                                 </FlightDepatWrapContent>
                  </FlightType>
   
+         
+                 
+                 
+                 
                   {/* from and to INput */}
                   <FlightInputContainer class="flight-wrapper">
-                    {/* takeoff input */}
+                  
+                   {/* takeoff input: */}
                     <FlightInputAndDropDown>
                          <FlightInputWrapper  onClick={handleShowFlightInputsA}>
                           <input id="from-input" type="text" placeholder="From" value={takeOffAirport} onChange={handleKickOff} />
@@ -303,10 +317,10 @@ export default function MultiCity() {
                               />
                             </TakeOffWrapper>}
                     </FlightInputAndDropDown>
-     
-                          <RoundTripImg><img src={roundtrip}  alt='trip icon'/></RoundTripImg>   
+                    
+                          <RoundTripImg onClick={handleSwapAirports}><img src={roundtrip}  alt='trip icon'/></RoundTripImg>   
   
-                           {/*Destination input  */}
+                           {/*Destination input:  */}
                         <FlightInputAndDropDown>                      
                               <FlightInputWrapper onClick={handleShowFlightInputsB}>
                               <input type="text" placeholder="To" value={destinationAirport} 
@@ -331,6 +345,19 @@ export default function MultiCity() {
   
                     </FlightInputContainer>
   
+
+
+
+
+
+
+
+
+
+
+
+                
+
   
   
                     {/* <!-- Depature and destination container --> */}

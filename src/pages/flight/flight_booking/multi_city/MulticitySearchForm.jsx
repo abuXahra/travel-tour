@@ -5,8 +5,22 @@ import Button from "../../../../components/button/Button";
 import PassengerCard from "./components/PassengerCard";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../../store/store";
+import { CheckboxWrapper } from "./MultiCity.style";
 
 const MulticitySearchForm = () => {
+  
+  
+    // Checkbox Validation: Terms and Agreement
+    // State for form values
+    const [isChecked, setIsChecked] = useState(false);
+  
+  
+    // Handler for checkbox change
+    const handleCheckboxChange = (event) => {
+      setIsChecked(event.target.checked);
+    };
+  
+  
   const maxCities = 4; // Maximum number of city inputs
   const { setMultiCityFlightResult, flightOffersSearchMultiCity, setLoader } =
     useAuthStore();
@@ -109,6 +123,7 @@ const MulticitySearchForm = () => {
 
   return (
     <FlightForm>
+
       {/* Passenger component */}
       <PassengerCard
         totalPassenger={totalPassengers}
@@ -142,6 +157,17 @@ const MulticitySearchForm = () => {
           setShowFlightButton={setShowFlightButton}
         />
       ))}
+
+      {/* Checkbox for flight result multiple date */}
+      <CheckboxWrapper>
+        <input
+           type="checkbox"
+           id="terms"
+           checked={isChecked}
+           onChange={handleCheckboxChange}
+        />
+        <p>My dates are flexible(+/- 3days)</p>
+      </CheckboxWrapper>
 
       {/* flight search button */}
       {showFlightButton && (

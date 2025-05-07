@@ -196,20 +196,24 @@ const MultiCityInput = ({
     handleInputChange("tripClass", classSelect);
   };
 
-  const classItems = [
-    {
-      title: "Guest",
-      value: "Guest",
-    },
-    {
-      title: "Business",
-      value: "Business",
-    },
-    {
-      title: "First Class",
-      value: "First Class",
-    },
-  ];
+  const flightClassItems = [
+            {
+             title: 'ECONOMY',
+             value: 'ECONOMY'
+            }, 
+            {
+              title: 'PREMIUM_ECONOMY',
+              value: 'PREMIUM_ECONOMY'
+             }, 
+             {
+              title: 'BUSINESS',
+              value: 'BUSINESS'
+             }, 
+             {
+              title: 'FIRST',
+              value: 'FIRST'
+             }, 
+          ]
 
   return (
     <InputWrapper>
@@ -348,7 +352,7 @@ const MultiCityInput = ({
               {/* Class drop down */}
               {showClass && (
                 <MultiFlightClassDropdown>
-                  {classItems.map((item, i) => (
+                  {flightClassItems.map((item, i) => (
                     <span key={i} onClick={() => handSelect(item.title)}>
                       <IoMdArrowDropright />
                       {item.title}

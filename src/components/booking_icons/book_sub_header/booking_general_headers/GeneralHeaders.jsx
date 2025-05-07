@@ -4,7 +4,7 @@ import BookingIcons from '../../book_icon/BookingIcons'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { GeneralHeaderItems } from '../../../../data/object/GeneralHeaderItems';
 
-export default function GeneralHeaders({backgroundColor, displayInMobile, gapInMobile}) {
+export default function GeneralHeaders({backgroundColor, displayInMobile, gapInMobile, textColor}) {
     
     const navigate = useNavigate();
     const location = useLocation();
@@ -37,6 +37,7 @@ export default function GeneralHeaders({backgroundColor, displayInMobile, gapInM
               Icon={item.Icon}
               headerBg={item.bgColor}
               bottomBorder={item.border}
+              textColor={textColor}
         />
         ))
       } 

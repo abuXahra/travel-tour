@@ -5,15 +5,19 @@
 import styled from 'styled-components'
 
 export const OverlayWrapper = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;  
-position: fixed; 
-height: 100vh; 
-width:100%; 
-top: 0px; 
-left: 0px;
-background-color: #00000076;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: auto;
+    background-color: #000000b9;
 `
 
 
@@ -25,11 +29,12 @@ export const OverlayCard = styled.div`
     height: ${({contentHight})=> contentHight || 'auto'};
     background-color: white;
     border-radius: 10px;
-    /* justify-content: center; */
     position: relative;
     padding: 20px;
     font-size: 18px;
-    text-align: center;
+    text-align: left;
+    /* margin-top: 20px;
+    margin-bottom: 20px; */
 
     @media (max-width: 768px) {
         width: 80%;

@@ -254,6 +254,7 @@ export default function OnewayCustomization() {
                             }
                             detail={true}
                           />
+                          <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
                         </span>
                         <span>
                           {
@@ -390,10 +391,10 @@ export default function OnewayCustomization() {
                   </TripDetailClass> */}
                   <TripDetailTime>
                     <CustomizeTripDetail>
-                      <h4>(1) {travelDetail?.AdultData[0]?.firstName}</h4>
-                      <p>ADULT</p>
-                      <span>{travelDetail?.AdultData[0]?.selectedGender}</span>
-                      <span>{travelDetail?.AdultData[0]?.email}</span>
+                    <h4>(1) {travelDetail?.AdultData[0]?.firstName} {travelDetail?.AdultData[0]?.middleName} {travelDetail?.AdultData[0]?.lastName}</h4>
+                        <span>{travelDetail?.AdultData[0]?.selectedGender}</span>
+                        <span>{travelDetail?.AdultData[0]?.email}</span>
+                         <span>{travelDetail?.AdultData[0]?.phone}</span>
                       <EditIcon
                         onClick={() =>
                           navigate(

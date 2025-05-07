@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
+  DnRBody,
+  DnRBodyChildA,
+  DnRBodyChildB,
+  DnRBodyChildC,
   DnRHeader,
   DnRWrapper,
   FlightCard,
   FlightCardContent,
   FlightLogo,
   MdFlightStyled,
+  PriceWrapper,
 } from "../../pages/flight/flight_result/FlightResult.style";
 import { MdFlight } from "react-icons/md";
 import flightLogo from "../../images/aire-peace.png";
@@ -86,8 +91,8 @@ const FlightResultForDepartandReturn = ({
                     : ""}
                 </p>
               </DnRHeader>
-              <div>
-                <span>
+              <DnRBody>
+                <DnRBodyChildA>
                   <h3>
                     {" "}
                     {new Date(
@@ -103,8 +108,8 @@ const FlightResultForDepartandReturn = ({
                   <AirlineCodeLookup
                     keyWord={data.itineraries[0].segments[0].departure.iataCode}
                   /> */}
-                </span>
-                <span style={{ textAlign: "center" }}>
+                </DnRBodyChildA>
+                <DnRBodyChildB style={{ textAlign: "center" }}>
                   <p style={{ fontSize: "8px" }}>
                     {" "}
                     {data.itineraries[0].segments[0].numberOfStops}-Stopover
@@ -126,8 +131,8 @@ const FlightResultForDepartandReturn = ({
                         .minutes
                     }min`}
                   </p>
-                </span>
-                <span>
+                </DnRBodyChildB>
+                <DnRBodyChildC>
                   <h3>
                     {" "}
                     {new Date(
@@ -141,13 +146,13 @@ const FlightResultForDepartandReturn = ({
                   {/* <AirlineCodeLookup
                     keyWord={data.itineraries[0].segments[0].arrival.iataCode}
                   /> */}
-                </span>
-              </div>
+                </DnRBodyChildC>
+              </DnRBody>
             </DnRWrapper>
 
             <DnRWrapper>
               <DnRHeader>
-                <h6>Return</h6>{" "}
+                <h5>Return</h5>{" "}
                 <p>
                   {" "}
                   {new Date(
@@ -162,8 +167,8 @@ const FlightResultForDepartandReturn = ({
                     : ""}
                 </p>
               </DnRHeader>
-              <div>
-                <span>
+              <DnRBody>
+                <DnRBodyChildA>
                   <h3>
                     {" "}
                     {new Date(
@@ -177,8 +182,8 @@ const FlightResultForDepartandReturn = ({
                   {/* <AirlineCodeLookup
                     keyWord={data.itineraries[1].segments[0].departure.iataCode}
                   /> */}
-                </span>
-                <span style={{ textAlign: "center" }}>
+                </DnRBodyChildA>
+                <DnRBodyChildB style={{ textAlign: "center" }}>
                   <p style={{ fontSize: "8px" }}>
                     {data.itineraries[1].segments[0].numberOfStops}-Stopover
                   </p>
@@ -198,8 +203,8 @@ const FlightResultForDepartandReturn = ({
                         .minutes
                     }min`}{" "}
                   </p>
-                </span>
-                <span>
+                </DnRBodyChildB>
+                <DnRBodyChildC>
                   <h3>
                     {" "}
                     {new Date(
@@ -213,8 +218,8 @@ const FlightResultForDepartandReturn = ({
                   {/* <AirlineCodeLookup
                     keyWord={data.itineraries[1].segments[0].arrival.iataCode}
                   /> */}
-                </span>
-              </div>
+                </DnRBodyChildC>
+              </DnRBody>
             </DnRWrapper>
           </FlightCardContent>
 
@@ -227,18 +232,14 @@ const FlightResultForDepartandReturn = ({
             </span>
           </FlightLogo> */}
 
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <b
-              style={{ color: "black", fontSize: "14px", textAlign: "center" }}
-            >
+          <PriceWrapper>
+            <p>
               Price: {money.format(data.price.total)}
-            </b>
-            <span
-              style={{ color: "green", fontSize: "12px", textAlign: "center" }}
-            >
+            </p>
+            <span>
               (Penalties upon Refunds)
             </span>
-          </div>
+          </PriceWrapper>
         </FlightCard>
       ))}
     </>

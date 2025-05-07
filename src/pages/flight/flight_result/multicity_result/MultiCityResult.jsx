@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   DateFlight,
+  DnRBody,
+  DnRBodyChildA,
+  DnRBodyChildB,
+  DnRBodyChildC,
   DNRDetail,
   DNRDetailAirport,
   DNRDetailBaggage,
@@ -21,7 +25,9 @@ import {
   FlightResultHeader,
   FlightResultMain,
   FlightResultWrapper,
+  LayoverWrapper,
   MdFlightStyled,
+  PriceWrapper,
   ResultCounter,
   ResultCounterLeft,
   ResultCounterRight,
@@ -37,6 +43,7 @@ import { useAuthStore } from "../../../../store/store";
 import iataAirports from "../../../../flightDB/IATA_airports.json";
 import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import NoResult from "../../../../components/no_result/NoResult";
+import Sidebar from "../../../../components/sidebar/Sidebar";
 
 export default function FlightResult() {
   const { multiCityFlightResult } = useAuthStore();
@@ -216,10 +223,12 @@ export default function FlightResult() {
       </MultiCityFormWrapper>
       {/* flight result section */}
       <FlightResultContent>
+        {/* SideBar */}
+                <Sidebar/>
         {/* Flight Result Main Content */}
         <FlightResultMain>
           {/* Counter Summary */}
-          <ResultCounter>
+          {/* <ResultCounter>
             <ResultCounterLeft>
               <h3>{multiCityFlightResult[1]?.length} results</h3>
               <p>Fares displayed are for all passengers.</p>
@@ -230,7 +239,7 @@ export default function FlightResult() {
               <span onClick={() => {}}>USD - US Dollar ($)</span>
               <span onClick={() => {}}>Sort and Filter</span>
             </ResultCounterRight>
-          </ResultCounter>
+          </ResultCounter> */}
 
           {/* Flight Result Card  1*/}
 
@@ -269,8 +278,8 @@ export default function FlightResult() {
                             : ""}
                         </p>
                       </DnRHeader>
-                      <div>
-                        <span>
+                      <DnRBody>
+                        <DnRBodyChildA>
                           <h3>
                             {new Date(
                               data.segments[0].departure.at
@@ -280,8 +289,8 @@ export default function FlightResult() {
                             })}
                           </h3>
                           {location[index]?.from}
-                        </span>
-                        <span>
+                        </DnRBodyChildA>
+                        <DnRBodyChildB>
                           {data.segments[0].numberOfStops}-Stopover
                           {"\n"}
                           {data.segments.length - 1}-Layover
@@ -296,8 +305,8 @@ export default function FlightResult() {
                           }hr ${
                             parseDuration(data.segments[0].duration).minutes
                           }min`}
-                        </span>
-                        <span>
+                        </DnRBodyChildB>
+                        <DnRBodyChildC>
                           <h3>
                             {" "}
                             {new Date(
@@ -308,8 +317,8 @@ export default function FlightResult() {
                             })}
                           </h3>
                           {location[index]?.to}
-                        </span>
-                      </div>
+                        </DnRBodyChildC>
+                      </DnRBody>
                     </DnRWrapper>
 
                     {/* <DnRWrapper>
@@ -339,14 +348,14 @@ export default function FlightResult() {
                     </DnRWrapper> */}
                   </FlightCardContent>
                 ))}
-                <FlightLogo>
-                  <b style={{ color: "black", fontSize: "14px" }}>
+                <PriceWrapper>
+                  <p>
                     Price: {money.format(data.price.total)}
-                  </b>
-                  <span style={{ color: "green", fontSize: "12px" }}>
+                  </p>
+                  <span>
                     (Penalties upon Refunds)
                   </span>
-                </FlightLogo>
+                </PriceWrapper>
               </FlightCard>
             ))}
         </FlightResultMain>
@@ -371,7 +380,11 @@ export default function FlightResult() {
                       <div>
                         <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
                         <h5>
-                          {`Flight From ${` ${
+                       {
+                            filterIataAirport(flightData?.departure?.iataCode)
+                              ?.Airport_name
+                          }, 
+                          {/* {`Flight From ${` ${
                             filterIataAirport(flightData?.departure?.iataCode)
                               ?.Airport_name
                           },  ${
@@ -383,10 +396,10 @@ export default function FlightResult() {
                           },  ${
                             filterIataAirport(flightData?.arrival?.iataCode)
                               ?.Location_served
-                          }`}`}
+                          }`}`} */}
                         </h5>
                       </div>
-                      <b>Outbound</b>
+                      <p>Outbound</p>
                     </span>
                     <DNRDetail>
                       <DNRDetailFlightImage>
@@ -460,7 +473,8 @@ export default function FlightResult() {
                       </DNRDetailAirport>
                       <DNRDetailBaggage>
                         <span>
-                          <h3>Airline</h3>
+                          <h5>Airline</h5>
+                          <div style={{display: "flex", gap: '5px'}}>    
                           <AirlineFlightLogo
                             dictionaries={
                               multiCityFlightResult?.[2]?.dictionaries
@@ -473,7 +487,7 @@ export default function FlightResult() {
                                     .validatingAirlineCodes[0]
                             }
                             only={true}
-                          />
+                          />- 780 - Economy - Class L</div>
                         </span>
                         <span>
                           <h3>Baggage</h3>
@@ -481,6 +495,9 @@ export default function FlightResult() {
                         </span>
                       </DNRDetailBaggage>
                     </DNRDetail>
+                    <br />
+                      <LayoverWrapper ><strong>Change of planes</strong> 15h 0m Layover in Istanbul</LayoverWrapper>
+                     <br />
                   </>
                 ))}
               </FlightDetailDNR>

@@ -76,6 +76,8 @@ export const MultiFlightClassDropdown = styled.div`
         display: flex;
         flex-direction: column;
         padding: 20px;
+        z-index: 9999;
+
 
         span{
             color: black;

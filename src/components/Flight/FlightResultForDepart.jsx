@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
+  DnRBody,
+  DnRBodyChildA,
+  DnRBodyChildB,
+  DnRBodyChildC,
   DnRHeader,
   DnRWrapper,
   FlightCard,
   FlightCardContent,
   FlightLogo,
   MdFlightStyled,
+  PriceWrapper,
 } from "../../pages/flight/flight_result/FlightResult.style";
 import { MdFlight } from "react-icons/md";
 import AirlineCodeLookup from "./AirlineCodeLookup";
@@ -81,8 +86,8 @@ const FlightResultForDepart = ({
                     : ""}
                 </p>
               </DnRHeader>
-              <div>
-                <span>
+              <DnRBody>
+                <DnRBodyChildA>
                   <h3>
                     {" "}
                     {new Date(
@@ -96,8 +101,8 @@ const FlightResultForDepart = ({
                   {/* <AirlineCodeLookup
                     keyWord={data.itineraries[0].segments[0].departure.iataCode}
                   /> */}
-                </span>
-                <span style={{ textAlign: "center" }}>
+                </DnRBodyChildA>
+                <DnRBodyChildB style={{ textAlign: "center" }}>
                   <p style={{ fontSize: "8px" }}>
                     {data.itineraries[0].segments[0].numberOfStops}-Stopover
                   </p>
@@ -114,8 +119,8 @@ const FlightResultForDepart = ({
                     parseDuration(data.itineraries[0].segments[0].duration)
                       .minutes
                   }min`}</p>
-                </span>
-                <span>
+                </DnRBodyChildB>
+                <DnRBodyChildC>
                   <h3>
                     {" "}
                     {new Date(
@@ -129,23 +134,15 @@ const FlightResultForDepart = ({
                   {/* <AirlineCodeLookup
                     keyWord={data.itineraries[0].segments[0].arrival.iataCode}
                   /> */}
-                </span>
-              </div>
+                </DnRBodyChildC>
+              </DnRBody>
             </DnRWrapper>
           </FlightCardContent>
 
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <b
-              style={{ color: "black", fontSize: "14px", textAlign: "center" }}
-            >
-              Price: {money.format(data.price.total)}
-            </b>
-            <span
-              style={{ color: "green", fontSize: "12px", textAlign: "center" }}
-            >
-              (Penalties upon Refunds)
-            </span>
-          </div>
+          <PriceWrapper>
+            <p>Price: {money.format(data.price.total)}</p>
+            <span>(Penalties upon Refunds)</span>
+          </PriceWrapper>
         </FlightCard>
       ))}
     </>

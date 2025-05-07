@@ -263,6 +263,7 @@ export default function MulticityCustomization() {
                                 }
                                 detail={true}
                               />
+                              <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
                             </span>
                             <span>
                               {" "}
@@ -416,6 +417,7 @@ export default function MulticityCustomization() {
                       <p>ADULT</p>
                       <span>{travelDetail?.selectedGender}</span>
                       <span>{travelDetail?.email}</span>
+                      <span>{travelDetail?.phone}</span>
                       <EditIcon onClick={() => navigate("/multicity-edit")}>
                         <FiEdit />
                       </EditIcon>

@@ -52,7 +52,7 @@ export const ContentMain = styled.div`
     flex-direction: column;
     gap: 20px;
     background-color: #0d3984cf; //
-    padding: 20px;
+    /* padding: 10px; */
     border-radius: 10px;
     border-top-left-radius: ${({tLeftRadius}) => tLeftRadius || '0px'};
 
@@ -66,10 +66,10 @@ export const FormWrapper = styled.div`
     flex-direction: column;
     background-color: white;
     border-radius: ${({rounderBorder})=>rounderBorder || '10px'};
-    padding: ${({pd})=>pd || '20px'};
+    padding: ${({pd})=>pd || '10px'};
     gap: 10px;
 `
-export const FlightForm = styled.div` //////////changer from form to div
+export const FlightForm = styled.div` //////////change from form to div
     width: 100%;
     flex-direction: column;
     display: flex;
@@ -135,7 +135,7 @@ export const RadioCheck =styled(FaCircle)`
 export const FlightInputContainer = styled.div`
     width: 100%;
     display: flex;
-    gap: 20px;
+    gap: 10px;
     align-items: center;
 
     @media (max-width:768px) {
@@ -199,12 +199,13 @@ export const FlightInputWrapper = styled.div`
 `
 
 export const RoundTripImg = styled.div`
-        height: 30px;
-        width: 30px;
+        height: 20px;
+        width: 20px;
+        cursor: pointer;
 
         img{
-            height: 30px;
-            width: 30px;
+            height: 20px;
+            width: 20px;
         }
         @media (max-width:768px) {
         display: none

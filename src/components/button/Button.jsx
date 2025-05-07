@@ -11,6 +11,8 @@ export default function Button({
   rightIcon,
   pd,
   loading,
+  btnDisplay,
+  fontSize
 }) {
   return (
     <ButtonStyle
@@ -21,6 +23,8 @@ export default function Button({
       onClick={onClick}
       pd={pd}
       disabled={loading}
+      btnDisplay={btnDisplay}
+      fontSize={fontSize}
     >
       {loading ? (
         <Loader />
