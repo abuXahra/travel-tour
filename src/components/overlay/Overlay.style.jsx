@@ -18,6 +18,7 @@ export const OverlayWrapper = styled.div`
     left: 0;
     overflow: auto;
     background-color: #000000b9;
+    z-index: 9999;
 `
 
 

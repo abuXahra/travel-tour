@@ -291,6 +291,7 @@ export const FLightDetail = styled.div`
     left: 0;
     overflow: auto;
     background-color: white;
+    z-index: 9999;
 
     @media (max-width:768px) {
         padding: 20px;

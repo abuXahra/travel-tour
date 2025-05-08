@@ -91,7 +91,7 @@ export const AirlineTitle = styled.div`
 `
 
 export const AirlinePrice = styled.div`
-        font-weight:500;
+        font-weight:200;
         font-size: 13px;
 `
 
