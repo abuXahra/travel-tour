@@ -21,6 +21,7 @@ import {
   FLightDetailContent,
   FlightDetailDNR,
   FlightLogo,
+  FlightMainHeader,
   FlightResultContent,
   FlightResultHeader,
   FlightResultMain,
@@ -32,7 +33,7 @@ import {
   ResultCounterLeft,
   ResultCounterRight,
 } from "../FlightResult.style";
-import { MdFlight } from "react-icons/md";
+import { MdDateRange, MdFlight } from "react-icons/md";
 import { FaTimes } from "react-icons/fa";
 import FlightIcon from "../../../../components/flight_icon/FlightIcon";
 import Button from "../../../../components/button/Button";
@@ -44,6 +45,11 @@ import iataAirports from "../../../../flightDB/IATA_airports.json";
 import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import NoResult from "../../../../components/no_result/NoResult";
 import Sidebar from "../../../../components/sidebar/Sidebar";
+import { ArilineListItems, DepartFlightTime, ReturnFlightTime, StopsItems } from "../../../../data/object/flight_sidebar/FlightResultSidebar";
+import FlexibleCalender from "../../../../components/Flight/flexible_Calender/FlexibleCalender";
+import { mockFlightData } from "../../../../data/object/FlexibleCalenderItems";
+import PriceMatrix from "../../../../components/Flight/price_matrix/PriceMatrix";
+import FlightFare from "../../../../components/Flight/flight_fare/FlightFare";
 
 export default function FlightResult() {
   const { multiCityFlightResult } = useAuthStore();
@@ -188,6 +194,7 @@ export default function FlightResult() {
     setOwCheckColor("white");
   };
 
+  const [showFlexibleDate, setShowFlexibleDate] = useState(false);
   return (
     <FlightResultWrapper>
       {/* dklfj;ldfjkv n;kld;jjfldfjslk */}
@@ -224,7 +231,12 @@ export default function FlightResult() {
       {/* flight result section */}
       <FlightResultContent>
         {/* SideBar */}
-                <Sidebar/>
+                <Sidebar
+                      Items={ArilineListItems}
+                      flightDepartItem={DepartFlightTime}
+                      flightReturnItem={ReturnFlightTime}
+                      StopsItems={StopsItems}
+                />
         {/* Flight Result Main Content */}
         <FlightResultMain>
           {/* Counter Summary */}
@@ -240,6 +252,27 @@ export default function FlightResult() {
               <span onClick={() => {}}>Sort and Filter</span>
             </ResultCounterRight>
           </ResultCounter> */}
+
+                    {/* show flexible calender */}
+                    <FlightMainHeader>
+                      <h3>From Lagos to Dubai</h3>
+                      <Button
+                        btnBorder={'1px solid white'}
+                        bgColor={'#FF6805'}
+                        textColor={'white'}
+                        onClick={() => setShowFlexibleDate(true)}
+                        text={'Flexible Dates'}
+                        rightIcon={<MdDateRange />}
+                        fontSize={'12px'}
+                      />
+                    </FlightMainHeader>
+
+
+ {/* Price matrix with regards to stops */}
+          <PriceMatrix />
+
+          {/* Flight Fare: Cheapest, Fastest, Recommeded */}
+          <FlightFare />
 
           {/* Flight Result Card  1*/}
 
@@ -650,6 +683,14 @@ export default function FlightResult() {
           </FlightDetailButton>
         </FLightDetail>
       )}
+           {showFlexibleDate &&
+              <FlexibleCalender
+                overlayButtonClick={() => setShowFlexibleDate(false)}
+                closeOverlayOnClick={() => setShowFlexibleDate(false)}
+                selectedDate={''}
+                flightData={mockFlightData}
+              />
+            }
     </FlightResultWrapper>
   );
 }

@@ -17,6 +17,7 @@ import {
   FLightDetailContent,
   FlightDetailDNR,
   FlightLogo,
+  FlightMainHeader,
   FlightResultContent,
   FlightResultHeader,
   FlightResultMain,
@@ -28,7 +29,7 @@ import {
   ResultCounterRight,
   ResultSidebar,
 } from "../FlightResult.style";
-import { MdFlight } from "react-icons/md";
+import { MdDateRange, MdFlight } from "react-icons/md";
 import { FaCircle, FaTimes } from "react-icons/fa";
 import FlightIcon from "../../../../components/flight_icon/FlightIcon";
 import Button from "../../../../components/button/Button";
@@ -52,6 +53,11 @@ import iataAirports from "../../../../flightDB/IATA_airports.json";
 import FlightResultForDepart from "../../../../components/Flight/FlightResultForDepart";
 import NoResult from "../../../../components/no_result/NoResult";
 import Sidebar from "../../../../components/sidebar/Sidebar";
+import { ArilineListItems, DepartFlightTime, ReturnFlightTime, StopsItems } from "../../../../data/object/flight_sidebar/FlightResultSidebar";
+import FlexibleCalender from "../../../../components/Flight/flexible_Calender/FlexibleCalender";
+import { mockFlightData } from "../../../../data/object/FlexibleCalenderItems";
+import FlightFare from "../../../../components/Flight/flight_fare/FlightFare";
+import PriceMatrix from "../../../../components/Flight/price_matrix/PriceMatrix";
 
 export default function OneWayResult() {
   const { oneWayFlightResult } = useAuthStore();
@@ -186,7 +192,7 @@ export default function OneWayResult() {
     setOwCheckColor("white");
   };
   console.log(oneWayFlightResult[2]);
-
+const [showFlexibleDate, setShowFlexibleDate] = useState(false);
   return (
     <FlightResultWrapper>
       {oneWayFlightResult[2]?.length === 0 && <NoResult />}
@@ -236,7 +242,12 @@ export default function OneWayResult() {
         
                
            {/* SideBar */}
-                <Sidebar/>
+                  <Sidebar
+                          Items={ArilineListItems}
+                          flightDepartItem={DepartFlightTime}
+                          flightReturnItem={ReturnFlightTime}
+                          StopsItems={StopsItems}
+                        />
 
         <FlightResultMain>
           {/* Counter Summary */}
@@ -252,6 +263,26 @@ export default function OneWayResult() {
               <span onClick={() => {}}>Sort and Filter</span>
             </ResultCounterRight>
           </ResultCounter> */}
+
+          {/* show flexible calender */}
+          <FlightMainHeader>
+            <h3>From Lagos to Dubai</h3>
+            <Button
+              btnBorder={'1px solid white'}
+              bgColor={'#FF6805'}
+              textColor={'white'}
+              onClick={() => setShowFlexibleDate(true)}
+              text={'Flexible Dates'}
+              rightIcon={<MdDateRange />}
+              fontSize={'12px'}
+            />
+          </FlightMainHeader>
+
+           {/* Price matrix with regards to stops */}
+                    <PriceMatrix />
+          
+                    {/* Flight Fare: Cheapest, Fastest, Recommeded */}
+                    <FlightFare />
 
           {/* Flight Result Card  1*/}
           <FlightResultForDepart
@@ -420,6 +451,15 @@ export default function OneWayResult() {
           </FlightDetailButton>
         </FLightDetail>
       )}
+
+           {showFlexibleDate &&
+              <FlexibleCalender
+                overlayButtonClick={() => setShowFlexibleDate(false)}
+                closeOverlayOnClick={() => setShowFlexibleDate(false)}
+                selectedDate={''}
+                flightData={mockFlightData}
+              />
+            }
     </FlightResultWrapper>
   );
 }
