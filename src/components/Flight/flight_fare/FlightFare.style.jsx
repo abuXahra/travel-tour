@@ -7,8 +7,11 @@ export const FlightFareWrapper = styled.div`
     width: 100%;
     border: 1px solid #0D3984;
     border-radius: 10px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
     background-color: white;
-    padding: 10px;
+    /* padding: 10px;
+    padding-top: 0px; */
 `
 
 export const  FlightFareHeader = styled.div`
@@ -34,11 +37,15 @@ export const FlightFareBody = styled.div`
 `
 
 export const FlightFareItem = styled.div`
-    width: 33.8%;
-    align-items: center;
-    cursor: pointer;
-    padding: 20px;
-    text-align: center;
-    background-color: ${({bgColor})=> bgColor || ""};
-    border-bottom: ${({bdBottom}) => bdBottom || 'none'};
+  width: 33.8%;
+  align-items: center;
+  cursor: pointer;
+  padding: 20px;
+  text-align: center;
+  background-color: ${({ isSelected }) => isSelected ? '#0d398413' : 'transparent'};
+  border: ${({ isSelected }) => isSelected ? '1px solid #0D3984' : 'none'};
+
+  :hover{
+    color: blue;
+  }
 `

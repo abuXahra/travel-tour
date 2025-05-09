@@ -1,60 +1,133 @@
 import styled from "styled-components";
 
-export const Wrapper = styled.div`
-  position: relative;
+export const TableWrapper = styled.div`
   width: 100%;
-  /* max-width: 640px; */
-  margin: 0 auto;
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 
-export const ScrollContainer = styled.div`
+export const TableContainer = styled.div`
   display: flex;
+  width: 100%;
   overflow-x: auto;
-  scroll-behavior: smooth;
-  gap: 12px;
-  padding: 10px 40px; /* room for buttons */
-    /* Hide scrollbar - works on most browsers */
-    scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
-  
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+`;
+
+
+const CELL_WIDTH = '120px';
+
+export const StickyCol = styled.div`
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  /* background-color: #fff;/ */
+  background-color: #0d398413;
+  width: ${CELL_WIDTH}; /* Match column width */
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+
+  table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+
+    th, td {
+      /* border: 1px solid #ddd; */
+      border: none;
+      padding: 10px;
+      width: ${CELL_WIDTH};
+      min-width: ${CELL_WIDTH};
+      max-width: ${CELL_WIDTH};
+      height: 50px;
+      font-size: 12px;
+      text-align: center;
+      vertical-align: middle;
+      font-weight: bold;
+    }
+  }
+`;
+
+
+export const ScrollableContent = styled.div`
+  overflow-x: auto;
+  display: inline-block;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+
   &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
+    display: none; /* Chrome, Safari, Opera */
   }
 `;
 
-export const DateBox = styled.div`
-display: flex;
-flex-direction: column;
-  flex: 0 0 140px;
-  padding: 12px;
-  border: 2px solid ${(props) => (props.selected ? '#0056b3' : '#ccc')};
-  border-radius: 8px;
-  text-align: center;
-  background-color: ${(props) => (props.selected ? '#007bff' : '#f7f7f7')};
-  color: ${(props) => (props.selected ? '#fff' : '#333')};
-  font-weight: ${(props) => (props.selected ? 'bold' : 'normal')};
-  font-size: 12px;
-  cursor: pointer;
+
+
+export const TableStyle = styled.table`
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    width: ${CELL_WIDTH};
+    min-width: ${CELL_WIDTH};
+    max-width: ${CELL_WIDTH};
+    height: 50px;
+    font-size: 12px;
+    text-align: center;
+    vertical-align: middle;
+
+    img {
+      width: 20px;
+    }
+  }
+
+  tr:nth-child(even) {
+    background-color: #0d398413;
+  }
+
+  td{
+    cursor: pointer;
+   
+   &:hover{
+      color:  #0D3984;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  }
 `;
 
-export const ArrowButton = styled.button`
+
+
+
+export const NavButton = styled.button`
   position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 30%;
-  background: white;
-  border: 1px solid #ccc;
+  top: 50%;
+  z-index: 10;
+  background-color: #fff;
+  border: none;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 25px;
+  height: 25px;
   cursor: pointer;
-  z-index: 1;
-  font-size: 12px;
-  font-weight: bold;
-  &:hover {
-    background: #eee;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+  font-size: 10px;
+  color: #FF6805;
+
+  &:first-of-type {
+    left: 2px;
   }
 
-  ${(props) => (props.left ? 'left: 0;' : 'right: 0;')}
+  &:last-of-type {
+    right: 2px;
+  }
 `;
