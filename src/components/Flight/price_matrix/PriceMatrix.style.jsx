@@ -6,7 +6,7 @@ export const TableWrapper = styled.div`
   background-color: #ffffff;
   border-radius: 10px;
   border: 1px solid #0D3984;
-  padding: 10px;
+  /* padding: 10px; */
   overflow: hidden;
   display: flex;
   flex-direction: column;

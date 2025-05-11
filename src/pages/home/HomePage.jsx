@@ -129,6 +129,8 @@ export default function HomePage() {
    
      // ===========Show/Hide Single City and Multi City Search Form
      const [showReturnDate, setShowReturnDate] = useState(true);
+     const [showOnewayDate, setShowOnewayDate] = useState(false);
+       
      const [tripType, setTripType] = useState();
    
      const [roundTrip, setRroundTrip] = useState("Round Trip");
@@ -150,6 +152,7 @@ export default function HomePage() {
      const handleRoundTrip = () => {
        setTripType(roundTrip);
        setShowReturnDate(true);
+       setShowOnewayDate(false);
        setShowMultiCityForm(false);
        setShowSingleForm(true);
        setRtBrColor("#2563eb");
@@ -162,6 +165,8 @@ export default function HomePage() {
    
      const handleOneWay = () => {
        setTripType(oneWay);
+       setShowReturnDate(false);
+       setShowOnewayDate(true);
        setShowReturnDate(false);
        setShowSingleForm(true);
        setShowMultiCityForm(false);
@@ -243,6 +248,7 @@ export default function HomePage() {
                     showSingleForm={showSingleForm}
                     showMultiCityForm={showMultiCityForm}
                     showReturnDate={showReturnDate}
+                    showOnewayDate={showOnewayDate}
                     locationError={locationError}
                   />
                 )}

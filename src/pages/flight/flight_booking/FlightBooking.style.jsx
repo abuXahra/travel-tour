@@ -228,8 +228,9 @@ export const FlightDepartWrapper = styled.div`
 
 
 export const FlightDepatWrapContent = styled.div`
-         width: ${({contWidth})=>contWidth || "100%"};
+        width: ${({contWidth})=>contWidth || "100%"};
         color: grey;
+        background-color: ${({bgColor}) => bgColor || ""};
         position: relative;
 
 

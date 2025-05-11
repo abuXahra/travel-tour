@@ -145,14 +145,33 @@ export const CheckboxWrapper = styled.div`
     align-items: center;
     font-size: 12px;
 
-   input {
-    width: 15px;
-    height:15px;
-    border-radius: 4px;
+    input {
+    height: 16px;
+    width: 16px;
+    appearance: none;
+    background-color: white;
+    border: 2px solid #ccc;
+    border-radius: 2px;
     cursor: pointer;
-    background-color: blue;
-    border-color: blue;
-  }
+    position: relative;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 
+    &:checked {
+      background-color: #1100ff;
+      border-color: #1100ff;
+    }
+
+    &:checked::after {
+      content: '';
+      position: absolute;
+      top: 0px;
+      left: 3px;
+      width: 4px;
+      height: 8px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+}
 
 `

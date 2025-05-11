@@ -26,6 +26,8 @@ import { IoMdArrowDropdown, IoMdArrowDropright } from "react-icons/io";
 import { useDebounce } from "../../../../../components/dalay";
 import { FaTimes } from "react-icons/fa";
 import cityList from "../../../../../flightDB/airports.json";
+import { flightClassItems } from "../../../../../data/object/flightClass";
+import DateSinglePickerCalender from "../../../../../components/DateSingle";
 
 const defaultCityList = [
   {
@@ -189,31 +191,38 @@ const MultiCityInput = ({
   const [destinationAriporList, setDestinationAriporList] =
     useState(defaultCityList);
 
-  const [classSelect, setClassSelect] = useState("Guest");
+  const [classSelect, setClassSelect] = useState(flightClassItems[0].value);
 
   const handSelect = (e) => {
     setClassSelect(e);
     handleInputChange("tripClass", classSelect);
   };
 
-  const flightClassItems = [
-            {
-             title: 'ECONOMY',
-             value: 'ECONOMY'
-            }, 
-            {
-              title: 'PREMIUM_ECONOMY',
-              value: 'PREMIUM_ECONOMY'
-             }, 
-             {
-              title: 'BUSINESS',
-              value: 'BUSINESS'
-             }, 
-             {
-              title: 'FIRST',
-              value: 'FIRST'
-             }, 
-          ]
+// handle the switch button
+ const handleSwitchInput = () => {
+  // Store current values before updating anything
+  const fromValue = city.from;
+  const toValue = city.to;
+  const fromCode = originLocationCode;
+  const toCode = destinationLocationCode;
+
+  // Swap input values
+  setSearchTakeOffInputValue(toValue);
+  setSearchDestinationInputValue(fromValue);
+
+  // Update bound city object
+  handleInputChange("from", toValue);
+  handleInputChange("to", fromValue);
+
+  // Swap airport codes
+  setOriginLocationCode(toCode);
+  setDestinationLocationCode(fromCode);
+};
+
+const setDepartDate = (formattedDate) => {
+  handleInputChange("departureDate", formattedDate);
+};
+
 
   return (
     <InputWrapper>
@@ -260,7 +269,7 @@ const MultiCityInput = ({
             </TakeOffWrapper>
           )}
         </FlightInputAndDropDown>
-        <RoundTripImg>
+        <RoundTripImg onClick={handleSwitchInput}>
           <img src={roundtrip} alt="trip icon" />
         </RoundTripImg>
 
@@ -315,8 +324,8 @@ const MultiCityInput = ({
 
       {/* <!-- Depature and destination container --> */}
       {showFlightInputs && (
-        <FlightDepartWrapper inputGap={"70px"}>
-          <FlightDepatWrapContent>
+        <FlightDepartWrapper>
+          {/* <FlightDepatWrapContent>
             <Label for="depart">Departure</Label>
             <input
               type="date"
@@ -324,8 +333,13 @@ const MultiCityInput = ({
               value={city.departureDate}
               onChange={handleDepartureDateChange}
             />
-          </FlightDepatWrapContent>
+          </FlightDepatWrapContent> */}
 
+                      <FlightDepatWrapContent>
+                        <Label for="depart">Departure</Label>
+                                <DateSinglePickerCalender setDepartDate={setDepartDate}/>
+                           </FlightDepatWrapContent>
+     
           {/* <FlightDepatWrapContent>
         <Label for="depart">Returning</Label>
         <input

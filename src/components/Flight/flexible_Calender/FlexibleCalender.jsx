@@ -123,7 +123,7 @@ export default function FlexibleCalender({overlayButtonClick, closeOverlayOnClic
                   <tr>
                       {arriveDates.map((data, idx) => (
                       <th key={idx}>
-                        <div style={{display:"flex", fontSize: "10px", flexDirection: "column", justifyContent: "center", alignItems:"center",}}>
+                        <div style={{display:"flex", fontSize: "13px", flexDirection: "column", justifyContent: "center", alignItems:"center",}}>
                           <span>{data}</span>
                           </div>  
                       </th>

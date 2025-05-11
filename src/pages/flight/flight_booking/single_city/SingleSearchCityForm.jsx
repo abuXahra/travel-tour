@@ -45,6 +45,7 @@ import FlightSlide from "../../../../components/Flight/flight_packages/flight_sl
 import Loader from "../../../../components/loader/Loader";
 import DateRangePickerCalender from "../../../../components/DateRangePickerCalender";
 import { CheckboxWrapper } from "../multi_city/MultiCity.style";
+import DateSinglePickerCalender from "../../../../components/DateSingle";
 
 const defaultCityList = [
   {
@@ -113,9 +114,15 @@ export default function SingleSearchCityForm({
   showSingleForm,
   showMultiCityForm,
   showReturnDate,
+  showOnewayDate,
   locationError,
 }) {
   const navigate = useNavigate();
+
+
+
+  // const [showRoundTripDates, setShowRoundTripDates] = useState(true);
+  // const [showOneWayDate, setShowOneWayDate] = useState(false);
 
   //  query parameters
   let queryParams;
@@ -145,7 +152,7 @@ export default function SingleSearchCityForm({
   const [destinationLocationCode, setDestinationLocationCode] = useState("");
 
   const currencyCode = "NGN"; // default currency code
-  // Mr Bobai - <
+  
 
   //DROPDOWN VARIABLES
   const [takeOffAirport, setTakeOffAirport] = useState("");
@@ -154,6 +161,18 @@ export default function SingleSearchCityForm({
   const [showFlightType, setShowFlightType] = useState(false);
   const [showFlightInputs, setshowFlightInputs] = useState(false);
 
+// switch the inputs
+  const handleSwitchInput = () => {
+    setTakeOffAirport((prevTakeOff) => {
+      setDestinationAirport(prevDestination => prevTakeOff);
+      return destinationAirport;
+    });
+
+    setOriginLocationCode((prevOriginCode) => {
+      setDestinationLocationCode(prevDestinationCode => prevOriginCode);
+      return destinationLocationCode;
+    });
+  };
   // passange count event handler Event handler
   // const handleKickOff = (e) => {
   //   setKickOff(e.target.value);
@@ -541,7 +560,7 @@ export default function SingleSearchCityForm({
               )}
             </FlightInputAndDropDown>
 
-            <RoundTripImg>
+            <RoundTripImg onClick={handleSwitchInput}>
               <img src={roundtrip} alt="trip icon" />
             </RoundTripImg>
 
@@ -579,7 +598,23 @@ export default function SingleSearchCityForm({
           {/* <!-- Depature and destination container --> */}
           {showFlightInputs && (
             <FlightDepartWrapper>
-              <FlightDepatWrapContent>
+
+          {/* Date range picker round trip*/}
+           { showReturnDate &&      
+                <FlightDepatWrapContent>
+                    <DateRangePickerCalender setDepartDate={setDepartDate} setReturnDate={setreturnDate}/>
+                 </FlightDepatWrapContent>
+          }
+
+          {/* Date single picker for one way */}
+
+        {showOnewayDate &&
+            <FlightDepatWrapContent>
+                      <DateSinglePickerCalender setDepartDate={setDepartDate}/>
+                 </FlightDepatWrapContent>
+              }
+
+              {/* <FlightDepatWrapContent>
                 <Label for="depart">Departing</Label>
                 <input
                   type="date"
@@ -587,18 +622,11 @@ export default function SingleSearchCityForm({
                   onChange={handleDepartureDate}
                   value={departDate}
                 />
-              </FlightDepatWrapContent>
-
-              {/* Date range picker */}
-{/*               
-              <FlightDepatWrapContent>
-                  <DateRangePickerCalender
-                    setDepartDate={setDepartDate}
-                    setReturnDate={setreturnDate}
-                  />
               </FlightDepatWrapContent> */}
 
-              {showReturnDate && (
+      
+
+              {/* {showReturnDate && (
                 <FlightDepatWrapContent>
                   <Label for="depart">Returning</Label>
                   <input
@@ -608,8 +636,9 @@ export default function SingleSearchCityForm({
                     value={returnDate}
                   />
                 </FlightDepatWrapContent>
-              )}
+              )} */}
 
+        
               <FlightDepatWrapContent>
                 <FlightPassengerWrapper>
                   <FlightPassengerClass

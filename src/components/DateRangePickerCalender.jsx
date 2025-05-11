@@ -13,13 +13,17 @@ import styled from 'styled-components';
 const StyledDatePickerWrapper = styled.div`
   /* Style only the input field */
   .rmdp-input {
-    width: 100%;
-    background-color: #0d398428;  /* Light background */
-    padding: 30px 20px;
-    border-radius: 10pxpx;
+    width: 213%;
+    /* background-color: #0d398428;  Light background */
+    padding: 26px 20px;
+    border-radius: 10px;
     border: none;
-    font-size: 18px;
+    font-size: 14px;
     color: #333;
+
+     @media (max-width:768px) {
+        width: 175%;
+    }
   }
 `;
 

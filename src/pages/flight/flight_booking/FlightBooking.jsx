@@ -141,7 +141,9 @@ export default function FlightBooking() {
   // =====================Select Forms: one way, round trip, multicity=========================//
 
   // ===========Show/Hide Single City and Multi City Search Form
+
   const [showReturnDate, setShowReturnDate] = useState(true);
+  const [showOnewayDate, setShowOnewayDate] = useState(false);
   const [tripType, setTripType] = useState();
 
   const [roundTrip, setRroundTrip] = useState("Round Trip");
@@ -160,11 +162,15 @@ export default function FlightBooking() {
   const [mcBrColor, setMcBrColor] = useState("grey");
   const [mcCheckColor, setMcCheckColor] = useState("white");
 
+  
+
   const handleRoundTrip = () => {
     setTripType(roundTrip);
     setShowReturnDate(true);
+    setShowOnewayDate(false)
     setShowMultiCityForm(false);
     setShowSingleForm(true);
+
     setRtBrColor("#2563eb");
     setRtCheckColor("#2563eb");
     setOwBrColor("grey");
@@ -176,6 +182,7 @@ export default function FlightBooking() {
   const handleOneWay = () => {
     setTripType(oneWay);
     setShowReturnDate(false);
+    setShowOnewayDate(true);
     setShowSingleForm(true);
     setShowMultiCityForm(false);
     setRtBrColor("grey");
@@ -251,7 +258,8 @@ export default function FlightBooking() {
                     showSingleForm={showSingleForm}
                     showMultiCityForm={showMultiCityForm}
                     showReturnDate={showReturnDate}
-                    locationError={locationError}
+                    showOnewayDate={showOnewayDate}
+                    locationError={locationError}  
                   />
                 )}
 

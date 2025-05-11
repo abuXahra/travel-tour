@@ -1,0 +1,43 @@
+// DateRangePickerCalender.js
+import React, { useState } from 'react';
+import DatePicker, { DateObject } from 'react-multi-date-picker';
+import styled from 'styled-components';
+
+const StyledDatePickerWrapper = styled.div`
+  /* Style only the input field */
+  .rmdp-input {
+    width: 213%;
+    padding: 26px 20px;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    color: #333;
+
+    @media (max-width: 768px) {
+      width: 175%;
+    }
+  }
+`;
+
+export default function DateSinglePickerCalender({ setDepartDate }) {
+  const [dateValue, setDateValue] = useState(new DateObject());
+
+  const handleDateChange = (newDateValue) => {
+    setDateValue(newDateValue);
+
+    // Update depart date when user selects a new date
+    setDepartDate(newDateValue.format('YYYY-MM-DD'));
+  };
+
+  return (
+    <StyledDatePickerWrapper>
+      <DatePicker
+        value={dateValue}
+        onChange={handleDateChange}
+        numberOfMonths={1}
+        portal={false}  // Use inline calendar
+        calendarPosition="bottom-left"
+      />
+    </StyledDatePickerWrapper>
+  );
+}
