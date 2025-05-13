@@ -335,10 +335,14 @@ const setDepartDate = (formattedDate) => {
             />
           </FlightDepatWrapContent> */}
 
-                      <FlightDepatWrapContent>
-                        <Label for="depart">Departure</Label>
-                                <DateSinglePickerCalender setDepartDate={setDepartDate}/>
-                           </FlightDepatWrapContent>
+                      <FlightDepatWrapContent 
+                        contWidth={"100%"} 
+                        bgColor={'#0d398428'}
+                        borderRadius={"10px"}
+                        >
+                            <Label for="depart">Departure Date</Label>
+                            <DateSinglePickerCalender setDepartDate={setDepartDate}/>
+                      </FlightDepatWrapContent>
      
           {/* <FlightDepatWrapContent>
         <Label for="depart">Returning</Label>
@@ -357,7 +361,7 @@ const setDepartDate = (formattedDate) => {
               }}
             >
               <MultiFlightClassTitle>
-                <span>Class</span>
+                <span style={{fontSize: "10px"}}>Class</span>
                 <span>
                   {classSelect} <IoMdArrowDropdown />
                 </span>

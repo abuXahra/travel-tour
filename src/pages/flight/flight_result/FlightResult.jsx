@@ -64,9 +64,91 @@ import FlexibleCalender from "../../../components/Flight/flexible_Calender/Flexi
 import { mockFlightData } from "../../../data/object/FlexibleCalenderItems";
 import PriceMatrix from "../../../components/Flight/price_matrix/PriceMatrix";
 import FlightFare from "../../../components/Flight/flight_fare/FlightFare";
+import FlightResultForm from "../flight_booking/single_city/single_resultform/FlightResultForm";
 
 export default function FlightResult() {
   const { singleFlightResult } = useAuthStore();
+
+  console.log('=================\n', singleFlightResult.departDate, "\n========================");
+
+  const getCityName = (locationString) => {
+  const parts = locationString.split(',');
+  return parts.length >= 2 ? parts[1].trim() : '';
+};
+
+const fromCityName = getCityName(singleFlightResult[0]);
+const toCityName = getCityName(singleFlightResult[1]);
+
+  const [takeOffAirport, setTakeOffAirport] = useState(fromCityName);
+  const [destinationAirport, setDestinationAirport] = useState(toCityName);
+  // const todayDate = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD (2025-02-29)
+  const [departDate, setDepartDate] = useState();
+  const [returnDate, setReturnDate] = useState();
+
+
+const [showReturnDate, setShowReturnDate] = useState(true);
+const [showOnewayDate, setShowOnewayDate] = useState(false);
+
+  // ===========Show/Hide Single City and Multi City Search Form
+  const [tripType, setTripType] = useState("One Way");
+
+  const [roundTrip, setRroundTrip] = useState("Round Trip");
+  const [oneWay, setOneWay] = useState("One Way");
+  const [multiCity, setMultiCity] = useState("Multi City");
+
+  const [showSingleForm, setShowSingleForm] = useState(true);
+  const [showMultiCityForm, setShowMultiCityForm] = useState(false);
+  // ===========Show/Hide Single City and Multi City Search Form
+
+  const [rtBrColor, setRtBrColor] = useState("#2563eb");
+  const [rtCheckColor, setRtCheckColor] = useState("#2563eb");
+
+  const [owBrColor, setOwBrColor] = useState("grey");
+  const [owCheckColor, setOwCheckColor] = useState("white");
+
+  const [mcBrColor, setMcBrColor] = useState("grey");
+  const [mcCheckColor, setMcCheckColor] = useState("white");
+
+  
+  const handleRoundTrip = () => {
+    setTripType(roundTrip);
+    setShowReturnDate(true);
+    setShowOnewayDate(false)
+    setShowMultiCityForm(false);
+    setShowSingleForm(true);
+    setRtBrColor("#2563eb");
+    setRtCheckColor("#2563eb");
+    setOwBrColor("grey");
+    setOwCheckColor("white");
+    setMcBrColor("grey");
+    setMcCheckColor("white");
+  };
+
+  const handleOneWay = () => {
+    setTripType(oneWay);
+    setShowReturnDate(false);
+    setShowOnewayDate(true)
+    setShowSingleForm(true);
+    setShowMultiCityForm(false);
+    setRtBrColor("grey");
+    setRtCheckColor("white");
+    setOwBrColor("#2563eb");
+    setOwCheckColor("#2563eb");
+    setMcBrColor("grey");
+    setMcCheckColor("white");
+  };
+
+  const handleMulticity = () => {
+    setTripType(multiCity);
+    setShowSingleForm(false);
+    setShowMultiCityForm(true);
+    setRtBrColor("grey");
+    setRtCheckColor("white");
+    setMcBrColor("#2563eb");
+    setMcCheckColor("#2563eb");
+    setOwBrColor("grey");
+    setOwCheckColor("white");
+  };
 
   // const flightData = JSON.parse(myObject);
 
@@ -125,29 +207,6 @@ export default function FlightResult() {
     },
   ];
 
-  const [showFlightInputs, setshowFlightInputs] = useState(false);
-
-  const [showReturnDate, setShowReturnDte] = useState(true);
-
-  // ===========Show/Hide Single City and Multi City Search Form
-  const [tripType, setTripType] = useState("One Way");
-
-  const [roundTrip, setRroundTrip] = useState("Round Trip");
-  const [oneWay, setOneWay] = useState("One Way");
-  const [multiCity, setMultiCity] = useState("Multi City");
-
-  const [showSingleForm, setShowSingleForm] = useState(true);
-  const [showMultiCityForm, setShowMultiCityForm] = useState(false);
-  // ===========Show/Hide Single City and Multi City Search Form
-
-  const [rtBrColor, setRtBrColor] = useState("#2563eb");
-  const [rtCheckColor, setRtCheckColor] = useState("#2563eb");
-
-  const [owBrColor, setOwBrColor] = useState("grey");
-  const [owCheckColor, setOwCheckColor] = useState("white");
-
-  const [mcBrColor, setMcBrColor] = useState("grey");
-  const [mcCheckColor, setMcCheckColor] = useState("white");
 
   // This is the Show View Detail Variable index
   const [index, setIndex] = useState(0);
@@ -180,87 +239,58 @@ export default function FlightResult() {
     return { hours, minutes };
   }
 
-  const handleRoundTrip = () => {
-    setTripType(roundTrip);
-    setShowReturnDte(true);
-    setShowMultiCityForm(false);
-    setShowSingleForm(true);
-    setRtBrColor("#2563eb");
-    setRtCheckColor("#2563eb");
-    setOwBrColor("grey");
-    setOwCheckColor("white");
-    setMcBrColor("grey");
-    setMcCheckColor("white");
-  };
-
-  const handleOneWay = () => {
-    setTripType(oneWay);
-    setShowReturnDte(false);
-    setShowSingleForm(true);
-    setShowMultiCityForm(false);
-    setRtBrColor("grey");
-    setRtCheckColor("white");
-    setOwBrColor("#2563eb");
-    setOwCheckColor("#2563eb");
-    setMcBrColor("grey");
-    setMcCheckColor("white");
-  };
-
-  const handleMulticity = () => {
-    setTripType(multiCity);
-    setShowSingleForm(false);
-    setShowMultiCityForm(true);
-    setRtBrColor("grey");
-    setRtCheckColor("white");
-    setMcBrColor("#2563eb");
-    setMcCheckColor("#2563eb");
-    setOwBrColor("grey");
-    setOwCheckColor("white");
-  };
+  
 
   console.log(filterIataAirport("LOS"));
+
+
+
 
   const [showFlexibleDate, setShowFlexibleDate] = useState(false);
 
   return (
     <FlightResultWrapper>
-      {singleFlightResult[2]?.length === 0 && <NoResult />}
-      {/* flight header section */}
-      <FlightResultHeader>
-        <DateFlight>Mon, 9 Sep 2024</DateFlight>
-        <p>
-          Select your departure flight from <span>{singleFlightResult[0]}</span>{" "}
-          to <span>{singleFlightResult[1]}</span>
-        </p>
-      </FlightResultHeader>
-      {/* Flight Modification form */}
-      {/* <FlightModification> */}
-      <FormWrapper>
-        <SingleSearchCityForm
-          handleRoundTrip={handleRoundTrip}
-          rtBrColor={rtBrColor}
-          rtCheckColor={rtCheckColor}
-          roundTrip={roundTrip}
-          handleOneWay={handleOneWay}
-          owBrColor={owBrColor}
-          owCheckColor={owCheckColor}
-          oneWay={oneWay}
-          handleMulticity={handleMulticity}
-          mcBrColor={mcBrColor}
-          mcCheckColor={mcCheckColor}
-          multiCity={multiCity}
-          showSingleForm={showSingleForm}
-          showMultiCityForm={showMultiCityForm}
-          showReturnDate={showReturnDate}
-        />
-      </FormWrapper>
-      {/* </FlightModification> */}
+      {singleFlightResult[2]?.length === 0 ? <NoResult /> :
 
-      {/* flight result section */}
+    <>
+      {/* flight header section */}
+      <FlightResultHeader resultHeaderbgColor={""}>
+              {/* Flight Modification form */}
+            <FormWrapper formWrapperbgColor={''}>
+              <FlightResultForm
+                    takeOffAirport={takeOffAirport}
+                    destinationAirport={destinationAirport} 
+                    setTakeOffAirport={setTakeOffAirport} 
+                    setDestinationAirport={setDestinationAirport} 
+                    departDate={departDate} 
+                    setDepartDate={setDepartDate}
+                    returnDate={returnDate} 
+                    setreturnDate={setReturnDate}
+                    handleRoundTrip={handleRoundTrip}
+                    rtBrColor={rtBrColor}
+                    rtCheckColor={rtCheckColor}
+                    roundTrip={roundTrip}
+                    handleOneWay={handleOneWay}
+                    owBrColor={owBrColor}
+                    owCheckColor={owCheckColor}
+                    oneWay={oneWay}
+                    handleMulticity={handleMulticity}
+                    mcBrColor={mcBrColor}
+                    mcCheckColor={mcCheckColor}
+                    multiCity={multiCity}
+                    showSingleForm={showSingleForm}
+                    showMultiCityForm={showMultiCityForm}
+                    showReturnDate={showReturnDate}
+                    showOnewayDate={showOnewayDate}
+              />
+            </FormWrapper>
+       {/* Flight Modification form */}
+      </FlightResultHeader>
+     
+
       {/* flight result section */}
       <FlightResultContent>
         {/* Flight Result Main Content */}
-
 
         {/* SideBar */}
         <Sidebar
@@ -276,7 +306,7 @@ export default function FlightResult() {
 
           {/* show flexible calender */}
           <FlightMainHeader>
-            <h3>From Lagos to Dubai</h3>
+            <h3>From {fromCityName} to {toCityName}</h3>
             <Button
               btnBorder={'1px solid white'}
               bgColor={'#FF6805'}
@@ -600,6 +630,7 @@ export default function FlightResult() {
           flightData={mockFlightData}
         />
       }
+      </>}
     </FlightResultWrapper>
   );
 }

@@ -159,7 +159,8 @@ const MulticitySearchForm = () => {
       ))}
 
       {/* Checkbox for flight result multiple date */}
-      <CheckboxWrapper>
+      <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+        <CheckboxWrapper>
         <input
            type="checkbox"
            id="terms"
@@ -181,6 +182,8 @@ const MulticitySearchForm = () => {
           />
         </div>
       )}
+      </div>
+      
     </FlightForm>
   );
 };

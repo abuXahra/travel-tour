@@ -39,7 +39,7 @@ export const MultiFlightClassTitle = styled.div`
             width: 100%;
             padding: 14px 10px 10px 10px;
             border-radius: 10px;
-            font-size: 13px;
+            font-size: 10px;
             text-transform: uppercase;
             font-weight: bold;
             display: flex;

@@ -15,16 +15,11 @@ export const FlightResultHeader = styled.div`
     display: flex;
     flex-direction: column;
     align-items: start;
-    background-color: #0D3984;
-    padding: 40px;
+    background-color: ${({resultHeaderbgColor}) => resultHeaderbgColor || "#0D3984"};
+    padding: 10px;
     color: white;
     font-size: 25px;
     gap: 10px;
-
-    span {
-        color: #FF6805;
-    }
-
 `
 
 export const DateFlight  = styled.p`

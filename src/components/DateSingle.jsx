@@ -7,11 +7,12 @@ const StyledDatePickerWrapper = styled.div`
   /* Style only the input field */
   .rmdp-input {
     width: 213%;
-    padding: 26px 20px;
     border-radius: 10px;
+    box-shadow: none;
     border: none;
-    font-size: 14px;
+    font-size: 15px;
     color: #333;
+    background-color: transparent;
 
     @media (max-width: 768px) {
       width: 175%;
