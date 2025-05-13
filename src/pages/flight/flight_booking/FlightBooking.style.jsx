@@ -169,8 +169,9 @@ export const FlightInputWrapper = styled.div`
     input{
         width: 100%;
         padding: 25px;
+        padding-left: 15px;
         border-radius: 10px;
-        font-size: 13px;
+        font-size: 25px;
         color: black;
         text-transform: capitalize;
         background-color: #0d398428;
@@ -191,7 +192,7 @@ export const FlightInputWrapper = styled.div`
 
     @media (max-width:768px) {
         input{ 
-            font-size: 12px;
+            font-size: 15px;
             padding-right: 40px;
         }
     }
@@ -248,10 +249,9 @@ export const FlightDepatWrapContent = styled.div`
         position: relative;
         border-radius: ${({borderRadius}) => borderRadius || ""};
 
-
         input{
             width: 100%;
-            padding: 30px 10px 10px 10px;
+            padding: 35px 15px 20px 15px;
             border-radius: 10px;
             font-size: 13px;
             /* background-color: #0d398428; */
@@ -268,9 +268,11 @@ export const FlightDepatWrapContent = styled.div`
 
 export const Label = styled.label`
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: ${({top}) => top || "10px"};
+            left: 15px;
             font-size: 10px;
+            color: grey;
+            transition: top 0.3s ease; 
 `
 
 
@@ -282,9 +284,9 @@ export const FlightPassengerWrapper  = styled.div`
 
 export const FlightPassengerClass = styled.div`
             width: 100%;
-            padding: 14px 10px 10px 10px;
+            padding: 28px 15px 20px 15px;
             border-radius: 10px;
-            font-size: 12px;
+            font-size: 15px;
             background-color: #0d398428;
             text-transform: capitalize;
             /* outline: 2px solid #0D3984; */
@@ -294,6 +296,11 @@ export const FlightPassengerClass = styled.div`
                 color: black;
                 text-transform: capitalize;
             }
+
+    @media (max-width:768px) {
+        padding: 30px 15px 20px 15px;
+        font-size: 12px;
+    }
             
 `
 

@@ -13,6 +13,7 @@ const StyledDatePickerWrapper = styled.div`
     font-size: 15px;
     color: #333;
     background-color: transparent;
+     margin-top: 5px;
 
     @media (max-width: 768px) {
       width: 175%;

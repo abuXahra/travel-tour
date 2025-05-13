@@ -171,6 +171,9 @@ export default function SingleSearchCityForm({
 const fromCityName = getCityName(takeOffAirport);
 const toCityName = getCityName(destinationAirport);
 
+// to move label up and down
+const labelTopFrom = takeOffAirport ? "10px" : "35px";
+const labelTopTo = destinationAirport ? "10px" : "35px";
 
 
 // switch the inputs
@@ -334,8 +337,7 @@ const toCityName = getCityName(destinationAirport);
   const [showFlexibleDate, setShowFlexibleDate] = useState(false);
   const [displayButton, setDisplayButton] = useState('none')
 
-
-  
+ 
   const onCloseTakOffDropdwon = () => {
     setShowTakeOffAirports(false);
   };
@@ -520,9 +522,10 @@ const toCityName = getCityName(destinationAirport);
             {/* takeoff input */}
             <FlightInputAndDropDown>
               <FlightInputWrapper onClick={handleShowFlightInputsA}>
+                <Label top={labelTopFrom} for="depart">From where?</Label>
                 <input
                   type="text"
-                  placeholder="From"
+                  // placeholder="From"
                   value={fromCityName? fromCityName : takeOffAirport}
                   onChange={(e) => onChangeTakeOffHandler(e)}
                 />
@@ -554,9 +557,10 @@ const toCityName = getCityName(destinationAirport);
             {/*Destination input  */}
             <FlightInputAndDropDown>
               <FlightInputWrapper onClick={handleShowFlightInputsB}>
+                <Label top={labelTopTo } for="depart">To where?</Label>
                 <input
                   type="text"
-                  placeholder="To"
+                  // placeholder="To"
                   value={toCityName? toCityName: destinationAirport}
                   onChange={(e) => onChangeDestinationHandler(e)}
                 />
@@ -637,11 +641,11 @@ const toCityName = getCityName(destinationAirport);
 
         
               <FlightDepatWrapContent>
+                <Label for="depart">Passenger and Class</Label>
                 <FlightPassengerWrapper>
                   <FlightPassengerClass
                     onClick={() => setShowPassenger(!showPassenger)}
                   >
-                    <span>Passenger and Class</span>
                     <div>
                       <span id="passengerValue">{totalPassengers}</span>{" "}
                       passenger and <span id="classValue">{flightClass}</span>{" "}
