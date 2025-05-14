@@ -249,6 +249,7 @@ const labelTopTo = destinationAirport ? "10px" : "35px";
   // Mr Bobai - >
   const originLocation = useDebounce(searchTakeOffInputValue);
   const destinationLocation = useDebounce(searchDestinationInputValue);
+
   useEffect(() => {
     if (originLocation !== "") {
       // airports(originLocation, 0);
@@ -562,6 +563,7 @@ const labelTopTo = destinationAirport ? "10px" : "35px";
                   type="text"
                   // placeholder="To"
                   value={toCityName? toCityName: destinationAirport}
+                  //  value={destinationAirport}
                   onChange={(e) => onChangeDestinationHandler(e)}
                 />
                 <span>

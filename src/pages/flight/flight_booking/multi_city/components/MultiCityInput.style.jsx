@@ -39,7 +39,7 @@ export const MultiFlightClass = styled.div`
 
 export const MultiFlightClassTitle = styled.div`
             width: 100%;
-            padding: 14px 10px 10px 10px;
+            padding: 28px 15px 20px 15px;
             border-radius: 10px;
             font-size: 13px;
             text-transform: capitalize;
@@ -49,6 +49,7 @@ export const MultiFlightClassTitle = styled.div`
             gap:2px;
             justify-content: space-between;
             background-color: #0d398428;
+              color: black;
            
 
             & span:nth-child(1){
