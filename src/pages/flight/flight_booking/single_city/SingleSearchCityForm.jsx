@@ -530,6 +530,7 @@ const labelTopTo = destinationAirport ? "10px" : "35px";
                   value={fromCityName? fromCityName : takeOffAirport}
                   onChange={(e) => onChangeTakeOffHandler(e)}
                 />
+                <p>{takeOffAirport}</p>
                 <span>
                   <MdFlightTakeoff />
                 </span>
@@ -566,6 +567,7 @@ const labelTopTo = destinationAirport ? "10px" : "35px";
                   //  value={destinationAirport}
                   onChange={(e) => onChangeDestinationHandler(e)}
                 />
+                <p>{destinationAirport}</p>
                 <span>
                   <MdFlightLand />
                 </span>

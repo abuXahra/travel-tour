@@ -247,6 +247,7 @@ const toCityName = getCityName(city.to);
         <FlightInputAndDropDown>
           <FlightInputWrapper onClick={toggleFromDropdown}>
             <Label top={labelTopFrom} for="depart">From where?</Label>
+            <p>{city.from}</p>
             <input
               type="text"
               // placeholder="From"
@@ -295,6 +296,7 @@ const toCityName = getCityName(city.to);
         <FlightInputAndDropDown>
           <FlightInputWrapper onClick={toggleToDropdown}>
              <Label top={labelTopTo } for="depart">To where?</Label>
+             <p>{city.to}</p>
             <input
               type="text"
               // placeholder="To"
