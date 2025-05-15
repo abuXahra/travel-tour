@@ -128,6 +128,13 @@ export const FlightInputWrapper = styled.div`
 
     }
 
+        p{
+        font-size: 10px;
+        position: absolute;
+        left:  15px;
+        bottom: 10px;
+        color: grey;
+    }
     @media (max-width:768px) {
         input{ 
             font-size: 12px;
@@ -212,7 +219,7 @@ export const FlightPassengerClass = styled.div`
             display: flex;
             flex-direction: column;
             text-transform: capitalize;
-            font-size: 14px;
+            font-size: 12px;
             padding-top: 10px;
             div{
                 color: black;

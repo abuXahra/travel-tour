@@ -22,14 +22,14 @@ const StyledDatePickerWrapper = styled.div`
   }
 `;
 
-export default function DateSinglePickerCalender({ setDepartDate }) {
+export default function DateSingleReturnCalender({ setReturnDate }) {
   const [dateValue, setDateValue] = useState(new DateObject());
 
   const handleDateChange = (newDateValue) => {
     setDateValue(newDateValue);
 
     // Update depart date when user selects a new date
-    setDepartDate(newDateValue.format('YYYY-MM-DD'));
+    setReturnDate(newDateValue.format('YYYY-MM-DD'));
   };
 
   return (

@@ -282,6 +282,7 @@ const [showOnewayDate, setShowOnewayDate] = useState(false);
                     showMultiCityForm={showMultiCityForm}
                     showReturnDate={showReturnDate}
                     showOnewayDate={showOnewayDate}
+                    p={singleFlightResult}
               />
             </FormWrapper>
        {/* Flight Modification form */}

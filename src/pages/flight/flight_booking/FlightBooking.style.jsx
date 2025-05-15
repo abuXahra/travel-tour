@@ -221,7 +221,7 @@ export const RoundTripImg = styled.div`
         justify-content: center;
         align-items: center;
         display: flex;
-        z-index: 999;
+        z-index: 100;
 
         img{
             height: 18px;

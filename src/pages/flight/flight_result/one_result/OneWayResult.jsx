@@ -284,7 +284,7 @@ const [showFlexibleDate, setShowFlexibleDate] = useState(false);
 
           {/* show flexible calender */}
           <FlightMainHeader>
-            <h3>From Lagos to Dubai</h3>
+             <h3>From {fromCityName} to {toCityName}</h3>
             <Button
               btnBorder={'1px solid white'}
               bgColor={'#FF6805'}

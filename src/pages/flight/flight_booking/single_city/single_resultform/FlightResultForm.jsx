@@ -32,6 +32,7 @@ import { DestinationWrapper, FlightDepartWrapper, FlightDepatWrapContent, Flight
 import { toast } from "react-toastify";
 import MulticitySearchForm from "../../multi_city/MulticitySearchForm";
 import { CheckboxWrapper } from "../../multi_city/MultiCity.style";
+import DateSingleReturnCalender from "../../../../../components/DateSingleReturn";
 
 const defaultCityList = [
   {
@@ -109,6 +110,7 @@ export default function FlightResultForm({
     showMultiCityForm,
     showReturnDate,
     showOnewayDate,
+    p,
 }) {
   const navigate = useNavigate();
 
@@ -517,6 +519,7 @@ const toCityName = getCityName(destinationAirport);
                         value={fromCityName? fromCityName : takeOffAirport}
                         onChange={(e) => onChangeTakeOffHandler(e)}
                         />
+                         <p>{p ? p[0] : takeOffAirport}</p>
                     </FlightInputWrapper>
 
                     {/*  Takeoff Airport Dropdown*/}
@@ -549,6 +552,7 @@ const toCityName = getCityName(destinationAirport);
                         value={toCityName ? toCityName : destinationAirport}
                         onChange={(e) => onChangeDestinationHandler(e)}
                         />
+                         <p>{p ? p[1] : destinationAirport}</p>
                     </FlightInputWrapper>
 
                     {/* dropdown */}
@@ -572,29 +576,29 @@ const toCityName = getCityName(destinationAirport);
                 {showFlightInputs && (
                     <FlightDepartWrapper>
 
-                {/* Date range picker round trip*/}
-                { showReturnDate &&      
-                        <FlightDepatWrapContent  
-                            contWidth={"100%"} 
-                            bgColor={'#0d398428'}
-                            borderRadius={"10px"}
-                        >
-                            <Label for="depart">Depart/Return Date</Label>
-                            <DateRangePickerCalender setDepartDate={setDepartDate} setReturnDate={setreturnDate}/>
-                        </FlightDepatWrapContent>
-                }
 
-                {/* Date single picker for one way */}
-                {showOnewayDate &&
-                    <FlightDepatWrapContent 
-                        contWidth={"100%"} 
-                        bgColor={'#0d398428'}
-                        borderRadius={"10px"}
-                                >
-                            <Label for="depart">Depart Date</Label>
-                            <DateSinglePickerCalender setDepartDate={setDepartDate}/>
-                        </FlightDepatWrapContent>
-                    }
+
+
+       <FlightDepatWrapContent 
+                     contWidth={"100%"} 
+                     bgColor={'#0d398428'}
+                     borderRadius={"10px"}
+                             >
+                           <Label for="depart">Depart Date</Label>
+                           <DateSinglePickerCalender setDepartDate={setDepartDate}/>
+                     </FlightDepatWrapContent>
+                               
+     
+                { showReturnDate &&      
+                     <FlightDepatWrapContent  
+                         contWidth={"100%"} 
+                         bgColor={'#0d398428'}
+                         borderRadius={"10px"}
+                     >
+                         <Label for="depart">Return Date</Label>
+                          <DateSingleReturnCalender setReturnDate={setreturnDate}/>
+                      </FlightDepatWrapContent>
+               }
                 
                     <FlightDepatWrapContent 
                         contWidth={"100%"} 
@@ -714,3 +718,33 @@ const toCityName = getCityName(destinationAirport);
     </SingleAndMulticityWrapper>
   );
 }
+
+
+
+
+
+
+
+
+//  { showReturnDate &&      
+//                 <FlightDepatWrapContent  
+//                     contWidth={"100%"} 
+//                     bgColor={'#0d398428'}
+//                     borderRadius={"10px"}
+//                 >
+//                     <Label for="depart">Return Date</Label>
+//                      <DateSingleReturnCalender setReturnDate={setreturnDate}/>
+//                  </FlightDepatWrapContent>
+//           }
+
+//                 {/* Date range picker round trip*/}
+//                 { showReturnDate &&      
+//                         <FlightDepatWrapContent  
+//                             contWidth={"100%"} 
+//                             bgColor={'#0d398428'}
+//                             borderRadius={"10px"}
+//                         >
+//                             <Label for="depart">Depart/Return Date</Label>
+//                             <DateRangePickerCalender setDepartDate={setDepartDate} setReturnDate={setreturnDate}/>
+//                         </FlightDepatWrapContent>
+//                 }
