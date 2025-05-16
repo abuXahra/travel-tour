@@ -65,8 +65,8 @@ export default function OneWayResult() {
   // const flightData = JSON.parse(myObject);
 
   const getCityName = (locationString) => {
-  const parts = locationString.split(',');
-  return parts.length >= 2 ? parts[1].trim() : '';
+  const parts = locationString?.split(',');
+  return parts?.length >= 2 ? parts[1].trim() : '';
 };
 
 const fromCityName = getCityName(oneWayFlightResult[0]);
