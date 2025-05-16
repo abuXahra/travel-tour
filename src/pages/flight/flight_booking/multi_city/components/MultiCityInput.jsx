@@ -92,7 +92,8 @@ const MultiCityInput = ({
     useState("");
   const originLocation = useDebounce(searchTakeOffInputValue);
   const destinationLocation = useDebounce(searchDestinationInputValue);
-  
+
+
   useEffect(() => {
     if (originLocation !== "") {
       // airports(originLocation, 0);
@@ -224,16 +225,34 @@ const setDepartDate = (formattedDate) => {
 };
 
 
+const labelTopFrom = city.from ? "10px" : "35px";
+const labelTopTo = city.to ? "10px" : "35px";
+
+
+  const getCityName = (locationString) => {
+     const parts = locationString.split(',');
+      return parts.length >= 2 ? parts[1].trim() : '';
+      // const parts = locationString.split(',');
+      // return parts.length >= 1 ? parts[0].trim() : '';
+};
+
+const fromCityName = getCityName(city.from);
+const toCityName = getCityName(city.to);
+
+
   return (
     <InputWrapper>
       <FlightInputContainer>
         {/* takeoff input */}
         <FlightInputAndDropDown>
           <FlightInputWrapper onClick={toggleFromDropdown}>
+            <Label top={labelTopFrom} for="depart">From where?</Label>
+            <p>{city.from}</p>
             <input
               type="text"
-              placeholder="From"
-              value={city.from}
+              // placeholder="From"
+              value={fromCityName? fromCityName : city.from}
+              // value={city.from}
               onChange={(e) => {
                 handleInputChange("from", e.target.value);
                 setSearchTakeOffInputValue(e.target.value);
@@ -276,10 +295,12 @@ const setDepartDate = (formattedDate) => {
         {/*Destination input  */}
         <FlightInputAndDropDown>
           <FlightInputWrapper onClick={toggleToDropdown}>
+             <Label top={labelTopTo } for="depart">To where?</Label>
+             <p>{city.to}</p>
             <input
               type="text"
-              placeholder="To"
-              value={city.to}
+              // placeholder="To"
+              value={toCityName? toCityName : city.to}
               onChange={(e) => {
                 handleInputChange("to", e.target.value);
                 handleToSelect(e.target.value);
@@ -335,10 +356,14 @@ const setDepartDate = (formattedDate) => {
             />
           </FlightDepatWrapContent> */}
 
-                      <FlightDepatWrapContent>
-                        <Label for="depart">Departure</Label>
-                                <DateSinglePickerCalender setDepartDate={setDepartDate}/>
-                           </FlightDepatWrapContent>
+                      <FlightDepatWrapContent 
+                        contWidth={"100%"} 
+                        bgColor={'#0d398428'}
+                        borderRadius={"10px"}
+                        >
+                            <Label for="depart">Departure Date</Label>
+                            <DateSinglePickerCalender setDepartDate={setDepartDate}/>
+                      </FlightDepatWrapContent>
      
           {/* <FlightDepatWrapContent>
         <Label for="depart">Returning</Label>
@@ -351,13 +376,14 @@ const setDepartDate = (formattedDate) => {
     </FlightDepatWrapContent> */}
 
           <FlightDepatWrapContent>
+             <Label for="depart">Class</Label>
             <MultiFlightClass
               onClick={() => {
                 setShowClass(!showClass);
               }}
             >
               <MultiFlightClassTitle>
-                <span>Class</span>
+                {/* <span style={{fontSize: "10px"}}>Class</span> */}
                 <span>
                   {classSelect} <IoMdArrowDropdown />
                 </span>

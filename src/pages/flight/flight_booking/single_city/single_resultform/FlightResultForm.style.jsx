@@ -2,79 +2,15 @@
 import { FaCircle } from "react-icons/fa"
 import styled from "styled-components"
 
-export const FlightWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    width: 100%;   
-`
 
 
-export const  FlightFormSection = styled.div`
-    height: ${({sectionHeight}) => sectionHeight || '100vh'};
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    color: ${({fontColor})=> fontColor || 'white'};
-    align-items: start;
-    padding: 100px;
-    gap: 20px;
 
-    @media (max-width:768px) {
-        height: auto;
-        padding: 50px 20px;
-    }
-
-`
-
-export const FlightFormSectionTitle = styled.div`
-    width: 100%;
-    display: flex;
-    gap: 10px;
-    flex-direction: column;
-    h1{
-         font-size: 40px;
-    }
-`
-
-export const FlightFormSectionContent = styled.div`
-    width: 100%;
-    display: flex;
-    /* gap: 10px; */
-    flex-direction: column;   
-`
-
-
-export const ContentMain = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background-color: #0d3984cf; //
-    /* padding: 10px; */
-    border-radius: 10px;
-    border-top-left-radius: ${({tLeftRadius}) => tLeftRadius || '0px'};
-
-    @media (max-width:768px) {
-        padding: 20px;
-    }
-`
-export const FormWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: ${({rounderBorder})=>rounderBorder || '10px'};
-    padding: ${({pd})=>pd || '10px'};
-    gap: 10px;
-`
 export const FlightForm = styled.div` //////////change from form to div
     width: 100%;
     flex-direction: column;
     display: flex;
     color: black;
-    gap: ${({formGap})=>formGap || '10px'};
+    gap: ${({formGap})=>formGap || '5px'};
 `
 
 
@@ -164,17 +100,19 @@ export const FlightInputWrapper = styled.div`
     display: flex;
     align-items: center;
     border-radius: 10px;
-    /* background-color: #0d398428; */
+    background-color: #0d398428;
 
     input{
         width: 100%;
-        padding: 25px;
+        padding-right: 15px;
         padding-left: 15px;
+        padding-top: 30px;
+         padding-bottom: 25px;
         border-radius: 10px;
         font-size: 25px;
         color: black;
         text-transform: capitalize;
-        background-color: #0d398428;
+        background-color: transparent;
         border: none;
             &:focus {
             outline: 2px solid #0D3984;
@@ -183,24 +121,23 @@ export const FlightInputWrapper = styled.div`
 
     span{
         position: absolute;
-        right: 20px;
-        top: 40%;
+        right: 10px;
+        top: 10px;
         font-size: 13px;
         color: #292929;
 
     }
 
-    p{
+        p{
         font-size: 10px;
         position: absolute;
         left:  15px;
         bottom: 10px;
         color: grey;
     }
-
     @media (max-width:768px) {
         input{ 
-            font-size: 15px;
+            font-size: 12px;
             padding-right: 40px;
         }
     }
@@ -221,7 +158,7 @@ export const RoundTripImg = styled.div`
         justify-content: center;
         align-items: center;
         display: flex;
-        z-index: 100;
+        z-index: 999;
 
         img{
             height: 18px;
@@ -252,35 +189,21 @@ export const FlightDepartWrapper = styled.div`
 
 export const FlightDepatWrapContent = styled.div`
         width: ${({contWidth})=>contWidth || "100%"};
-        color: grey;
         background-color: ${({bgColor}) => bgColor || ""};
         position: relative;
         border-radius: ${({borderRadius}) => borderRadius || ""};
-
-        input{
-            width: 100%;
-            padding: 35px 15px 20px 15px;
-            border-radius: 10px;
-            font-size: 13px;
-            /* background-color: #0d398428; */
-            border: none;
-
-            &:focus {
-            outline: 2px solid #0D3984;
-
-      
-         }
-
-    }
+            padding-right: 15px;
+            padding-left: 15px;
+            padding-top: 25px;
+            padding-bottom: 25px;
 `
 
 export const Label = styled.label`
             position: absolute;
-            top: ${({top}) => top || "10px"};
-            left: 15px;
+            top: 15px;
+            left: 20px;
             font-size: 10px;
             color: grey;
-            transition: top 0.3s ease; 
 `
 
 
@@ -288,27 +211,21 @@ export const FlightPassengerWrapper  = styled.div`
        width: 100%;
        display: flex;
        flex-direction: column;
+       position: relative;
 `
 
 export const FlightPassengerClass = styled.div`
             width: 100%;
-            padding: 28px 15px 20px 15px;
-            border-radius: 10px;
-            font-size: 15px;
-            background-color: #0d398428;
+            display: flex;
+            flex-direction: column;
             text-transform: capitalize;
-            /* outline: 2px solid #0D3984; */
-    
-
+            font-size: 12px;
+            padding-top: 10px;
             div{
                 color: black;
-                text-transform: capitalize;
+                
+                
             }
-
-    @media (max-width:768px) {
-        padding: 30px 15px 20px 15px;
-        font-size: 12px;
-    }
             
 `
 
@@ -363,4 +280,16 @@ export const SubmitButtonWrapper = styled.div`
     display: ${({displayButton}) => displayButton || 'none'};
     justify-content: space-between; 
     align-items: center;
+`
+
+export const FormInputs = styled.div`
+    width: 100%;
+    display: flex;
+    gap: 10px;
+
+      @media (max-width:768px) {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
 `

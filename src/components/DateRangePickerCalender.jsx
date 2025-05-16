@@ -5,7 +5,7 @@
 
 
 // DateRangePickerCalender.js
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import DatePicker, { DateObject } from "react-multi-date-picker";
 import Footer from 'react-multi-date-picker/plugins/range_picker_footer';
 import styled from 'styled-components';
@@ -14,12 +14,14 @@ const StyledDatePickerWrapper = styled.div`
   /* Style only the input field */
   .rmdp-input {
     width: 213%;
-    /* background-color: #0d398428;  Light background */
-    padding: 26px 20px;
     border-radius: 10px;
+    box-shadow: none;
     border: none;
-    font-size: 14px;
+    font-size: 15px;
     color: #333;
+    background-color: transparent;
+    margin-top: 5px;
+
 
      @media (max-width:768px) {
         width: 175%;
@@ -31,6 +33,7 @@ export default function DateRangePickerCalender({setDepartDate, setReturnDate}) 
   
   
 
+const datePickerRef = useRef(null);
 
 
   const [dateValue, setDateValue] = useState([
@@ -52,6 +55,11 @@ export default function DateRangePickerCalender({setDepartDate, setReturnDate}) 
         if (Array.isArray(newDateValue) && newDateValue.length === 2) {
             setDepartDate(newDateValue[0]?.format("YYYY-MM-DD"));
             setReturnDate(newDateValue[1]?.format("YYYY-MM-DD"));
+            
+          // Close the calendar
+          if (datePickerRef.current) {
+            datePickerRef.current.closeCalendar();
+          }
         }
        
       };
@@ -63,13 +71,13 @@ export default function DateRangePickerCalender({setDepartDate, setReturnDate}) 
         onChange={handleDateChange}
         range
         numberOfMonths={2}
-        portal={false}  // ← important!
+        portal={true}  // ← important!
+        ref={datePickerRef}
         calendarPosition="bottom-left"
-        plugins={[<Footer position="bottom" />]}
+        // plugins={[<Footer position="bottom" />]}
 />
     </StyledDatePickerWrapper>
   );
 }
-
 
 

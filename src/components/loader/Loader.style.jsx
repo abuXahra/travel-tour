@@ -16,7 +16,7 @@ export const LoaderWrapper = styled.div`
     margin-top: -120px;
     
     img{
-           height: 35px;
+           width: 100px;
     }
   `
 

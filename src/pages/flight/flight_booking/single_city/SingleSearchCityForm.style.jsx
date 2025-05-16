@@ -6,3 +6,4 @@ export const SingleAndMulticityWrapper = styled.div`
     flex-direction: column;
     gap: 10px;
 `
+

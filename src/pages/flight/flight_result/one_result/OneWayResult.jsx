@@ -37,13 +37,13 @@ import flightLogo from "../../../../images/aire-peace.png";
 // import FormWrapper from '../../../../components/booking_icons/form_wrapper/FormWrapper';
 import {
   FlightType,
+  FormWrapper,
   RadioCheck,
   RadioItem,
   RadioItemWrapper,
 } from "../../flight_booking/FlightBooking.style";
 import SingleSearchCityForm from "../../flight_booking/single_city/SingleSearchCityForm";
 import MulticitySearchForm from "../../flight_booking/multi_city/MulticitySearchForm";
-import FormWrapper from "../../../../pages/flight/flight_booking/FlightBooking.style";
 import { OneFormWrapper } from "./OneWayResult.style";
 
 import AirlineCodeLookup from "../../../../components/Flight/AirlineCodeLookup";
@@ -63,10 +63,20 @@ import FlexibleCalender from "../../../../components/Flight/flexible_Calender/Fl
 import { mockFlightData } from "../../../../data/object/FlexibleCalenderItems";
 import FlightFare from "../../../../components/Flight/flight_fare/FlightFare";
 import PriceMatrix from "../../../../components/Flight/price_matrix/PriceMatrix";
+import FlightResultForm from "../../flight_booking/single_city/single_resultform/FlightResultForm";
 
 export default function OneWayResult() {
-  const { oneWayFlightResult } = useAuthStore();
+  const [data, setData] = useState([]);
+  const { oneWayFlightResult, FData } = useAuthStore();
   // const flightData = JSON.parse(myObject);
+
+  const getCityName = (locationString) => {
+    const parts = locationString?.split(",");
+    return parts?.length >= 2 ? parts[1].trim() : "";
+  };
+
+  const fromCityName = getCityName(oneWayFlightResult[0]);
+  const toCityName = getCityName(oneWayFlightResult[1]);
 
   // user defined variable for stopover   ===============================================================
   const [flightStopOver, setFlightStopOver] = useState(1);
@@ -78,11 +88,12 @@ export default function OneWayResult() {
       navigate("/flight-booking");
     }
   }, [oneWayFlightResult, navigate]);
-  // useEffect(() => {
-  //   if (!oneWayFlightResult[0]) {
-  //     navigate("/flight-booking");
-  //   }
-  // }, [oneWayFlightResult, navigate]);
+  useEffect(() => {
+    if (!FData) {
+      navigate("/flight-booking");
+    }
+    setData(oneWayFlightResult?.[2]);
+  }, [FData, navigate]);
 
   // Show View Detail Variable
   const [showViewDetailCard, setShowViewDetailCard] = useState(false);
@@ -129,9 +140,14 @@ export default function OneWayResult() {
     return `${hours}h ${minutes}m Layover in ${city}`;
   };
 
-  const [showFlightInputs, setshowFlightInputs] = useState(false);
+  const [takeOffAirport, setTakeOffAirport] = useState(fromCityName);
+  const [destinationAirport, setDestinationAirport] = useState(toCityName);
+  const todayDate = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD (2025-02-29)
+  const [departDate, setDepartDate] = useState(todayDate);
+  const [returnDate, setReturnDate] = useState(todayDate);
 
-  const [showReturnDate, setShowReturnDte] = useState(false);
+  const [showReturnDate, setShowReturnDate] = useState(false);
+  const [showOnewayDate, setShowOnewayDate] = useState(true);
 
   // ===========Show/Hide Single City and Multi City Search Form
   const [tripType, setTripType] = useState("One Way");
@@ -177,7 +193,8 @@ export default function OneWayResult() {
 
   const handleRoundTrip = () => {
     setTripType(roundTrip);
-    setShowReturnDte(true);
+    setShowReturnDate(true);
+    setShowOnewayDate(false);
     setShowMultiCityForm(false);
     setShowSingleForm(true);
     setRtBrColor("#2563eb");
@@ -190,7 +207,8 @@ export default function OneWayResult() {
 
   const handleOneWay = () => {
     setTripType(oneWay);
-    setShowReturnDte(false);
+    setShowReturnDate(false);
+    setShowOnewayDate(true);
     setShowSingleForm(true);
     setShowMultiCityForm(false);
     setRtBrColor("grey");
@@ -212,65 +230,73 @@ export default function OneWayResult() {
     setOwBrColor("grey");
     setOwCheckColor("white");
   };
-  console.log(oneWayFlightResult[2]);
+
+  console.log(data);
   const [showFlexibleDate, setShowFlexibleDate] = useState(false);
   return (
     <FlightResultWrapper>
-      {oneWayFlightResult[2]?.length === 0 && <NoResult />}
-      {/* flight header section */}
-      <FlightResultHeader>
-        <DateFlight>Mon, 9 Sep 2024</DateFlight>
-        <p>
-          Select your departure flight from <span>{oneWayFlightResult[0]}</span>{" "}
-          to <span>{oneWayFlightResult[1]}</span>
-        </p>
-      </FlightResultHeader>
+      {data?.length === 0 ? (
+        <NoResult />
+      ) : (
+        <>
+          {/* flight header section */}
+          <FlightResultHeader resultHeaderbgColor={""}>
+            {/* Flight Modification form */}
+            <FormWrapper formWrapperbgColor={""}>
+              <FlightResultForm
+                takeOffAirport={takeOffAirport}
+                destinationAirport={destinationAirport}
+                setTakeOffAirport={setTakeOffAirport}
+                setDestinationAirport={setDestinationAirport}
+                departDate={departDate}
+                setDepartDate={setDepartDate}
+                returnDate={returnDate}
+                setreturnDate={setReturnDate}
+                handleRoundTrip={handleRoundTrip}
+                rtBrColor={rtBrColor}
+                rtCheckColor={rtCheckColor}
+                roundTrip={roundTrip}
+                handleOneWay={handleOneWay}
+                owBrColor={owBrColor}
+                owCheckColor={owCheckColor}
+                oneWay={oneWay}
+                handleMulticity={handleMulticity}
+                mcBrColor={mcBrColor}
+                mcCheckColor={mcCheckColor}
+                multiCity={multiCity}
+                showSingleForm={showSingleForm}
+                showMultiCityForm={showMultiCityForm}
+                showReturnDate={showReturnDate}
+                showOnewayDate={showOnewayDate}
+              />
+            </FormWrapper>
+            {/* Flight Modification form */}
+          </FlightResultHeader>
 
-      {/* Flight top level items  such as stopover, manage bookings etc..*/}
-      {/* Flight Headers */}
+          {/* flight result section */}
+          <FlightResultContent>
+            {/* Flight Result Main Content */}
 
-      {/* Flight Modification form */}
-      {/* <FlightModification> */}
-      <OneFormWrapper>
-        {/*======= Flight Search Form =============================== */}
+            {/* SideBar */}
+            <Sidebar
+              Items={ArilineListItems}
+              flightDepartItem={DepartFlightTime}
+              flightReturnItem={ReturnFlightTime}
+              StopsItems={StopsItems}
+              flightSearchResultData={data}
+              dictionaries={oneWayFlightResult[9]}
+              onFilterChange={(bool, flight) => {
+                if (bool === 0) {
+                  setData(oneWayFlightResult?.[2]);
+                } else {
+                  setData(flight);
+                }
+              }}
+            />
 
-        {/*============================ Single City Search Form =============================== */}
-
-        <SingleSearchCityForm
-          handleRoundTrip={handleRoundTrip}
-          rtBrColor={rtBrColor}
-          rtCheckColor={rtCheckColor}
-          roundTrip={roundTrip}
-          handleOneWay={handleOneWay}
-          owBrColor={owBrColor}
-          owCheckColor={owCheckColor}
-          oneWay={oneWay}
-          handleMulticity={handleMulticity}
-          mcBrColor={mcBrColor}
-          mcCheckColor={mcCheckColor}
-          multiCity={multiCity}
-          showSingleForm={showSingleForm}
-          showMultiCityForm={showMultiCityForm}
-          showReturnDate={showReturnDate}
-        />
-      </OneFormWrapper>
-      {/* </FlightModification> */}
-
-      {/* flight result section */}
-      <FlightResultContent>
-        {/* Flight Result Main Content */}
-
-        {/* SideBar */}
-        <Sidebar
-          Items={ArilineListItems}
-          flightDepartItem={DepartFlightTime}
-          flightReturnItem={ReturnFlightTime}
-          StopsItems={StopsItems}
-        />
-
-        <FlightResultMain>
-          {/* Counter Summary */}
-          {/* <ResultCounter>
+            <FlightResultMain>
+              {/* Counter Summary */}
+              {/* <ResultCounter>
             <ResultCounterLeft>
               <h3>{oneWayFlightResult[2]?.length} results</h3>
               <p>Fares displayed are for all passengers.</p>
@@ -283,222 +309,240 @@ export default function OneWayResult() {
             </ResultCounterRight>
           </ResultCounter> */}
 
-          {/* show flexible calender */}
-          <FlightMainHeader>
-            <h3>From Lagos to Dubai</h3>
-            <Button
-              btnBorder={"1px solid white"}
-              bgColor={"#FF6805"}
-              textColor={"white"}
-              onClick={() => setShowFlexibleDate(true)}
-              text={"Flexible Dates"}
-              rightIcon={<MdDateRange />}
-              fontSize={"12px"}
-            />
-          </FlightMainHeader>
+              {/* show flexible calender */}
+              <FlightMainHeader>
+                <h3>
+                  From {fromCityName} to {toCityName}
+                </h3>
+                <Button
+                  btnBorder={"1px solid white"}
+                  bgColor={"#FF6805"}
+                  textColor={"white"}
+                  onClick={() => setShowFlexibleDate(true)}
+                  text={"Flexible Dates"}
+                  rightIcon={<MdDateRange />}
+                  fontSize={"12px"}
+                />
+              </FlightMainHeader>
 
-          {/* Price matrix with regards to stops */}
-          <PriceMatrix
-            flightSearchResultData={oneWayFlightResult[2]}
-            dictionaries={oneWayFlightResult[9]}
-          />
+              {/* Price matrix with regards to stops */}
+              <PriceMatrix
+                flightSearchResultData={data}
+                dictionaries={oneWayFlightResult[9]}
+              />
 
-          {/* Flight Fare: Cheapest, Fastest, Recommeded */}
-          <FlightFare flightSearchResultData={oneWayFlightResult[2]} />
+              {/* Flight Fare: Cheapest, Fastest, Recommeded */}
+              <FlightFare
+                flightSearchResultData={data}
+                onFlightSelect={(flight) => {
+                  setData(flight);
+                }}
+              />
 
-          {/* Flight Result Card  1*/}
-          <FlightResultForDepart
-            dictionaries={oneWayFlightResult[9]}
-            flightSearchResultData={oneWayFlightResult[2]}
-            locationName={[oneWayFlightResult[0], oneWayFlightResult[1]]}
-            setIndex={setIndex}
-            showViewDetail={showViewDetail}
-          />
-        </FlightResultMain>
-      </FlightResultContent>
+              {/* Flight Result Card  1*/}
+              <FlightResultForDepart
+                dictionaries={oneWayFlightResult[9]}
+                flightSearchResultData={data}
+                locationName={[oneWayFlightResult[0], oneWayFlightResult[1]]}
+                setIndex={setIndex}
+                showViewDetail={showViewDetail}
+              />
+            </FlightResultMain>
+          </FlightResultContent>
 
-      {/* FLIGHT DETAIL SECTION */}
-      {showViewDetailCard && (
-        <FLightDetail>
-          {/* close icon */}
-          <FlightDetailClose>
-            <FaTimes onClick={closeViewDetail} />
-          </FlightDetailClose>
+          {/* FLIGHT DETAIL SECTION */}
+          {showViewDetailCard && (
+            <FLightDetail>
+              {/* close icon */}
+              <FlightDetailClose>
+                <FaTimes onClick={closeViewDetail} />
+              </FlightDetailClose>
 
-          {/* flight detail content */}
-          <FLightDetailContent>
-            {/* flight departure */}
-            <FlightDetailDNR>
-              {oneWayFlightResult[2][index].itineraries[0].segments?.map(
-                (flightData, Index, arr) => {
-                  const isLastSegment = Index === arr.length - 1;
-                  const nextSegment = !isLastSegment ? arr[Index + 1] : null;
+              {/* flight detail content */}
+              <FLightDetailContent>
+                {/* flight departure */}
+                <FlightDetailDNR>
+                  {data[index].itineraries[0].segments?.map(
+                    (flightData, Index, arr) => {
+                      const isLastSegment = Index === arr.length - 1;
+                      const nextSegment = !isLastSegment
+                        ? arr[Index + 1]
+                        : null;
 
-                  return (
-                    <>
-                      <span>
-                        <div>
-                          {/* <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} /> */}
-                          <h4>
-                            {`Flight From ${` ${
-                              filterIataAirport(flightData?.departure?.iataCode)
-                                ?.Airport_name
-                            },  ${
-                              filterIataAirport(flightData?.departure?.iataCode)
-                                ?.Location_served
-                            }`} -- ${`${
-                              filterIataAirport(flightData?.arrival?.iataCode)
-                                ?.Airport_name
-                            },  ${
-                              filterIataAirport(flightData?.arrival?.iataCode)
-                                ?.Location_served
-                            }`}`}
-                          </h4>
-                        </div>
-                        <b>Outbound</b>
-                      </span>
-
-                      <DNRDetail>
-                        <DNRDetailFlightImage>
-                          <img
-                            src={`https://images.wakanow.com/Images/flight-logos/${
-                              flightData?.operating?.carrierCode
-                                ? flightData?.operating?.carrierCode
-                                : oneWayFlightResult[2][index]
-                                    .validatingAirlineCodes[0]
-                            }.gif`}
-                            alt={
-                              oneWayFlightResult[2][index]
-                                .validatingAirlineCodes[0]
-                            }
-                          />
-                        </DNRDetailFlightImage>
-
-                        <DNRDetailTime>
+                      return (
+                        <>
                           <span>
-                            <h5>
-                              {new Date(
-                                flightData?.departure.at
-                              ).toLocaleTimeString("en-US", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </h5>
-                            <p>{`${
-                              filterIataAirport(flightData?.departure?.iataCode)
-                                ?.Airport_name
-                            },  ${
-                              filterIataAirport(flightData?.departure?.iataCode)
-                                ?.Location_served
-                            }`}</p>
-                            {/* <AirlineCodeLookup
+                            <div>
+                              {/* <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} /> */}
+                              <h4>
+                                {`Flight From ${` ${
+                                  filterIataAirport(
+                                    flightData?.departure?.iataCode
+                                  )?.Airport_name
+                                },  ${
+                                  filterIataAirport(
+                                    flightData?.departure?.iataCode
+                                  )?.Location_served
+                                }`} -- ${`${
+                                  filterIataAirport(
+                                    flightData?.arrival?.iataCode
+                                  )?.Airport_name
+                                },  ${
+                                  filterIataAirport(
+                                    flightData?.arrival?.iataCode
+                                  )?.Location_served
+                                }`}`}
+                              </h4>
+                            </div>
+                            <b>Outbound</b>
+                          </span>
+
+                          <DNRDetail>
+                            <DNRDetailFlightImage>
+                              <img
+                                src={`https://images.wakanow.com/Images/flight-logos/${
+                                  flightData?.operating?.carrierCode
+                                    ? flightData?.operating?.carrierCode
+                                    : data[index].validatingAirlineCodes[0]
+                                }.gif`}
+                                alt={data[index].validatingAirlineCodes[0]}
+                              />
+                            </DNRDetailFlightImage>
+
+                            <DNRDetailTime>
+                              <span>
+                                <h5>
+                                  {new Date(
+                                    flightData?.departure.at
+                                  ).toLocaleTimeString("en-US", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </h5>
+                                <p>{`${
+                                  filterIataAirport(
+                                    flightData?.departure?.iataCode
+                                  )?.Airport_name
+                                },  ${
+                                  filterIataAirport(
+                                    flightData?.departure?.iataCode
+                                  )?.Location_served
+                                }`}</p>
+                                {/* <AirlineCodeLookup
                       keyWord={
                         oneWayFlightResult[2][index].itineraries[0].segments[0]
                           .departure.iataCode
                       }
                     /> */}
-                          </span>
-                          <span>
-                            <p>
-                              {" "}
-                              {`${
-                                parseDuration(flightData?.duration).hours
-                              }hr ${
-                                parseDuration(flightData?.duration).minutes
-                              }min`}
-                            </p>
-                            <FlightIcon
-                              rotate={"90deg"}
-                              iconColor={"#0D3984"}
-                            />
-                            <p>
-                              {flightData?.numberOfStops}
-                              -Stop
-                            </p>
-                          </span>
-                          <span>
-                            <h5>
-                              {" "}
-                              {new Date(
-                                flightData?.arrival.at
-                              ).toLocaleTimeString("en-US", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </h5>
-                            <p>{`${
-                              filterIataAirport(flightData?.arrival?.iataCode)
-                                ?.Airport_name
-                            },  ${
-                              filterIataAirport(flightData?.arrival?.iataCode)
-                                ?.Location_served
-                            }`}</p>
-                            {/* <AirlineCodeLookup
+                              </span>
+                              <span>
+                                <p>
+                                  {" "}
+                                  {`${
+                                    parseDuration(flightData?.duration).hours
+                                  }hr ${
+                                    parseDuration(flightData?.duration).minutes
+                                  }min`}
+                                </p>
+                                <FlightIcon
+                                  rotate={"90deg"}
+                                  iconColor={"#0D3984"}
+                                />
+                                <p>
+                                  {flightData?.numberOfStops}
+                                  -Stop
+                                </p>
+                              </span>
+                              <span>
+                                <h5>
+                                  {" "}
+                                  {new Date(
+                                    flightData?.arrival.at
+                                  ).toLocaleTimeString("en-US", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </h5>
+                                <p>{`${
+                                  filterIataAirport(
+                                    flightData?.arrival?.iataCode
+                                  )?.Airport_name
+                                },  ${
+                                  filterIataAirport(
+                                    flightData?.arrival?.iataCode
+                                  )?.Location_served
+                                }`}</p>
+                                {/* <AirlineCodeLookup
                       keyWord={
                         oneWayFlightResult[2][index].itineraries[0].segments[0]
                           .arrival.iataCode
                       }
                     /> */}
-                          </span>
-                        </DNRDetailTime>
+                              </span>
+                            </DNRDetailTime>
 
-                        <DNRDetailAirport>
-                          <div>Airport ({flightData?.departure?.iataCode})</div>
-                          <div>Airport ({flightData?.arrival?.iataCode})</div>
-                        </DNRDetailAirport>
-                        <DNRDetailBaggage>
-                          <span>
-                            <h5>Airline</h5>
-                            <div style={{ display: "flex", gap: "5px" }}>
-                              <AirlineFlightLogo
-                                dictionaries={oneWayFlightResult[9]}
-                                data={oneWayFlightResult[2][index]}
-                                keyWord={
-                                  flightData?.operating?.carrierCode
-                                    ? flightData?.operating?.carrierCode
-                                    : oneWayFlightResult[2][index]
-                                        .validatingAirlineCodes[0]
-                                }
-                                only={true}
-                              />{" "}
-                              {`
-                            - ${flightData?.number} - ${oneWayFlightResult[2][index]?.travelerPricings[0]?.fareDetailsBySegment[Index]?.cabin} - Class ${oneWayFlightResult[2][Index]?.travelerPricings[0]?.fareDetailsBySegment[Index]?.class} `}
-                            </div>
-                          </span>
-                          <span>
-                            <h5>Baggage</h5>
-                            100kg
-                          </span>
-                        </DNRDetailBaggage>
-                      </DNRDetail>
-                      <br />
-                      {nextSegment && (
-                        <LayoverWrapper>
-                          <strong>Change of planes</strong>{" "}
-                          {calculateLayoverInfo(flightData, nextSegment)}
-                        </LayoverWrapper>
-                      )}
-                      <br />
-                    </>
-                  );
-                }
-              )}
-            </FlightDetailDNR>
-          </FLightDetailContent>
+                            <DNRDetailAirport>
+                              <div>
+                                Airport ({flightData?.departure?.iataCode})
+                              </div>
+                              <div>
+                                Airport ({flightData?.arrival?.iataCode})
+                              </div>
+                            </DNRDetailAirport>
+                            <DNRDetailBaggage>
+                              <span>
+                                <h5>Airline</h5>
+                                <div style={{ display: "flex", gap: "5px" }}>
+                                  <AirlineFlightLogo
+                                    dictionaries={oneWayFlightResult[9]}
+                                    data={data[index]}
+                                    keyWord={
+                                      flightData?.operating?.carrierCode
+                                        ? flightData?.operating?.carrierCode
+                                        : data[index].validatingAirlineCodes[0]
+                                    }
+                                    only={true}
+                                  />{" "}
+                                  {`
+                            - ${flightData?.number} - ${data[index]?.travelerPricings[0]?.fareDetailsBySegment[Index]?.cabin} - Class ${data[Index]?.travelerPricings[0]?.fareDetailsBySegment[Index]?.class} `}
+                                </div>
+                              </span>
+                              <span>
+                                <h5>Baggage</h5>
+                                100kg
+                              </span>
+                            </DNRDetailBaggage>
+                          </DNRDetail>
+                          <br />
+                          {nextSegment && (
+                            <LayoverWrapper>
+                              <strong>Change of planes</strong>{" "}
+                              {calculateLayoverInfo(flightData, nextSegment)}
+                            </LayoverWrapper>
+                          )}
+                          <br />
+                        </>
+                      );
+                    }
+                  )}
+                </FlightDetailDNR>
+              </FLightDetailContent>
 
-          <FlightDetailButton>
-            <Button text={"Continue Booking"} onClick={continueBooking} />
-          </FlightDetailButton>
-        </FLightDetail>
-      )}
+              <FlightDetailButton>
+                <Button text={"Continue Booking"} onClick={continueBooking} />
+              </FlightDetailButton>
+            </FLightDetail>
+          )}
 
-      {showFlexibleDate && (
-        <FlexibleCalender
-          overlayButtonClick={() => setShowFlexibleDate(false)}
-          closeOverlayOnClick={() => setShowFlexibleDate(false)}
-          selectedDate={""}
-          flightData={mockFlightData}
-        />
+          {showFlexibleDate && (
+            <FlexibleCalender
+              overlayButtonClick={() => setShowFlexibleDate(false)}
+              closeOverlayOnClick={() => setShowFlexibleDate(false)}
+              selectedDate={""}
+              flightData={mockFlightData}
+            />
+          )}
+        </>
       )}
     </FlightResultWrapper>
   );

@@ -109,9 +109,9 @@ export default function Sidebar({
     });
   };
   useEffect(() => {
-    if (flightData.length === 0) {
-      setFlightData(flightSearchResultData);
-    }
+    // if (flightData.length === 0) {
+    //   setFlightData(flightSearchResultData);
+    // }
     const filtered = flightSearchResultData.filter(
       (item) =>
         selectedAirlines.size === 0 ||

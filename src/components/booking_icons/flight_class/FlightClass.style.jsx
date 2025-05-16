@@ -5,12 +5,17 @@ export const FlightClassWrapper = styled.div`
         width: 100%;
        justify-content: space-between;
         border:none;
+        text-transform: capitalize;
+        
+        label{
+            text-transform: capitalize;
+        }
 
         input{
-            width: 20px;
-            width:20px; 
-            height: 20px; 
+               height: 16px;
+               width: 16px; 
             background-color: blue;
             border:none;
         }
+       
 `

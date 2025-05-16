@@ -17,6 +17,7 @@ import {
   RadioItem,
   RadioItemWrapper,
   RoundTripImg,
+  SubmitButtonWrapper,
   TakeOffWrapper,
 } from "../FlightBooking.style";
 import {
@@ -46,6 +47,7 @@ import Loader from "../../../../components/loader/Loader";
 import DateRangePickerCalender from "../../../../components/DateRangePickerCalender";
 import { CheckboxWrapper } from "../multi_city/MultiCity.style";
 import DateSinglePickerCalender from "../../../../components/DateSingle";
+import DateSingleReturnCalender from "../../../../components/DateSingleReturn";
 
 const defaultCityList = [
   {
@@ -132,7 +134,7 @@ export default function SingleSearchCityForm({
   const [kickOff, setKickOff] = useState("");
   const [destination, setDestination] = useState();
   const [departDate, setDepartDate] = useState(todayDate);
-  const [returnDate, setreturnDate] = useState(todayDate);
+  const [returnDate, setReturnDate] = useState(todayDate);
   const [flightClass, setFlightClass] = useState("ECONOMY");
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
@@ -158,6 +160,18 @@ export default function SingleSearchCityForm({
 
   const [showFlightType, setShowFlightType] = useState(false);
   const [showFlightInputs, setshowFlightInputs] = useState(false);
+
+  const getCityName = (locationString) => {
+    const parts = locationString.split(",");
+    return parts.length >= 2 ? parts[1].trim() : "";
+  };
+
+  const fromCityName = getCityName(takeOffAirport);
+  const toCityName = getCityName(destinationAirport);
+
+  // to move label up and down
+  const labelTopFrom = takeOffAirport ? "10px" : "35px";
+  const labelTopTo = destinationAirport ? "10px" : "35px";
 
   // switch the inputs
   const handleSwitchInput = () => {
@@ -185,7 +199,7 @@ export default function SingleSearchCityForm({
   };
 
   const handleReturnDate = (e) => {
-    setreturnDate(e.target.value);
+    setReturnDate(e.target.value);
   };
 
   const handleIncrement = (type) => {
@@ -216,36 +230,6 @@ export default function SingleSearchCityForm({
   };
 
   const [showPassenger, setShowPassenger] = useState(false);
-  // Mr Bobai - >
-  // DROPDOWN LOCATION AND DESTINATION AIRPORTS
-
-  // const takeOffAportList = [
-  //   {
-  //       airportAddress: 'Abuja, Nigeria',
-  //       airportName: 'Nnamdi Azikwe Internatinal Airport',
-  //       airportAbbreviation: 'ABV'
-  //   },
-  //   {
-  //       airportAddress: 'Lagos, Nigeria',
-  //       airportName: 'Murtala Muhammad Internatinal Airport',
-  //       airportAbbreviation: 'LOS'
-  //   },
-
-  // ]
-
-  // const destinationAriporList = [
-  //   {
-  //     airportAddress: 'Lagos, Nigeria',
-  //     airportName: 'Murtala Muhammad Internatinal Airport',
-  //     airportAbbreviation: 'LOS'
-  // },
-  //   {
-  //       airportAddress: 'Abuja, Nigeria',
-  //       airportName: 'Nnamdi Azikwe Internatinal Airport',
-  //       airportAbbreviation: 'ABV'
-  //   },
-
-  // ]
 
   const [takeOffAportList, setTakeOffAportList] = useState(defaultCityList);
   const [destinationAriporList, setDestinationAriporList] =
@@ -258,6 +242,7 @@ export default function SingleSearchCityForm({
   // Mr Bobai - >
   const originLocation = useDebounce(searchTakeOffInputValue);
   const destinationLocation = useDebounce(searchDestinationInputValue);
+
   useEffect(() => {
     if (originLocation !== "") {
       // airports(originLocation, 0);
@@ -344,6 +329,7 @@ export default function SingleSearchCityForm({
   const [showTakeOffAirports, setShowTakeOffAirports] = useState(false);
   const [showDestinationAirports, setShowDestinationAirports] = useState(false);
   const [showFlexibleDate, setShowFlexibleDate] = useState(false);
+  const [displayButton, setDisplayButton] = useState("none");
 
   const onCloseTakOffDropdwon = () => {
     setShowTakeOffAirports(false);
@@ -360,6 +346,7 @@ export default function SingleSearchCityForm({
     setshowFlightInputs(true);
     setShowFlightType(true);
     setShowFlexibleDate(true);
+    setDisplayButton("flex");
   };
 
   const handleShowFlightInputsB = () => {
@@ -368,6 +355,7 @@ export default function SingleSearchCityForm({
     setshowFlightInputs(true);
     setShowFlightType(true);
     setShowFlexibleDate(true);
+    setDisplayButton("flex");
   };
   if (showReturnDate) {
     searchParams = {
@@ -439,6 +427,12 @@ export default function SingleSearchCityForm({
   const bookflights = async () => {
     // destination location
     if (takeOffAirport === destinationAirport) {
+      locationError();
+      return;
+    }
+
+    // destination location
+    if (fromCityName === toCityName) {
       locationError();
       return;
     }
@@ -521,12 +515,16 @@ export default function SingleSearchCityForm({
             {/* takeoff input */}
             <FlightInputAndDropDown>
               <FlightInputWrapper onClick={handleShowFlightInputsA}>
+                <Label top={labelTopFrom} for="depart">
+                  From where?
+                </Label>
                 <input
                   type="text"
-                  placeholder="From"
-                  value={takeOffAirport}
+                  // placeholder="From"
+                  value={fromCityName ? fromCityName : takeOffAirport}
                   onChange={(e) => onChangeTakeOffHandler(e)}
                 />
+                <p>{takeOffAirport}</p>
                 <span>
                   <MdFlightTakeoff />
                 </span>
@@ -555,12 +553,17 @@ export default function SingleSearchCityForm({
             {/*Destination input  */}
             <FlightInputAndDropDown>
               <FlightInputWrapper onClick={handleShowFlightInputsB}>
+                <Label top={labelTopTo} for="depart">
+                  To where?
+                </Label>
                 <input
                   type="text"
-                  placeholder="To"
-                  value={destinationAirport}
+                  // placeholder="To"
+                  value={toCityName ? toCityName : destinationAirport}
+                  //  value={destinationAirport}
                   onChange={(e) => onChangeDestinationHandler(e)}
                 />
+                <p>{destinationAirport}</p>
                 <span>
                   <MdFlightLand />
                 </span>
@@ -586,52 +589,32 @@ export default function SingleSearchCityForm({
           {/* <!-- Depature and destination container --> */}
           {showFlightInputs && (
             <FlightDepartWrapper>
-              {/* Date range picker round trip*/}
+              <FlightDepatWrapContent
+                contWidth={"100%"}
+                bgColor={"#0d398428"}
+                borderRadius={"10px"}
+              >
+                <Label for="depart">Depart Date</Label>
+                <DateSinglePickerCalender setDepartDate={setDepartDate} />
+              </FlightDepatWrapContent>
+
               {showReturnDate && (
-                <FlightDepatWrapContent>
-                  <DateRangePickerCalender
-                    setDepartDate={setDepartDate}
-                    setReturnDate={setreturnDate}
-                  />
+                <FlightDepatWrapContent
+                  contWidth={"100%"}
+                  bgColor={"#0d398428"}
+                  borderRadius={"10px"}
+                >
+                  <Label for="depart">Return Date</Label>
+                  <DateSingleReturnCalender setReturnDate={setReturnDate} />
                 </FlightDepatWrapContent>
               )}
-
-              {/* Date single picker for one way */}
-
-              {showOnewayDate && (
-                <FlightDepatWrapContent>
-                  <DateSinglePickerCalender setDepartDate={setDepartDate} />
-                </FlightDepatWrapContent>
-              )}
-
-              {/* <FlightDepatWrapContent>
-                <Label for="depart">Departing</Label>
-                <input
-                  type="date"
-                  id="depart"
-                  onChange={handleDepartureDate}
-                  value={departDate}
-                />
-              </FlightDepatWrapContent> */}
-
-              {/* {showReturnDate && (
-                <FlightDepatWrapContent>
-                  <Label for="depart">Returning</Label>
-                  <input
-                    type="date"
-                    id="return"
-                    onChange={handleReturnDate}
-                    value={returnDate}
-                  />
-                </FlightDepatWrapContent>
-              )} */}
 
               <FlightDepatWrapContent>
+                <Label for="depart">Passenger and Class</Label>
                 <FlightPassengerWrapper>
                   <FlightPassengerClass
                     onClick={() => setShowPassenger(!showPassenger)}
                   >
-                    <span>Passenger and Class</span>
                     <div>
                       <span id="passengerValue">{totalPassengers}</span>{" "}
                       passenger and <span id="classValue">{flightClass}</span>{" "}
@@ -669,7 +652,7 @@ export default function SingleSearchCityForm({
                         />
 
                         <hr />
-                        <h3>Class</h3>
+                        <h4>Class</h4>
                         <FlightClass
                           name="flightClass"
                           value="ECONOMY"
@@ -710,25 +693,27 @@ export default function SingleSearchCityForm({
                   )}
                 </FlightPassengerWrapper>
               </FlightDepatWrapContent>
-
-              <div>
-                <Button onClick={() => bookflights()} text={"Search Flight"} />
-              </div>
             </FlightDepartWrapper>
           )}
 
-          {/* Checkbox for flight result multiple date */}
-          {showFlexibleDate && (
-            <CheckboxWrapper>
-              <input
-                type="checkbox"
-                id="terms"
-                checked={isChecked}
-                onChange={handleCheckboxChange}
-              />
-              <p>My dates are flexible(+/- 3days)</p>
-            </CheckboxWrapper>
-          )}
+          <SubmitButtonWrapper displayButton={displayButton}>
+            {/* Checkbox for flight result multiple date */}
+            {showFlexibleDate && (
+              <CheckboxWrapper>
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={isChecked}
+                  onChange={handleCheckboxChange}
+                />
+                <p>My dates are flexible(+/- 3days)</p>
+              </CheckboxWrapper>
+            )}
+
+            {showFlexibleDate && (
+              <Button onClick={() => bookflights()} text={"Search Flight"} />
+            )}
+          </SubmitButtonWrapper>
         </FlightForm>
       )}
       {showMultiCityForm && <MulticitySearchForm />}

@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import { Button, ButtonLogin, ButtonWrapper, CloseHamburger, Hamburger, LinkStyle,  NavContent, NavLinks, NavWrapp } from './Navbar.style'
-import logo from '../../../images/logo.png'
+import logo from '../../../images/logos/flight_logo2.PNG'
 import { Link, useNavigate } from 'react-router-dom'
 import { IoMdArrowDropdown } from 'react-icons/io'
 import { RxDash } from 'react-icons/rx'
