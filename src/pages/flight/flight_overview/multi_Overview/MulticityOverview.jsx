@@ -54,7 +54,6 @@ export default function MulticityOverview() {
   // user defined variable for stopover   ===============================================================
   const [flightStopOver, setFlightStopOver] = useState(1);
 
-  
   const popup = new PayStack();
   const navigate = useNavigate();
   const { flightResultIndex } = useParams();
@@ -479,7 +478,7 @@ export default function MulticityOverview() {
                                   ?.carriers[
                                   flightData?.operating?.carrierCode
                                 ]}
-                                - 780
+                              - {flightData?.number}
                             </span>
                             <img
                               src={`https://images.wakanow.com/Images/flight-logos/${
@@ -492,7 +491,7 @@ export default function MulticityOverview() {
                               alt=""
                               srcset=""
                             />
-                           
+
                             {/* <img
                           src={flightLogo}
                           height={20}

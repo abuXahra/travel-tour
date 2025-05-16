@@ -10,6 +10,7 @@ const domain = "https://manzo-travels-be.onrender.com";
 
 export const useAuthStore = create((set) => ({
   loader: false,
+  FData: false,
   singleFlightResult: [],
   oneWayFlightResult: [],
   multiCityFlightResult: [],
@@ -17,6 +18,7 @@ export const useAuthStore = create((set) => ({
   travelDetail: {},
   hotelResult: [],
   setLoader: (loader) => set({ loader }),
+  setfData: (bool) => set({ FData: bool }),
   setOneWayFlightOrder: (obj) => set({ oneWayFlightOrder: obj }),
   setMultiCityFlightResult: (obj) => set({ multiCityFlightResult: obj }),
   setSingleFlightResult: (obj) => set({ singleFlightResult: obj }),

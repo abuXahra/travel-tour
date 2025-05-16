@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
   ButtonWrapper,
   FlightDetailWrapper,
@@ -53,7 +53,7 @@ export default function MuliticityTripInfo() {
   // navigation
   const navigate = useNavigate();
 
-  const { multiCityFlightResult, setTravelDetail } = useAuthStore();
+  const { multiCityFlightResult, setTravelDetail, FData } = useAuthStore();
   const { multiCityFlightResultIndex } = useParams();
   let queryParams;
   let location = multiCityFlightResult[0];
@@ -98,12 +98,9 @@ export default function MuliticityTripInfo() {
   });
 
   useEffect(() => {
-    if (!multiCityFlightResult[1] || multiCityFlightResult[1]?.length === 0) {
+    if (!FData) {
       navigate("/flight-booking");
     }
-    // else {
-    //   location = multiCityFlightResult[0];
-    // }
   }, [multiCityFlightResult, navigate]);
 
   const handleSelectTitleChange = (data, event, index) => {
@@ -454,7 +451,8 @@ export default function MuliticityTripInfo() {
   const filterIataAirport = (iataCode) => {
     const newFilterData = iataAirports.find((item) => {
       return (
-        item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase())
+        item?.IATA &&
+        item?.IATA?.toLowerCase()?.includes(iataCode?.toLowerCase())
       );
     });
 
@@ -491,7 +489,7 @@ export default function MuliticityTripInfo() {
     email,
   };
 
-   const [showTerms, setShowTerms] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
 
   return (
     <TripInfoWrapper>
@@ -679,7 +677,11 @@ export default function MuliticityTripInfo() {
                                       .validatingAirlineCodes[0]
                               }
                               detail={true}
-                            /> <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
+                            />{" "}
+                            <p style={{ textAlign: "let", fontSize: "12px" }}>
+                              {" "}
+                              - 780
+                            </p>
                           </span>
                           <span>
                             <a href="#">
@@ -777,7 +779,10 @@ export default function MuliticityTripInfo() {
                             </div>
                           </TripAirport>
                         </TripDetailTime>
-                        <p style={{textAlign: "center", fontSize: "12px"}}><b style={{color: "#FF6805"}}>Layover</b> 1h 30m Layover in Addis Ababa (Addis Ababa) </p> 
+                        <p style={{ textAlign: "center", fontSize: "12px" }}>
+                          <b style={{ color: "#FF6805" }}>Layover</b> 1h 30m
+                          Layover in Addis Ababa (Addis Ababa){" "}
+                        </p>
                       </TripDetailBody>
                     ))}
                   </>
@@ -927,13 +932,18 @@ export default function MuliticityTripInfo() {
 
                   {/* Continue Button */}
                   <ButtonWrapper>
-                  <div>
-                          <input type="checkbox" name="terms" id="terms" />
-                          <p>
-                            By proceeding you agree have read and accept our{" "}
-                            <span style={{cursor: "pointer", fontWeight: "bold"}} onClick={()=>setShowTerms(true)}>Terms and Conditions</span>
-                          </p>
-                        </div>
+                    <div>
+                      <input type="checkbox" name="terms" id="terms" />
+                      <p>
+                        By proceeding you agree have read and accept our{" "}
+                        <span
+                          style={{ cursor: "pointer", fontWeight: "bold" }}
+                          onClick={() => setShowTerms(true)}
+                        >
+                          Terms and Conditions
+                        </span>
+                      </p>
+                    </div>
                   </ButtonWrapper>
                 </FormWrapper>
               </TripInfoContent>
@@ -1080,13 +1090,18 @@ export default function MuliticityTripInfo() {
 
                   {/* Continue Button */}
                   <ButtonWrapper>
-                  <div>
-                          <input type="checkbox" name="terms" id="terms" />
-                          <p>
-                            By proceeding you agree have read and accept our{" "}
-                            <span style={{cursor: "pointer", fontWeight: "bold"}} onClick={()=>setShowTerms(true)}>Terms and Conditions</span>
-                          </p>
-                        </div>
+                    <div>
+                      <input type="checkbox" name="terms" id="terms" />
+                      <p>
+                        By proceeding you agree have read and accept our{" "}
+                        <span
+                          style={{ cursor: "pointer", fontWeight: "bold" }}
+                          onClick={() => setShowTerms(true)}
+                        >
+                          Terms and Conditions
+                        </span>
+                      </p>
+                    </div>
                     {/* <Button
                                  text={"Continue"}
                                  onClick={() => {
@@ -1242,12 +1257,17 @@ export default function MuliticityTripInfo() {
                   {/* Continue Button */}
                   <ButtonWrapper>
                     <div>
-                          <input type="checkbox" name="terms" id="terms" />
-                          <p>
-                            By proceeding you agree have read and accept our{" "}
-                            <span style={{cursor: "pointer", fontWeight: "bold"}} onClick={()=>setShowTerms(true)}>Terms and Conditions</span>
-                          </p>
-                        </div>
+                      <input type="checkbox" name="terms" id="terms" />
+                      <p>
+                        By proceeding you agree have read and accept our{" "}
+                        <span
+                          style={{ cursor: "pointer", fontWeight: "bold" }}
+                          onClick={() => setShowTerms(true)}
+                        >
+                          Terms and Conditions
+                        </span>
+                      </p>
+                    </div>
                     {/* <Button
                                  text={"Continue"}
                                  onClick={() => {
@@ -1284,39 +1304,114 @@ export default function MuliticityTripInfo() {
         </TripMinContent>
       </TripInfoBody>
 
-{/* terms popup modal */}
-       { showTerms && 
-               <Overlay
-                btnDisplay2={'none'}
-                text1={'Continue'}
-                contentWidth={'70%'}
-                overlayButtonClick={()=>setShowTerms(false)}
-                closeOverlayOnClick={()=>setShowTerms(false)}
-                >
-                  <h3>Terms and Conditions</h3>
-                  <hr />
-                  <div style={{fontSize: "12px", display: "flex", gap:"10px", flexDirection: "column"}}>
-                      <p>Cancellation and Date Change penalty applicable. Penalty amount will depend on the Date and Time of Cancellation or Date Change.</p>
-                      
-                      <p> All booking/reservations made on Wakanow.com are subject to third party operating Airline's rules and terms of carriage. </p>
-                      
-                      <p>Wakanow merely acts as a travel agent of third party operating Airlines and SHALL have NO responsibility, whatsoever, for any additional cost (directly or indirectly) incurred by any passenger due to any delay, loss, cancellation, change, inaccurate/insufficient information arising whether during booking reservation or after ticket issuance.</p>
-                      <p>All the Arik Air flight bookings/reservations are subject to airline availability and are valid for 1 (one) hour from time of booking to payment confirmation and ticket issuance.</p>
-                      <p>All flight fare quoted on www.wakanow.com are subject to availability, and to change at any time by the third party Airline operators</p>
-                      <p>Passengers are liable for; all card transactions (whether successful or not) travel details, compliance and adequacy of visa requirements, travel itinerary and names (as appear on passport) provided for bookings</p>
-                      <p>Ticket issuance SHALL BE subject to payment confirmation by Wakanow.</p>
-                      <p>Please ensure that your International passport has at least 6 (six) months validity prior to its expiration date as Wakanow shall not be liable for any default.</p>
-                      <p>For all non-card transactions, please contact us at 07009252669, 01-6329250, 01-2773010 to confirm booking details, travel dates and travel requirements before proceeding to payment.</p>
-                      <p>Refund, cancellation and change requests, where applicable, are subject to third party operating airline's policy, plus a service charge of $50</p>
-                      <p>Refund settlement in 9 above, shall be pursuant to fund remittance by the operating airline</p>
-                      <p>Passengers are advised to arrive at the airport at least 3-5 hours prior to flight departure.</p>
-                      <p>First time travelers are advised to have a return flight ticket, confirmed hotel/accommodation and a minimum of $1000 for Personal Travel Allowance (PTA) or Business Travel Allowance (BTA).</p>
-                      <p>An original child's Birth Certificate and Consent letter from parent(s) must be presented before the check-in counter at the Airport.</p>
-                      <p>All tickets are non-transferable at any time. Some tickets may be non-refundable or non-changeable.</p>
-                      <p>Some Airlines may require additional Medical Report/Documents in the case of pregnant passenger(s).</p>
-                      <p>The Passenger hereby confirms to have read and understood this booking information notice and has agreed to waive all rights, by law and to hold harmless and absolve Wakanow of all liabilities that may arise thereof.</p>
-                  </div>
-                </Overlay>}
+      {/* terms popup modal */}
+      {showTerms && (
+        <Overlay
+          btnDisplay2={"none"}
+          text1={"Continue"}
+          contentWidth={"70%"}
+          overlayButtonClick={() => setShowTerms(false)}
+          closeOverlayOnClick={() => setShowTerms(false)}
+        >
+          <h3>Terms and Conditions</h3>
+          <hr />
+          <div
+            style={{
+              fontSize: "12px",
+              display: "flex",
+              gap: "10px",
+              flexDirection: "column",
+            }}
+          >
+            <p>
+              Cancellation and Date Change penalty applicable. Penalty amount
+              will depend on the Date and Time of Cancellation or Date Change.
+            </p>
+
+            <p>
+              {" "}
+              All booking/reservations made on Wakanow.com are subject to third
+              party operating Airline's rules and terms of carriage.{" "}
+            </p>
+
+            <p>
+              Wakanow merely acts as a travel agent of third party operating
+              Airlines and SHALL have NO responsibility, whatsoever, for any
+              additional cost (directly or indirectly) incurred by any passenger
+              due to any delay, loss, cancellation, change,
+              inaccurate/insufficient information arising whether during booking
+              reservation or after ticket issuance.
+            </p>
+            <p>
+              All the Arik Air flight bookings/reservations are subject to
+              airline availability and are valid for 1 (one) hour from time of
+              booking to payment confirmation and ticket issuance.
+            </p>
+            <p>
+              All flight fare quoted on www.wakanow.com are subject to
+              availability, and to change at any time by the third party Airline
+              operators
+            </p>
+            <p>
+              Passengers are liable for; all card transactions (whether
+              successful or not) travel details, compliance and adequacy of visa
+              requirements, travel itinerary and names (as appear on passport)
+              provided for bookings
+            </p>
+            <p>
+              Ticket issuance SHALL BE subject to payment confirmation by
+              Wakanow.
+            </p>
+            <p>
+              Please ensure that your International passport has at least 6
+              (six) months validity prior to its expiration date as Wakanow
+              shall not be liable for any default.
+            </p>
+            <p>
+              For all non-card transactions, please contact us at 07009252669,
+              01-6329250, 01-2773010 to confirm booking details, travel dates
+              and travel requirements before proceeding to payment.
+            </p>
+            <p>
+              Refund, cancellation and change requests, where applicable, are
+              subject to third party operating airline's policy, plus a service
+              charge of $50
+            </p>
+            <p>
+              Refund settlement in 9 above, shall be pursuant to fund remittance
+              by the operating airline
+            </p>
+            <p>
+              Passengers are advised to arrive at the airport at least 3-5 hours
+              prior to flight departure.
+            </p>
+            <p>
+              First time travelers are advised to have a return flight ticket,
+              confirmed hotel/accommodation and a minimum of $1000 for Personal
+              Travel Allowance (PTA) or Business Travel Allowance (BTA).
+            </p>
+            <p>
+              An original child's Birth Certificate and Consent letter from
+              parent(s) must be presented before the check-in counter at the
+              Airport.
+            </p>
+            <p>
+              All tickets are non-transferable at any time. Some tickets may be
+              non-refundable or non-changeable.
+            </p>
+            <p>
+              Some Airlines may require additional Medical Report/Documents in
+              the case of pregnant passenger(s).
+            </p>
+            <p>
+              The Passenger hereby confirms to have read and understood this
+              booking information notice and has agreed to waive all rights, by
+              law and to hold harmless and absolve Wakanow of all liabilities
+              that may arise thereof.
+            </p>
+          </div>
+        </Overlay>
+      )}
     </TripInfoWrapper>
   );
 }

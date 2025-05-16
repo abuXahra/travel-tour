@@ -119,8 +119,6 @@ export default function SingleSearchCityForm({
 }) {
   const navigate = useNavigate();
 
-
-
   // const [showRoundTripDates, setShowRoundTripDates] = useState(true);
   // const [showOneWayDate, setShowOneWayDate] = useState(false);
 
@@ -146,13 +144,13 @@ export default function SingleSearchCityForm({
     flightOffersSearch,
     airportAndCitySearch,
     setLoader,
+    setfData,
   } = useAuthStore();
 
   const [originLocationCode, setOriginLocationCode] = useState("");
   const [destinationLocationCode, setDestinationLocationCode] = useState("");
 
   const currencyCode = "NGN"; // default currency code
-  
 
   //DROPDOWN VARIABLES
   const [takeOffAirport, setTakeOffAirport] = useState("");
@@ -161,15 +159,15 @@ export default function SingleSearchCityForm({
   const [showFlightType, setShowFlightType] = useState(false);
   const [showFlightInputs, setshowFlightInputs] = useState(false);
 
-// switch the inputs
+  // switch the inputs
   const handleSwitchInput = () => {
     setTakeOffAirport((prevTakeOff) => {
-      setDestinationAirport(prevDestination => prevTakeOff);
+      setDestinationAirport((prevDestination) => prevTakeOff);
       return destinationAirport;
     });
 
     setOriginLocationCode((prevOriginCode) => {
-      setDestinationLocationCode(prevDestinationCode => prevOriginCode);
+      setDestinationLocationCode((prevDestinationCode) => prevOriginCode);
       return destinationLocationCode;
     });
   };
@@ -189,9 +187,6 @@ export default function SingleSearchCityForm({
   const handleReturnDate = (e) => {
     setreturnDate(e.target.value);
   };
-
-
-  console.log('==============================\n Depart Date: ', departDate, '\n Depart Date: ' , returnDate, '\n====================================')
 
   const handleIncrement = (type) => {
     if (type === "adults" && adults < 9) {
@@ -350,7 +345,6 @@ export default function SingleSearchCityForm({
   const [showDestinationAirports, setShowDestinationAirports] = useState(false);
   const [showFlexibleDate, setShowFlexibleDate] = useState(false);
 
-  
   const onCloseTakOffDropdwon = () => {
     setShowTakeOffAirports(false);
   };
@@ -455,6 +449,7 @@ export default function SingleSearchCityForm({
     console.log(res);
     if (res) {
       setLoader(false);
+      await setfData(true);
       setSingleFlightResult([
         takeOffAirport,
         destinationAirport,
@@ -491,21 +486,14 @@ export default function SingleSearchCityForm({
     }
   };
 
-
-
-
-
   // Checkbox Validation: Terms and Agreement
-      // State for form values
-      const [isChecked, setIsChecked] = useState(false);
-    
-    
-      // Handler for checkbox change
-      const handleCheckboxChange = (event) => {
-        setIsChecked(event.target.checked);
-      };
+  // State for form values
+  const [isChecked, setIsChecked] = useState(false);
 
-
+  // Handler for checkbox change
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
 
   return (
     <SingleAndMulticityWrapper>
@@ -598,21 +586,23 @@ export default function SingleSearchCityForm({
           {/* <!-- Depature and destination container --> */}
           {showFlightInputs && (
             <FlightDepartWrapper>
-
-          {/* Date range picker round trip*/}
-           { showReturnDate &&      
+              {/* Date range picker round trip*/}
+              {showReturnDate && (
                 <FlightDepatWrapContent>
-                    <DateRangePickerCalender setDepartDate={setDepartDate} setReturnDate={setreturnDate}/>
-                 </FlightDepatWrapContent>
-          }
+                  <DateRangePickerCalender
+                    setDepartDate={setDepartDate}
+                    setReturnDate={setreturnDate}
+                  />
+                </FlightDepatWrapContent>
+              )}
 
-          {/* Date single picker for one way */}
+              {/* Date single picker for one way */}
 
-        {showOnewayDate &&
-            <FlightDepatWrapContent>
-                      <DateSinglePickerCalender setDepartDate={setDepartDate}/>
-                 </FlightDepatWrapContent>
-              }
+              {showOnewayDate && (
+                <FlightDepatWrapContent>
+                  <DateSinglePickerCalender setDepartDate={setDepartDate} />
+                </FlightDepatWrapContent>
+              )}
 
               {/* <FlightDepatWrapContent>
                 <Label for="depart">Departing</Label>
@@ -623,8 +613,6 @@ export default function SingleSearchCityForm({
                   value={departDate}
                 />
               </FlightDepatWrapContent> */}
-
-      
 
               {/* {showReturnDate && (
                 <FlightDepatWrapContent>
@@ -638,7 +626,6 @@ export default function SingleSearchCityForm({
                 </FlightDepatWrapContent>
               )} */}
 
-        
               <FlightDepatWrapContent>
                 <FlightPassengerWrapper>
                   <FlightPassengerClass
@@ -729,20 +716,19 @@ export default function SingleSearchCityForm({
               </div>
             </FlightDepartWrapper>
           )}
-  
-  {/* Checkbox for flight result multiple date */}
-  {
-    showFlexibleDate &&
-    <CheckboxWrapper>
-                  <input
-                     type="checkbox"
-                     id="terms"
-                     checked={isChecked}
-                     onChange={handleCheckboxChange}
-                  />
-                  <p>My dates are flexible(+/- 3days)</p>
-                </CheckboxWrapper>
-  }            
+
+          {/* Checkbox for flight result multiple date */}
+          {showFlexibleDate && (
+            <CheckboxWrapper>
+              <input
+                type="checkbox"
+                id="terms"
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+              />
+              <p>My dates are flexible(+/- 3days)</p>
+            </CheckboxWrapper>
+          )}
         </FlightForm>
       )}
       {showMultiCityForm && <MulticitySearchForm />}

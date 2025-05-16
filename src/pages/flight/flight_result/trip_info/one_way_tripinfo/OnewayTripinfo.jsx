@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
   ButtonWrapper,
   FlightDetailWrapper,
@@ -46,6 +46,32 @@ import iataAirports from "../../../../../flightDB/IATA_airports.json";
 import { useAuthStore } from "../../../../../store/store";
 import Overlay from "../../../../../components/overlay/Overlay";
 
+const filterIataAirport = (iataCode) => {
+  const newFilterData = iataAirports.find((item) => {
+    return (
+      item?.IATA && item?.IATA?.toLowerCase()?.includes(iataCode?.toLowerCase())
+    );
+  });
+
+  return newFilterData;
+};
+const calculateLayoverInfo = (prevSegment, nextSegment) => {
+  console.log(prevSegment?.arrival.at);
+  console.log("nextSegment", nextSegment);
+  if (!prevSegment || !nextSegment) return "Layover data not available";
+  const arrivalTime = new Date(prevSegment?.arrival?.at);
+  const departureTime = new Date(nextSegment?.departure?.at);
+  const layoverMinutes = Math.floor((departureTime - arrivalTime) / 60000);
+
+  const hours = Math.floor(layoverMinutes / 60);
+  const minutes = layoverMinutes % 60;
+
+  const iata = nextSegment?.departure?.iataCode;
+  const city = filterIataAirport(iata)?.Location_served;
+
+  return `${hours}h ${minutes}m Layover in ${city} (${city})`;
+};
+
 export default function OnewayTripinfo() {
   const [data, setData] = useState({});
 
@@ -55,28 +81,26 @@ export default function OnewayTripinfo() {
   // navigation
   const navigate = useNavigate();
 
-  const { oneWayFlightResult, setTravelDetail, flightPriceLookup } =
+  const { oneWayFlightResult, setTravelDetail, flightPriceLookup, FData } =
     useAuthStore();
   const { oneWayFlightResultIndex } = useParams();
 
   useEffect(() => {
-    if (!oneWayFlightResult || oneWayFlightResult?.length === 0) {
-      navigate("/flight-booking");
-    }
-  }, [oneWayFlightResult, navigate]);
-  useEffect(() => {
     const flightPrice = async () => {
+      if (!FData) {
+        navigate("/flight-booking");
+      }
       let flightPrice = await flightPriceLookup(
-        oneWayFlightResult[2][oneWayFlightResultIndex]
+        oneWayFlightResult?.[2]?.[oneWayFlightResultIndex]
       );
 
       if (flightPrice) {
         console.log(flightPrice);
-        setData(flightPrice.flightOffers[0]);
+        setData(flightPrice?.flightOffers?.[0]);
       }
     };
     flightPrice();
-  }, [oneWayFlightResult]);
+  }, [oneWayFlightResult, FData]);
 
   let queryParams;
 
@@ -119,16 +143,6 @@ export default function OnewayTripinfo() {
     ChildrenData: [],
     InfantData: [],
   });
-
-  const filterIataAirport = (iataCode) => {
-    const newFilterData = iataAirports.find((item) => {
-      return (
-        item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase())
-      );
-    });
-
-    return newFilterData;
-  };
 
   const handleSelectTitleChange = (data, event, index) => {
     const newTitle = event.target.value;
@@ -476,16 +490,16 @@ export default function OnewayTripinfo() {
   // Cacula for duration
   function parseDuration(duration) {
     const regex = /PT(\d+H)?(\d+M)?/;
-    const matches = duration.match(regex);
+    const matches = duration?.match(regex);
 
     let hours = 0;
     let minutes = 0;
 
-    if (matches[1]) {
-      hours = parseInt(matches[1].replace("H", ""));
+    if (matches?.[1]) {
+      hours = parseInt(matches?.[1]?.replace("H", ""));
     }
-    if (matches[2]) {
-      minutes = parseInt(matches[2].replace("M", ""));
+    if (matches?.[2]) {
+      minutes = parseInt(matches?.[2]?.replace("M", ""));
     }
 
     return { hours, minutes };
@@ -501,9 +515,9 @@ export default function OnewayTripinfo() {
     phone,
     email,
   };
-  
-    const [showTerms, setShowTerms] = useState(false);
-  
+
+  const [showTerms, setShowTerms] = useState(false);
+
   console.log(TravelData);
   return (
     <TripInfoWrapper>
@@ -543,15 +557,15 @@ export default function OnewayTripinfo() {
                 <div>
                   <p>
                     <b>
-                      {oneWayFlightResult[0]} ({oneWayFlightResult[3]}) TO{" "}
-                      {oneWayFlightResult[1]} ({oneWayFlightResult[4]})
+                      {oneWayFlightResult?.[0]} ({oneWayFlightResult?.[3]}) TO{" "}
+                      {oneWayFlightResult?.[1]} ({oneWayFlightResult?.[4]})
                     </b>
                   </p>
                   <p>
                     {" "}
                     {
-                      oneWayFlightResult[2][oneWayFlightResultIndex]
-                        .travelerPricings[0].fareDetailsBySegment[0].cabin
+                      oneWayFlightResult?.[2]?.[oneWayFlightResultIndex]
+                        .travelerPricings?.[0]?.fareDetailsBySegment?.[0]?.cabin
                     }{" "}
                     Round Trip
                   </p>
@@ -619,14 +633,14 @@ export default function OnewayTripinfo() {
               >
                 <span>
                   {" "}
-                  <h5>{oneWayFlightResult[0]}</h5>{" "}
+                  <h5>{oneWayFlightResult?.[0]}</h5>{" "}
                   <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />{" "}
-                  <h5>{oneWayFlightResult[1]}</h5>{" "}
+                  <h5>{oneWayFlightResult?.[1]}</h5>{" "}
                 </span>
                 <span>
                   <p>
                     {new Date(
-                      oneWayFlightResult[2][
+                      oneWayFlightResult?.[2]?.[
                         oneWayFlightResultIndex
                       ].itineraries[0].segments[0].departure.at
                     ).toLocaleDateString("en-US", {
@@ -637,18 +651,18 @@ export default function OnewayTripinfo() {
                   </p>
                   <p>
                     {
-                      oneWayFlightResult[2][oneWayFlightResultIndex]
+                      oneWayFlightResult?.[2]?.[oneWayFlightResultIndex]
                         .itineraries[0].segments[0].numberOfStops
                     }{" "}
                     Stops.{" "}
                     {`${
                       parseDuration(
-                        oneWayFlightResult[2][oneWayFlightResultIndex]
+                        oneWayFlightResult?.[2]?.[oneWayFlightResultIndex]
                           .itineraries[0].segments[0].duration
                       ).hours
                     }hr ${
                       parseDuration(
-                        oneWayFlightResult[2][oneWayFlightResultIndex]
+                        oneWayFlightResult?.[2]?.[oneWayFlightResultIndex]
                           .itineraries[0].segments[0].duration
                       ).minutes
                     }min`}
@@ -661,112 +675,129 @@ export default function OnewayTripinfo() {
               {/* body */}
               {showtripDepart && (
                 <>
-                  {oneWayFlightResult[2][
+                  {oneWayFlightResult?.[2]?.[
                     oneWayFlightResultIndex
-                  ].itineraries[0].segments?.map((flightData, Index) => (
-                    <TripDetailBody>
-                      <TripDetailClass>
-                        <span>
-                          <AirlineFlightLogo
-                            dictionaries={oneWayFlightResult[9]}
-                            data={
-                              oneWayFlightResult[2][oneWayFlightResultIndex]
-                            }
-                            keyWord={
-                              flightData?.operating?.carrierCode
-                                ? flightData?.operating?.carrierCode
-                                : oneWayFlightResult[2][oneWayFlightResultIndex]
-                                    .validatingAirlineCodes[0]
-                            }
-                            detail={true}
-                          />
-                           <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
-                        </span>
-                        <span>
-                          <a href="#">
-                            {
-                              oneWayFlightResult[2][oneWayFlightResultIndex]
-                                .travelerPricings[0].fareDetailsBySegment[0]
-                                .cabin
-                            }
-                          </a>
-                        </span>
-                      </TripDetailClass>
-                      <TripDetailTime>
-                        <TripHour>
+                  ].itineraries[0].segments?.map((flightData, Index, arr) => {
+                    const isLastSegment = Index === arr.length - 1;
+                    const nextSegment = !isLastSegment ? arr[Index + 1] : null;
+
+                    return (
+                      <TripDetailBody>
+                        <TripDetailClass>
                           <span>
-                            <div>
-                              <h5>
-                                {new Date(
-                                  flightData?.departure?.at
-                                ).toLocaleTimeString("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </h5>
-                              <h5>
-                                {" "}
-                                {new Date(
-                                  flightData?.arrival?.at
-                                ).toLocaleTimeString("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </h5>
-                            </div>
-                            <div>
-                              <hr />
-                              <FlightIcon
-                                rotate={"180deg"}
-                                iconColor={"#0D3984"}
-                              />
-                              <hr />
-                            </div>
+                            <AirlineFlightLogo
+                              dictionaries={oneWayFlightResult?.[9]}
+                              data={
+                                oneWayFlightResult?.[2]?.[
+                                  oneWayFlightResultIndex
+                                ]
+                              }
+                              keyWord={
+                                flightData?.operating?.carrierCode
+                                  ? flightData?.operating?.carrierCode
+                                  : oneWayFlightResult?.[2]?.[
+                                      oneWayFlightResultIndex
+                                    ].validatingAirlineCodes[0]
+                              }
+                              detail={true}
+                            />
+                            <p style={{ textAlign: "let", fontSize: "12px" }}>
+                              {" "}
+                              - {flightData?.number}
+                            </p>
                           </span>
-                        </TripHour>
-                        <TripAirport>
-                          <div>
-                            <p>
-                              {`${
-                                filterIataAirport(
-                                  flightData?.departure?.iataCode
-                                )?.Airport_name
-                              },  ${
-                                filterIataAirport(
-                                  flightData?.departure?.iataCode
-                                )?.Location_served
-                              }`}{" "}
-                              <b>({flightData?.departure?.iataCode})</b>
-                            </p>
-                            <p>{`${
-                              parseDuration(flightData?.duration).hours
-                            }hr ${
-                              parseDuration(flightData?.duration).minutes
-                            }min`}</p>
-                            <p>
-                              {`${
-                                filterIataAirport(flightData?.arrival?.iataCode)
-                                  ?.Airport_name
-                              },  ${
-                                filterIataAirport(flightData?.arrival?.iataCode)
-                                  ?.Location_served
-                              }`}{" "}
-                              <b>({flightData?.arrival?.iataCode})</b>
-                            </p>
-                          </div>
-                          <div>
+                          <span>
+                            <a href="#">
+                              {
+                                oneWayFlightResult?.[2]?.[
+                                  oneWayFlightResultIndex
+                                ].travelerPricings[0].fareDetailsBySegment[0]
+                                  .cabin
+                              }
+                            </a>
+                          </span>
+                        </TripDetailClass>
+                        <TripDetailTime>
+                          <TripHour>
                             <span>
-                              <h5>BAGGAGE:</h5> <p>ADULT</p>
+                              <div>
+                                <h5>
+                                  {new Date(
+                                    flightData?.departure?.at
+                                  ).toLocaleTimeString("en-US", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </h5>
+                                <h5>
+                                  {" "}
+                                  {new Date(
+                                    flightData?.arrival?.at
+                                  ).toLocaleTimeString("en-US", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </h5>
+                              </div>
+                              <div>
+                                <hr />
+                                <FlightIcon
+                                  rotate={"180deg"}
+                                  iconColor={"#0D3984"}
+                                />
+                                <hr />
+                              </div>
                             </span>
-                            <span>
-                              <h5>CHECK IN:</h5> <p>20KG</p>{" "}
-                            </span>
-                          </div>
-                        </TripAirport>
-                      </TripDetailTime>
-                      <p style={{textAlign: "center", fontSize: "12px"}}><b style={{color: "#FF6805"}}>Layover</b> 1h 30m Layover in Addis Ababa (Addis Ababa) </p> 
-                    </TripDetailBody>
-                  ))}
+                          </TripHour>
+                          <TripAirport>
+                            <div>
+                              <p>
+                                {`${
+                                  filterIataAirport(
+                                    flightData?.departure?.iataCode
+                                  )?.Airport_name
+                                },  ${
+                                  filterIataAirport(
+                                    flightData?.departure?.iataCode
+                                  )?.Location_served
+                                }`}{" "}
+                                <b>({flightData?.departure?.iataCode})</b>
+                              </p>
+                              <p>{`${
+                                parseDuration(flightData?.duration).hours
+                              }hr ${
+                                parseDuration(flightData?.duration).minutes
+                              }min`}</p>
+                              <p>
+                                {`${
+                                  filterIataAirport(
+                                    flightData?.arrival?.iataCode
+                                  )?.Airport_name
+                                },  ${
+                                  filterIataAirport(
+                                    flightData?.arrival?.iataCode
+                                  )?.Location_served
+                                }`}{" "}
+                                <b>({flightData?.arrival?.iataCode})</b>
+                              </p>
+                            </div>
+                            <div>
+                              <span>
+                                <h5>BAGGAGE:</h5> <p>ADULT</p>
+                              </span>
+                              <span>
+                                <h5>CHECK IN:</h5> <p>20KG</p>{" "}
+                              </span>
+                            </div>
+                          </TripAirport>
+                        </TripDetailTime>
+                        <p style={{ textAlign: "center", fontSize: "12px" }}>
+                          <b style={{ color: "#FF6805" }}>Layover</b>{" "}
+                          {calculateLayoverInfo(flightData, nextSegment)}
+                        </p>
+                      </TripDetailBody>
+                    );
+                  })}
                 </>
               )}
             </FlightDetailWrapper>
@@ -909,13 +940,18 @@ export default function OnewayTripinfo() {
 
                 {/* Continue Button */}
                 <ButtonWrapper>
-                <div>
-                        <input type="checkbox" name="terms" id="terms" />
-                        <p>
-                          By proceeding you agree have read and accept our{" "}
-                          <span style={{cursor: "pointer", fontWeight: "bold"}} onClick={()=>setShowTerms(true)}>Terms and Conditions</span>
-                        </p>
-                      </div>
+                  <div>
+                    <input type="checkbox" name="terms" id="terms" />
+                    <p>
+                      By proceeding you agree have read and accept our{" "}
+                      <span
+                        style={{ cursor: "pointer", fontWeight: "bold" }}
+                        onClick={() => setShowTerms(true)}
+                      >
+                        Terms and Conditions
+                      </span>
+                    </p>
+                  </div>
                 </ButtonWrapper>
               </FormWrapper>
             </TripInfoContent>
@@ -1059,13 +1095,18 @@ export default function OnewayTripinfo() {
 
                 {/* Continue Button */}
                 <ButtonWrapper>
-                <div>
-                        <input type="checkbox" name="terms" id="terms" />
-                        <p>
-                          By proceeding you agree have read and accept our{" "}
-                          <span style={{cursor: "pointer", fontWeight: "bold"}} onClick={()=>setShowTerms(true)}>Terms and Conditions</span>
-                        </p>
-                      </div>
+                  <div>
+                    <input type="checkbox" name="terms" id="terms" />
+                    <p>
+                      By proceeding you agree have read and accept our{" "}
+                      <span
+                        style={{ cursor: "pointer", fontWeight: "bold" }}
+                        onClick={() => setShowTerms(true)}
+                      >
+                        Terms and Conditions
+                      </span>
+                    </p>
+                  </div>
                   {/* <Button
                         text={"Continue"}
                         onClick={() => {
@@ -1215,13 +1256,18 @@ export default function OnewayTripinfo() {
 
                 {/* Continue Button */}
                 <ButtonWrapper>
-                <div>
-                        <input type="checkbox" name="terms" id="terms" />
-                        <p>
-                          By proceeding you agree have read and accept our{" "}
-                          <span style={{cursor: "pointer", fontWeight: "bold"}} onClick={()=>setShowTerms(true)}>Terms and Conditions</span>
-                        </p>
-                      </div>
+                  <div>
+                    <input type="checkbox" name="terms" id="terms" />
+                    <p>
+                      By proceeding you agree have read and accept our{" "}
+                      <span
+                        style={{ cursor: "pointer", fontWeight: "bold" }}
+                        onClick={() => setShowTerms(true)}
+                      >
+                        Terms and Conditions
+                      </span>
+                    </p>
+                  </div>
                   {/* <Button
                         text={"Continue"}
                         onClick={() => {
@@ -1247,38 +1293,113 @@ export default function OnewayTripinfo() {
           </div>
         </TripMinContent>
       </TripInfoBody>
-      { showTerms && 
-               <Overlay
-                btnDisplay2={'none'}
-                text1={'Continue'}
-                contentWidth={'70%'}
-                overlayButtonClick={()=>setShowTerms(false)}
-                closeOverlayOnClick={()=>setShowTerms(false)}
-                >
-                  <h3>Terms and Conditions</h3>
-                  <hr />
-                  <div style={{fontSize: "12px", display: "flex", gap:"10px", flexDirection: "column"}}>
-                      <p>Cancellation and Date Change penalty applicable. Penalty amount will depend on the Date and Time of Cancellation or Date Change.</p>
-                      
-                      <p> All booking/reservations made on Wakanow.com are subject to third party operating Airline's rules and terms of carriage. </p>
-                      
-                      <p>Wakanow merely acts as a travel agent of third party operating Airlines and SHALL have NO responsibility, whatsoever, for any additional cost (directly or indirectly) incurred by any passenger due to any delay, loss, cancellation, change, inaccurate/insufficient information arising whether during booking reservation or after ticket issuance.</p>
-                      <p>All the Arik Air flight bookings/reservations are subject to airline availability and are valid for 1 (one) hour from time of booking to payment confirmation and ticket issuance.</p>
-                      <p>All flight fare quoted on www.wakanow.com are subject to availability, and to change at any time by the third party Airline operators</p>
-                      <p>Passengers are liable for; all card transactions (whether successful or not) travel details, compliance and adequacy of visa requirements, travel itinerary and names (as appear on passport) provided for bookings</p>
-                      <p>Ticket issuance SHALL BE subject to payment confirmation by Wakanow.</p>
-                      <p>Please ensure that your International passport has at least 6 (six) months validity prior to its expiration date as Wakanow shall not be liable for any default.</p>
-                      <p>For all non-card transactions, please contact us at 07009252669, 01-6329250, 01-2773010 to confirm booking details, travel dates and travel requirements before proceeding to payment.</p>
-                      <p>Refund, cancellation and change requests, where applicable, are subject to third party operating airline's policy, plus a service charge of $50</p>
-                      <p>Refund settlement in 9 above, shall be pursuant to fund remittance by the operating airline</p>
-                      <p>Passengers are advised to arrive at the airport at least 3-5 hours prior to flight departure.</p>
-                      <p>First time travelers are advised to have a return flight ticket, confirmed hotel/accommodation and a minimum of $1000 for Personal Travel Allowance (PTA) or Business Travel Allowance (BTA).</p>
-                      <p>An original child's Birth Certificate and Consent letter from parent(s) must be presented before the check-in counter at the Airport.</p>
-                      <p>All tickets are non-transferable at any time. Some tickets may be non-refundable or non-changeable.</p>
-                      <p>Some Airlines may require additional Medical Report/Documents in the case of pregnant passenger(s).</p>
-                      <p>The Passenger hereby confirms to have read and understood this booking information notice and has agreed to waive all rights, by law and to hold harmless and absolve Wakanow of all liabilities that may arise thereof.</p>
-                  </div>
-                </Overlay>}
+      {showTerms && (
+        <Overlay
+          btnDisplay2={"none"}
+          text1={"Continue"}
+          contentWidth={"70%"}
+          overlayButtonClick={() => setShowTerms(false)}
+          closeOverlayOnClick={() => setShowTerms(false)}
+        >
+          <h3>Terms and Conditions</h3>
+          <hr />
+          <div
+            style={{
+              fontSize: "12px",
+              display: "flex",
+              gap: "10px",
+              flexDirection: "column",
+            }}
+          >
+            <p>
+              Cancellation and Date Change penalty applicable. Penalty amount
+              will depend on the Date and Time of Cancellation or Date Change.
+            </p>
+
+            <p>
+              {" "}
+              All booking/reservations made on Wakanow.com are subject to third
+              party operating Airline's rules and terms of carriage.{" "}
+            </p>
+
+            <p>
+              Wakanow merely acts as a travel agent of third party operating
+              Airlines and SHALL have NO responsibility, whatsoever, for any
+              additional cost (directly or indirectly) incurred by any passenger
+              due to any delay, loss, cancellation, change,
+              inaccurate/insufficient information arising whether during booking
+              reservation or after ticket issuance.
+            </p>
+            <p>
+              All the Arik Air flight bookings/reservations are subject to
+              airline availability and are valid for 1 (one) hour from time of
+              booking to payment confirmation and ticket issuance.
+            </p>
+            <p>
+              All flight fare quoted on www.wakanow.com are subject to
+              availability, and to change at any time by the third party Airline
+              operators
+            </p>
+            <p>
+              Passengers are liable for; all card transactions (whether
+              successful or not) travel details, compliance and adequacy of visa
+              requirements, travel itinerary and names (as appear on passport)
+              provided for bookings
+            </p>
+            <p>
+              Ticket issuance SHALL BE subject to payment confirmation by
+              Wakanow.
+            </p>
+            <p>
+              Please ensure that your International passport has at least 6
+              (six) months validity prior to its expiration date as Wakanow
+              shall not be liable for any default.
+            </p>
+            <p>
+              For all non-card transactions, please contact us at 07009252669,
+              01-6329250, 01-2773010 to confirm booking details, travel dates
+              and travel requirements before proceeding to payment.
+            </p>
+            <p>
+              Refund, cancellation and change requests, where applicable, are
+              subject to third party operating airline's policy, plus a service
+              charge of $50
+            </p>
+            <p>
+              Refund settlement in 9 above, shall be pursuant to fund remittance
+              by the operating airline
+            </p>
+            <p>
+              Passengers are advised to arrive at the airport at least 3-5 hours
+              prior to flight departure.
+            </p>
+            <p>
+              First time travelers are advised to have a return flight ticket,
+              confirmed hotel/accommodation and a minimum of $1000 for Personal
+              Travel Allowance (PTA) or Business Travel Allowance (BTA).
+            </p>
+            <p>
+              An original child's Birth Certificate and Consent letter from
+              parent(s) must be presented before the check-in counter at the
+              Airport.
+            </p>
+            <p>
+              All tickets are non-transferable at any time. Some tickets may be
+              non-refundable or non-changeable.
+            </p>
+            <p>
+              Some Airlines may require additional Medical Report/Documents in
+              the case of pregnant passenger(s).
+            </p>
+            <p>
+              The Passenger hereby confirms to have read and understood this
+              booking information notice and has agreed to waive all rights, by
+              law and to hold harmless and absolve Wakanow of all liabilities
+              that may arise thereof.
+            </p>
+          </div>
+        </Overlay>
+      )}
     </TripInfoWrapper>
   );
 }

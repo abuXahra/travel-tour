@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   OverviewContent,
   OverviewHeader,
@@ -61,6 +61,7 @@ export default function OnewayOverview() {
     setOneWayFlightOrder,
     flightPriceLookup,
     flightCreateOrders,
+    FData,
   } = useAuthStore();
   const [showTripSummary, setShowTripSummary] = useState(false);
   const [showTravelDetail, setShowTravelDetail] = useState(false);
@@ -89,18 +90,23 @@ export default function OnewayOverview() {
     currency: "NGN",
     style: "currency",
   });
+  useEffect(() => {
+    if (!FData) {
+      navigate("/flight-booking");
+    }
+  }, [FData, navigate]);
   function parseDuration(duration) {
     const regex = /PT(\d+H)?(\d+M)?/;
-    const matches = duration.match(regex);
+    const matches = duration?.match(regex);
 
     let hours = 0;
     let minutes = 0;
 
-    if (matches[1]) {
-      hours = parseInt(matches[1].replace("H", ""));
+    if (matches?.[1]) {
+      hours = parseInt(matches?.[1]?.replace("H", ""));
     }
-    if (matches[2]) {
-      minutes = parseInt(matches[2].replace("M", ""));
+    if (matches?.[2]) {
+      minutes = parseInt(matches?.[2]?.replace("M", ""));
     }
 
     return { hours, minutes };
@@ -247,7 +253,7 @@ export default function OnewayOverview() {
     setIsChecked(event.target.checked);
   };
 
-  let data = oneWayFlightResult?.[2][oneWayFlightResultIndex];
+  let data = oneWayFlightResult?.[2]?.[oneWayFlightResultIndex];
   console.log(data);
   // Depart
   let DepartName = oneWayFlightResult?.[0];
@@ -517,21 +523,22 @@ export default function OnewayOverview() {
                             oneWayFlightResult?.[9]?.carriers[
                               flightData?.operating?.carrierCode
                             ]}
-                             - 780
+                          - {flightData?.number}
                         </span>
                         <img
                           src={`https://images.wakanow.com/Images/flight-logos/${
                             flightData?.operating?.carrierCode
                               ? flightData?.operating?.carrierCode
-                              : oneWayFlightResult?.[2][oneWayFlightResultIndex]
-                                  .validatingAirlineCodes[0]
+                              : oneWayFlightResult?.[2]?.[
+                                  oneWayFlightResultIndex
+                                ].validatingAirlineCodes[0]
                           }.gif`}
                           height={20}
                           width={40}
                           alt=""
                           srcset=""
                         />
-                       
+
                         {/* <img
                                      src={flightLogo}
                                      height={20}
@@ -989,7 +996,8 @@ export default function OnewayOverview() {
                 Payable Amount:{" "}
                 <b>
                   {money.format(
-                    oneWayFlightResult[2][oneWayFlightResultIndex].price.total
+                    oneWayFlightResult?.[2]?.[oneWayFlightResultIndex].price
+                      .total
                   )}
                 </b>
               </span>

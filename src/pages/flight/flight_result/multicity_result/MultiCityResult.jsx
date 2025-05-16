@@ -45,7 +45,12 @@ import iataAirports from "../../../../flightDB/IATA_airports.json";
 import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import NoResult from "../../../../components/no_result/NoResult";
 import Sidebar from "../../../../components/sidebar/Sidebar";
-import { ArilineListItems, DepartFlightTime, ReturnFlightTime, StopsItems } from "../../../../data/object/flight_sidebar/FlightResultSidebar";
+import {
+  ArilineListItems,
+  DepartFlightTime,
+  ReturnFlightTime,
+  StopsItems,
+} from "../../../../data/object/flight_sidebar/FlightResultSidebar";
 import FlexibleCalender from "../../../../components/Flight/flexible_Calender/FlexibleCalender";
 import { mockFlightData } from "../../../../data/object/FlexibleCalenderItems";
 import PriceMatrix from "../../../../components/Flight/price_matrix/PriceMatrix";
@@ -231,12 +236,12 @@ export default function FlightResult() {
       {/* flight result section */}
       <FlightResultContent>
         {/* SideBar */}
-                <Sidebar
-                      Items={ArilineListItems}
-                      flightDepartItem={DepartFlightTime}
-                      flightReturnItem={ReturnFlightTime}
-                      StopsItems={StopsItems}
-                />
+        <Sidebar
+          Items={ArilineListItems}
+          flightDepartItem={DepartFlightTime}
+          flightReturnItem={ReturnFlightTime}
+          StopsItems={StopsItems}
+        />
         {/* Flight Result Main Content */}
         <FlightResultMain>
           {/* Counter Summary */}
@@ -253,23 +258,25 @@ export default function FlightResult() {
             </ResultCounterRight>
           </ResultCounter> */}
 
-                    {/* show flexible calender */}
-                    <FlightMainHeader>
-                      <h3>From Lagos to Dubai</h3>
-                      <Button
-                        btnBorder={'1px solid white'}
-                        bgColor={'#FF6805'}
-                        textColor={'white'}
-                        onClick={() => setShowFlexibleDate(true)}
-                        text={'Flexible Dates'}
-                        rightIcon={<MdDateRange />}
-                        fontSize={'12px'}
-                      />
-                    </FlightMainHeader>
+          {/* show flexible calender */}
+          <FlightMainHeader>
+            <h3>From Lagos to Dubai</h3>
+            <Button
+              btnBorder={"1px solid white"}
+              bgColor={"#FF6805"}
+              textColor={"white"}
+              onClick={() => setShowFlexibleDate(true)}
+              text={"Flexible Dates"}
+              rightIcon={<MdDateRange />}
+              fontSize={"12px"}
+            />
+          </FlightMainHeader>
 
-
- {/* Price matrix with regards to stops */}
-          <PriceMatrix />
+          {/* Price matrix with regards to stops */}
+          <PriceMatrix
+            flightSearchResultData={multiCityFlightResult[1]}
+            dictionaries={multiCityFlightResult?.[2]?.dictionaries}
+          />
 
           {/* Flight Fare: Cheapest, Fastest, Recommeded */}
           <FlightFare />
@@ -382,12 +389,8 @@ export default function FlightResult() {
                   </FlightCardContent>
                 ))}
                 <PriceWrapper>
-                  <p>
-                    Price: {money.format(data.price.total)}
-                  </p>
-                  <span>
-                    (Penalties upon Refunds)
-                  </span>
+                  <p>Price: {money.format(data.price.total)}</p>
+                  <span>(Penalties upon Refunds)</span>
                 </PriceWrapper>
               </FlightCard>
             ))}
@@ -413,10 +416,11 @@ export default function FlightResult() {
                       <div>
                         <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} />
                         <h5>
-                       {
+                          {
                             filterIataAirport(flightData?.departure?.iataCode)
                               ?.Airport_name
-                          }, 
+                          }
+                          ,
                           {/* {`Flight From ${` ${
                             filterIataAirport(flightData?.departure?.iataCode)
                               ?.Airport_name
@@ -507,20 +511,23 @@ export default function FlightResult() {
                       <DNRDetailBaggage>
                         <span>
                           <h5>Airline</h5>
-                          <div style={{display: "flex", gap: '5px'}}>    
-                          <AirlineFlightLogo
-                            dictionaries={
-                              multiCityFlightResult?.[2]?.dictionaries
-                            }
-                            data={multiCityFlightResult[1][index]}
-                            keyWord={
-                              flightData?.operating?.carrierCode
-                                ? flightData?.operating?.carrierCode
-                                : multiCityFlightResult[1][index]
-                                    .validatingAirlineCodes[0]
-                            }
-                            only={true}
-                          />- 780 - Economy - Class L</div>
+                          <div style={{ display: "flex", gap: "5px" }}>
+                            <AirlineFlightLogo
+                              dictionaries={
+                                multiCityFlightResult?.[2]?.dictionaries
+                              }
+                              data={multiCityFlightResult[1][index]}
+                              keyWord={
+                                flightData?.operating?.carrierCode
+                                  ? flightData?.operating?.carrierCode
+                                  : multiCityFlightResult[1][index]
+                                      .validatingAirlineCodes[0]
+                              }
+                              only={true}
+                            />
+                            {`
+                            - ${flightData?.number} - ${multiCityFlightResult[1][index]?.travelerPricings[0]?.fareDetailsBySegment[Index]?.cabin} - Class ${multiCityFlightResult[1][index]?.travelerPricings[0]?.fareDetailsBySegment[Index]?.class} `}
+                          </div>
                         </span>
                         <span>
                           <h3>Baggage</h3>
@@ -529,8 +536,11 @@ export default function FlightResult() {
                       </DNRDetailBaggage>
                     </DNRDetail>
                     <br />
-                      <LayoverWrapper ><strong>Change of planes</strong> 15h 0m Layover in Istanbul</LayoverWrapper>
-                     <br />
+                    <LayoverWrapper>
+                      <strong>Change of planes</strong> 15h 0m Layover in
+                      Istanbul
+                    </LayoverWrapper>
+                    <br />
                   </>
                 ))}
               </FlightDetailDNR>
@@ -683,14 +693,14 @@ export default function FlightResult() {
           </FlightDetailButton>
         </FLightDetail>
       )}
-           {showFlexibleDate &&
-              <FlexibleCalender
-                overlayButtonClick={() => setShowFlexibleDate(false)}
-                closeOverlayOnClick={() => setShowFlexibleDate(false)}
-                selectedDate={''}
-                flightData={mockFlightData}
-              />
-            }
+      {showFlexibleDate && (
+        <FlexibleCalender
+          overlayButtonClick={() => setShowFlexibleDate(false)}
+          closeOverlayOnClick={() => setShowFlexibleDate(false)}
+          selectedDate={""}
+          flightData={mockFlightData}
+        />
+      )}
     </FlightResultWrapper>
   );
 }

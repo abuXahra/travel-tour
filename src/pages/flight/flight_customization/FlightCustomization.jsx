@@ -83,7 +83,8 @@ export default function FlightCustomization() {
   const filterIataAirport = (iataCode) => {
     const newFilterData = iataAirports.find((item) => {
       return (
-        item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase())
+        item?.IATA &&
+        item?.IATA.toLowerCase()?.includes(iataCode?.toLowerCase())
       );
     });
 
@@ -94,7 +95,7 @@ export default function FlightCustomization() {
     const bookflights = async () => {
       try {
         const res = await flightPriceLookup(
-          singleFlightResult[2][flightResultIndex]
+          singleFlightResult?.[2]?.[flightResultIndex]
         );
         if (res) {
           console.log(res);
@@ -275,7 +276,10 @@ export default function FlightCustomization() {
                               }
                               detail={true}
                             />
-                            <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
+                            <p style={{ textAlign: "let", fontSize: "12px" }}>
+                              {" "}
+                              - {flightData?.number}
+                            </p>
                           </span>
                           <span>
                             <a href="#">
@@ -405,7 +409,10 @@ export default function FlightCustomization() {
                               }
                               detail={true}
                             />
-                            <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
+                            <p style={{ textAlign: "let", fontSize: "12px" }}>
+                              {" "}
+                              - {flightData?.number}
+                            </p>
                           </span>
                           <span>
                             {" "}
@@ -541,7 +548,10 @@ export default function FlightCustomization() {
                           }
                           detail={true}
                         />
-                        <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
+                        <p style={{ textAlign: "let", fontSize: "12px" }}>
+                          {" "}
+                          - 780
+                        </p>
                       </span>
                       <span>
                         {
@@ -552,7 +562,11 @@ export default function FlightCustomization() {
                     </TripDetailClass>
                     <TripDetailTime>
                       <CustomizeTripDetail>
-                        <h4>(1) {travelDetail?.AdultData[0]?.firstName} {travelDetail?.AdultData[0]?.middleName} {travelDetail?.AdultData[0]?.lastName}</h4>
+                        <h4>
+                          (1) {travelDetail?.AdultData[0]?.firstName}{" "}
+                          {travelDetail?.AdultData[0]?.middleName}{" "}
+                          {travelDetail?.AdultData[0]?.lastName}
+                        </h4>
                         <span>
                           {travelDetail?.AdultData[0]?.selectedGender}
                         </span>

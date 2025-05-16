@@ -263,7 +263,10 @@ export default function MulticityCustomization() {
                                 }
                                 detail={true}
                               />
-                              <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
+                              <p style={{ textAlign: "let", fontSize: "12px" }}>
+                                {" "}
+                                - {flightData?.number}
+                              </p>
                             </span>
                             <span>
                               {" "}

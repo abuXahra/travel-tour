@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
   ButtonWrapper,
   FlightDetailWrapper,
@@ -47,6 +47,32 @@ import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../../store/store";
 import Overlay from "../../../../components/overlay/Overlay";
 
+const filterIataAirport = (iataCode) => {
+  const newFilterData = iataAirports.find((item) => {
+    return (
+      item?.IATA && item?.IATA?.toLowerCase()?.includes(iataCode?.toLowerCase())
+    );
+  });
+
+  return newFilterData;
+};
+const calculateLayoverInfo = (prevSegment, nextSegment) => {
+  console.log(prevSegment?.arrival.at);
+  console.log("nextSegment", nextSegment);
+  if (!prevSegment || !nextSegment) return "Layover data not available";
+  const arrivalTime = new Date(prevSegment?.arrival?.at);
+  const departureTime = new Date(nextSegment?.departure?.at);
+  const layoverMinutes = Math.floor((departureTime - arrivalTime) / 60000);
+
+  const hours = Math.floor(layoverMinutes / 60);
+  const minutes = layoverMinutes % 60;
+
+  const iata = nextSegment?.departure?.iataCode;
+  const city = filterIataAirport(iata)?.Location_served;
+
+  return `${hours}h ${minutes}m Layover in ${city} (${city})`;
+};
+
 export default function TripInfo() {
   const [data, setData] = useState({});
 
@@ -60,25 +86,23 @@ export default function TripInfo() {
     singleFlightResult,
     setTravelDetail,
     flightPriceLookup,
+    FData,
     setSingleFlightResult,
   } = useAuthStore();
   const { flightResultIndex } = useParams();
 
   useEffect(() => {
-    if (!singleFlightResult || singleFlightResult?.length === 0) {
+    if (!FData) {
       navigate("/flight-booking");
     }
-  }, [singleFlightResult, navigate]);
-
-  useEffect(() => {
     const flightPrice = async () => {
       let flightPrice = await flightPriceLookup(
-        singleFlightResult[2][flightResultIndex]
+        singleFlightResult?.[2]?.[flightResultIndex]
       );
 
       if (flightPrice) {
         console.log(flightPrice);
-        setData(flightPrice.flightOffers[0]);
+        setData(flightPrice?.flightOffers?.[0]);
       }
     };
     flightPrice();
@@ -102,7 +126,6 @@ export default function TripInfo() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
 
-
   // error
   const [titleError, setTitleError] = useState(false);
   const [firstNameError, setFirstNameError] = useState(false);
@@ -125,16 +148,6 @@ export default function TripInfo() {
     { title: "Mr", value: "Mr" },
     { title: "Mrs", value: "Mrs" },
   ];
-
-  const filterIataAirport = (iataCode) => {
-    const newFilterData = iataAirports.find((item) => {
-      return (
-        item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase())
-      );
-    });
-
-    return newFilterData;
-  };
 
   const handleSelectTitleChange = (data, event, index) => {
     const newTitle = event.target.value;
@@ -436,8 +449,8 @@ export default function TripInfo() {
 
     e.preventDefault();
 
-        e.preventDefault();
-        let isValid = true;
+    e.preventDefault();
+    let isValid = true;
 
     // title validation
     if (!selectedTitleValue) {
@@ -458,13 +471,13 @@ export default function TripInfo() {
     }
 
     // middle name validation
-    if (!middleName ) {
+    if (!middleName) {
       setMiddleNameError(true);
       isValid = false;
     }
 
     // dob validation
-    if (!dob ) {
+    if (!dob) {
       setDobError(true);
       isValid = false;
     }
@@ -495,13 +508,9 @@ export default function TripInfo() {
 
     if (isValid) {
       setTravelDetail(TravelData);
-    navigate(`/flight-customization/${flightResultIndex}`)
+      navigate(`/flight-customization/${flightResultIndex}`);
     }
-    
   };
-
-
-
 
   const [showtripDepart, setShowtripDepart] = useState(false);
   const [showtripReturn, setShowtripReturn] = useState(false);
@@ -538,9 +547,7 @@ export default function TripInfo() {
   console.log(TravelData);
   // let carrierCode = singleFlightResult[9].carriers[keyWord];
 
-
   const [showTerms, setShowTerms] = useState(false);
-
 
   // console.log(queryParams);
   if (!singleFlightResult || singleFlightResult?.length === 0) {
@@ -728,120 +735,137 @@ export default function TripInfo() {
                   <>
                     {singleFlightResult[2][
                       flightResultIndex
-                    ].itineraries[0].segments?.map((flightData, Index) => (
-                      <TripDetailBody>
-                        <TripDetailClass>
-                          <span>
-                            <AirlineFlightLogo
-                              dictionaries={singleFlightResult[9]}
-                              data={singleFlightResult[2][flightResultIndex]}
-                              keyWord={
-                                flightData?.operating?.carrierCode
-                                  ? flightData?.operating?.carrierCode
-                                  : singleFlightResult[2][flightResultIndex]
-                                      .validatingAirlineCodes[0]
-                              }
-                              detail={true}
-                            /> 
-                             <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
-                          </span>
-                          <span>
-                            <a href="#">
-                              {
-                                singleFlightResult[2][flightResultIndex]
-                                  .travelerPricings[0].fareDetailsBySegment[0]
-                                  .cabin
-                              }
-                            </a>
-                          </span>
-                        </TripDetailClass>
-                        <TripDetailTime>
-                          <TripHour>
-                            <span>
-                              <div>
-                                <h4>
-                                  {new Date(
-                                    flightData?.departure?.at
-                                  ).toLocaleTimeString("en-US", {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
-                                </h4>
-                                <h4>
-                                  {" "}
-                                  {new Date(
-                                    flightData?.arrival?.at
-                                  ).toLocaleTimeString("en-US", {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
-                                </h4>
-                              </div>
-                              <div>
-                                <hr />
-                                <FlightIcon
-                                  rotate={"180deg"}
-                                  iconColor={"#0D3984"}
-                                />
-                                <hr />
-                              </div>
-                            </span>
-                          </TripHour>
-                          <TripAirport>
-                            <div>
-                              <p>
-                                {`${
-                                  filterIataAirport(
-                                    flightData?.departure?.iataCode
-                                  )?.Airport_name
-                                },  ${
-                                  filterIataAirport(
-                                    flightData?.departure?.iataCode
-                                  )?.Location_served
-                                }`}{" "}
-                                <b>({flightData?.departure?.iataCode})</b>
-                              </p>
-                              <p>
-                                {" "}
-                                {`${
-                                  parseDuration(flightData?.duration).hours
-                                }hr ${
-                                  parseDuration(flightData?.duration).minutes
-                                }min`}
-                              </p>
-                              <p>
-                                {`${
-                                  filterIataAirport(
-                                    flightData?.arrival?.iataCode
-                                  )?.Airport_name
-                                },  ${
-                                  filterIataAirport(
-                                    flightData?.arrival?.iataCode
-                                  )?.Location_served
-                                }`}{" "}
-                                <b>({flightData?.arrival?.iataCode})</b>
-                              </p>
-                            </div>
-                            <div>
-                              <span>
-                                <h4>CHECK IN:</h4>{" "}
-                                <p>
-                                  {
-                                    singleFlightResult[2][flightResultIndex]
-                                      .travelerPricings[0].travelerType
-                                  }
-                                </p>{" "}
-                              </span>
-                              <span>
-                                <h4>BAGGAGE:</h4> <p>1</p>
-                              </span>
-                            </div>
-                          </TripAirport>
-                        </TripDetailTime>
-                      <p style={{textAlign: "center", fontSize: "12px"}}><b style={{color: "#FF6805"}}>Layover</b> 1h 30m Layover in Addis Ababa (Addis Ababa) </p> 
+                    ].itineraries[0].segments?.map((flightData, Index, arr) => {
+                      const isLastSegment = Index === arr.length - 1;
+                      const nextSegment = !isLastSegment
+                        ? arr[Index + 1]
+                        : null;
 
-                      </TripDetailBody>
-                    ))}
+                      return (
+                        <TripDetailBody>
+                          <TripDetailClass>
+                            <span>
+                              <AirlineFlightLogo
+                                dictionaries={singleFlightResult[9]}
+                                data={singleFlightResult[2][flightResultIndex]}
+                                keyWord={
+                                  flightData?.operating?.carrierCode
+                                    ? flightData?.operating?.carrierCode
+                                    : singleFlightResult[2][flightResultIndex]
+                                        .validatingAirlineCodes[0]
+                                }
+                                detail={true}
+                              />
+                              <p style={{ textAlign: "let", fontSize: "12px" }}>
+                                {" "}
+                                - 780
+                              </p>
+                            </span>
+                            <span>
+                              <a href="#">
+                                {
+                                  singleFlightResult[2][flightResultIndex]
+                                    .travelerPricings[0].fareDetailsBySegment[0]
+                                    .cabin
+                                }
+                              </a>
+                            </span>
+                          </TripDetailClass>
+                          <TripDetailTime>
+                            <TripHour>
+                              <span>
+                                <div>
+                                  <h4>
+                                    {new Date(
+                                      flightData?.departure?.at
+                                    ).toLocaleTimeString("en-US", {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </h4>
+                                  <h4>
+                                    {" "}
+                                    {new Date(
+                                      flightData?.arrival?.at
+                                    ).toLocaleTimeString("en-US", {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </h4>
+                                </div>
+                                <div>
+                                  <hr />
+                                  <FlightIcon
+                                    rotate={"180deg"}
+                                    iconColor={"#0D3984"}
+                                  />
+                                  <hr />
+                                </div>
+                              </span>
+                            </TripHour>
+                            <TripAirport>
+                              <div>
+                                <p>
+                                  {`${
+                                    filterIataAirport(
+                                      flightData?.departure?.iataCode
+                                    )?.Airport_name
+                                  },  ${
+                                    filterIataAirport(
+                                      flightData?.departure?.iataCode
+                                    )?.Location_served
+                                  }`}{" "}
+                                  <b>({flightData?.departure?.iataCode})</b>
+                                </p>
+                                <p>
+                                  {" "}
+                                  {`${
+                                    parseDuration(flightData?.duration).hours
+                                  }hr ${
+                                    parseDuration(flightData?.duration).minutes
+                                  }min`}
+                                </p>
+                                <p>
+                                  {`${
+                                    filterIataAirport(
+                                      flightData?.arrival?.iataCode
+                                    )?.Airport_name
+                                  },  ${
+                                    filterIataAirport(
+                                      flightData?.arrival?.iataCode
+                                    )?.Location_served
+                                  }`}{" "}
+                                  <b>({flightData?.arrival?.iataCode})</b>
+                                </p>
+                              </div>
+                              <div>
+                                <span>
+                                  <h4>CHECK IN:</h4>{" "}
+                                  <p>
+                                    {
+                                      singleFlightResult[2][flightResultIndex]
+                                        .travelerPricings[0].travelerType
+                                    }
+                                  </p>{" "}
+                                </span>
+                                <span>
+                                  <h4>BAGGAGE:</h4> <p>1</p>
+                                </span>
+                              </div>
+                            </TripAirport>
+                          </TripDetailTime>
+
+                          {nextSegment && (
+                            <p
+                              style={{ textAlign: "center", fontSize: "12px" }}
+                            >
+                              <b style={{ color: "#FF6805" }}>Layover</b>{" "}
+                              {calculateLayoverInfo(flightData, nextSegment)}
+                            </p>
+                          )}
+                        </TripDetailBody>
+                      );
+                    })}
                   </>
                 )}
               </FlightDetailWrapper>
@@ -900,120 +924,137 @@ export default function TripInfo() {
                   <>
                     {singleFlightResult[2][
                       flightResultIndex
-                    ].itineraries[1].segments?.map((flightData, Index) => (
-                      <TripDetailBody>
-                        <TripDetailClass>
-                          <span>
-                            <AirlineFlightLogo
-                              dictionaries={singleFlightResult[9]}
-                              data={singleFlightResult[2][flightResultIndex]}
-                              keyWord={
-                                flightData?.operating?.carrierCode
-                                  ? flightData?.operating?.carrierCode
-                                  : singleFlightResult[2][flightResultIndex]
-                                      .validatingAirlineCodes[0]
-                              }
-                              detail={true}
-                            />
-                             <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
-                          </span>
-                          <span>
-                            <a href="#">
-                              {
-                                singleFlightResult[2][flightResultIndex]
-                                  .travelerPricings[0].fareDetailsBySegment[0]
-                                  .cabin
-                              }
-                            </a>
-                          </span>
-                        </TripDetailClass>
-                        <TripDetailTime>
-                          <TripHour>
+                    ].itineraries[1].segments?.map((flightData, Index, arr) => {
+                      const isLastSegment = Index === arr.length - 1;
+                      const nextSegment = !isLastSegment
+                        ? arr[Index + 1]
+                        : null;
+
+                      return (
+                        <TripDetailBody>
+                          <TripDetailClass>
                             <span>
-                              <div>
-                                <h4>
-                                  {new Date(
-                                    flightData?.departure?.at
-                                  ).toLocaleTimeString("en-US", {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
-                                </h4>
-                                <h4>
-                                  {" "}
-                                  {new Date(
-                                    flightData?.arrival?.at
-                                  ).toLocaleTimeString("en-US", {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
-                                </h4>
-                              </div>
-                              <div>
-                                <hr />
-                                <FlightIcon
-                                  rotate={"360deg"}
-                                  iconColor={"#FF6805"}
-                                />
-                                <hr />
-                              </div>
-                            </span>
-                          </TripHour>
-                          <TripAirport>
-                            <div>
-                              <p>
-                                {`${
-                                  filterIataAirport(
-                                    flightData?.departure?.iataCode
-                                  )?.Airport_name
-                                },  ${
-                                  filterIataAirport(
-                                    flightData?.departure?.iataCode
-                                  )?.Location_served
-                                }`}{" "}
-                                <b>({flightData?.departure?.iataCode})</b>
-                              </p>
-                              <p>
+                              <AirlineFlightLogo
+                                dictionaries={singleFlightResult[9]}
+                                data={singleFlightResult[2][flightResultIndex]}
+                                keyWord={
+                                  flightData?.operating?.carrierCode
+                                    ? flightData?.operating?.carrierCode
+                                    : singleFlightResult[2][flightResultIndex]
+                                        .validatingAirlineCodes[0]
+                                }
+                                detail={true}
+                              />
+                              <p style={{ textAlign: "let", fontSize: "12px" }}>
                                 {" "}
-                                {`${
-                                  parseDuration(flightData?.duration).hours
-                                }hr ${
-                                  parseDuration(flightData?.duration).minutes
-                                }min`}
+                                - 780
                               </p>
-                              <p>
-                                {`${
-                                  filterIataAirport(
-                                    flightData?.arrival?.iataCode
-                                  )?.Airport_name
-                                },  ${
-                                  filterIataAirport(
-                                    flightData?.arrival?.iataCode
-                                  )?.Location_served
-                                }`}{" "}
-                                <b>({flightData?.arrival?.iataCode})</b>
-                              </p>
-                            </div>
-                            <div>
+                            </span>
+                            <span>
+                              <a href="#">
+                                {
+                                  singleFlightResult[2][flightResultIndex]
+                                    .travelerPricings[0].fareDetailsBySegment[0]
+                                    .cabin
+                                }
+                              </a>
+                            </span>
+                          </TripDetailClass>
+                          <TripDetailTime>
+                            <TripHour>
                               <span>
-                                <h4>CHECK IN:</h4>{" "}
+                                <div>
+                                  <h4>
+                                    {new Date(
+                                      flightData?.departure?.at
+                                    ).toLocaleTimeString("en-US", {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </h4>
+                                  <h4>
+                                    {" "}
+                                    {new Date(
+                                      flightData?.arrival?.at
+                                    ).toLocaleTimeString("en-US", {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </h4>
+                                </div>
+                                <div>
+                                  <hr />
+                                  <FlightIcon
+                                    rotate={"360deg"}
+                                    iconColor={"#FF6805"}
+                                  />
+                                  <hr />
+                                </div>
+                              </span>
+                            </TripHour>
+                            <TripAirport>
+                              <div>
+                                <p>
+                                  {`${
+                                    filterIataAirport(
+                                      flightData?.departure?.iataCode
+                                    )?.Airport_name
+                                  },  ${
+                                    filterIataAirport(
+                                      flightData?.departure?.iataCode
+                                    )?.Location_served
+                                  }`}{" "}
+                                  <b>({flightData?.departure?.iataCode})</b>
+                                </p>
                                 <p>
                                   {" "}
-                                  {
-                                    singleFlightResult[2][flightResultIndex]
-                                      .travelerPricings[0].travelerType
-                                  }
-                                </p>{" "}
-                              </span>
-                              <span>
-                                <h4>BAGGAGE:</h4> <p>1</p>
-                              </span>
-                            </div>
-                          </TripAirport>
-                        </TripDetailTime>
-                        <p style={{textAlign: "center", fontSize: "12px"}}><b style={{color: "#FF6805"}}>Layover</b> 1h 30m Layover in Addis Ababa (Addis Ababa) </p> 
-                      </TripDetailBody>
-                    ))}
+                                  {`${
+                                    parseDuration(flightData?.duration).hours
+                                  }hr ${
+                                    parseDuration(flightData?.duration).minutes
+                                  }min`}
+                                </p>
+                                <p>
+                                  {`${
+                                    filterIataAirport(
+                                      flightData?.arrival?.iataCode
+                                    )?.Airport_name
+                                  },  ${
+                                    filterIataAirport(
+                                      flightData?.arrival?.iataCode
+                                    )?.Location_served
+                                  }`}{" "}
+                                  <b>({flightData?.arrival?.iataCode})</b>
+                                </p>
+                              </div>
+                              <div>
+                                <span>
+                                  <h4>CHECK IN:</h4>{" "}
+                                  <p>
+                                    {" "}
+                                    {
+                                      singleFlightResult[2][flightResultIndex]
+                                        .travelerPricings[0].travelerType
+                                    }
+                                  </p>{" "}
+                                </span>
+                                <span>
+                                  <h4>BAGGAGE:</h4> <p>1</p>
+                                </span>
+                              </div>
+                            </TripAirport>
+                          </TripDetailTime>
+                          {nextSegment && (
+                            <p
+                              style={{ textAlign: "center", fontSize: "12px" }}
+                            >
+                              <b style={{ color: "#FF6805" }}>Layover</b>{" "}
+                              {calculateLayoverInfo(flightData, nextSegment)}
+                            </p>
+                          )}
+                        </TripDetailBody>
+                      );
+                    })}
                   </>
                 )}
               </FlightDetailWrapper>
@@ -1159,12 +1200,17 @@ export default function TripInfo() {
                     {/* Continue Button */}
                     <ButtonWrapper>
                       <div>
-                          <input type="checkbox" name="terms" id="terms" />
-                          <p>
-                            By proceeding you agree have read and accept our{" "}
-                            <span style={{cursor: "pointer", fontWeight: "bold"}} onClick={()=>setShowTerms(true)}>Terms and Conditions</span>
-                          </p>
-                        </div>
+                        <input type="checkbox" name="terms" id="terms" />
+                        <p>
+                          By proceeding you agree have read and accept our{" "}
+                          <span
+                            style={{ cursor: "pointer", fontWeight: "bold" }}
+                            onClick={() => setShowTerms(true)}
+                          >
+                            Terms and Conditions
+                          </span>
+                        </p>
+                      </div>
                     </ButtonWrapper>
                   </FormWrapper>
                 </TripInfoContent>
@@ -1315,7 +1361,12 @@ export default function TripInfo() {
                         <input type="checkbox" name="terms" id="terms" />
                         <p>
                           By proceeding you agree have read and accept our{" "}
-                          <span style={{cursor: "pointer", fontWeight: "bold"}} onClick={()=>setShowTerms(true)}>Terms and Conditions</span>
+                          <span
+                            style={{ cursor: "pointer", fontWeight: "bold" }}
+                            onClick={() => setShowTerms(true)}
+                          >
+                            Terms and Conditions
+                          </span>
                         </p>
                       </div>
                       {/* <Button
@@ -1472,7 +1523,6 @@ export default function TripInfo() {
 
                     {/* Continue Button */}
                     <ButtonWrapper>
-                
                       {/* <Button
                         text={"Continue"}
                         onClick={() => {
@@ -1487,50 +1537,122 @@ export default function TripInfo() {
                 </TripInfoContent>
               )
             )}
-          <div>
-              <Button
-                text={"Continue"}
-                onClick={handledSubmit}
-              />
+            <div>
+              <Button text={"Continue"} onClick={handledSubmit} />
             </div>
 
             {/*user trip data  */}
           </TripMinContent>
         </TripInfoBody>
-         
-         
-         { showTerms && 
-         <Overlay
-          btnDisplay2={'none'}
-          text1={'Continue'}
-          contentWidth={'70%'}
-          overlayButtonClick={()=>setShowTerms(false)}
-          closeOverlayOnClick={()=>setShowTerms(false)}
+
+        {showTerms && (
+          <Overlay
+            btnDisplay2={"none"}
+            text1={"Continue"}
+            contentWidth={"70%"}
+            overlayButtonClick={() => setShowTerms(false)}
+            closeOverlayOnClick={() => setShowTerms(false)}
           >
             <h3>Terms and Conditions</h3>
             <hr />
-            <div style={{fontSize: "12px", display: "flex", gap:"10px", flexDirection: "column"}}>
-                <p>Cancellation and Date Change penalty applicable. Penalty amount will depend on the Date and Time of Cancellation or Date Change.</p>
-                
-                <p> All booking/reservations made on Wakanow.com are subject to third party operating Airline's rules and terms of carriage. </p>
-                
-                <p>Wakanow merely acts as a travel agent of third party operating Airlines and SHALL have NO responsibility, whatsoever, for any additional cost (directly or indirectly) incurred by any passenger due to any delay, loss, cancellation, change, inaccurate/insufficient information arising whether during booking reservation or after ticket issuance.</p>
-                <p>All the Arik Air flight bookings/reservations are subject to airline availability and are valid for 1 (one) hour from time of booking to payment confirmation and ticket issuance.</p>
-                <p>All flight fare quoted on www.wakanow.com are subject to availability, and to change at any time by the third party Airline operators</p>
-                <p>Passengers are liable for; all card transactions (whether successful or not) travel details, compliance and adequacy of visa requirements, travel itinerary and names (as appear on passport) provided for bookings</p>
-                <p>Ticket issuance SHALL BE subject to payment confirmation by Wakanow.</p>
-                <p>Please ensure that your International passport has at least 6 (six) months validity prior to its expiration date as Wakanow shall not be liable for any default.</p>
-                <p>For all non-card transactions, please contact us at 07009252669, 01-6329250, 01-2773010 to confirm booking details, travel dates and travel requirements before proceeding to payment.</p>
-                <p>Refund, cancellation and change requests, where applicable, are subject to third party operating airline's policy, plus a service charge of $50</p>
-                <p>Refund settlement in 9 above, shall be pursuant to fund remittance by the operating airline</p>
-                <p>Passengers are advised to arrive at the airport at least 3-5 hours prior to flight departure.</p>
-                <p>First time travelers are advised to have a return flight ticket, confirmed hotel/accommodation and a minimum of $1000 for Personal Travel Allowance (PTA) or Business Travel Allowance (BTA).</p>
-                <p>An original child's Birth Certificate and Consent letter from parent(s) must be presented before the check-in counter at the Airport.</p>
-                <p>All tickets are non-transferable at any time. Some tickets may be non-refundable or non-changeable.</p>
-                <p>Some Airlines may require additional Medical Report/Documents in the case of pregnant passenger(s).</p>
-                <p>The Passenger hereby confirms to have read and understood this booking information notice and has agreed to waive all rights, by law and to hold harmless and absolve Wakanow of all liabilities that may arise thereof.</p>
+            <div
+              style={{
+                fontSize: "12px",
+                display: "flex",
+                gap: "10px",
+                flexDirection: "column",
+              }}
+            >
+              <p>
+                Cancellation and Date Change penalty applicable. Penalty amount
+                will depend on the Date and Time of Cancellation or Date Change.
+              </p>
+
+              <p>
+                {" "}
+                All booking/reservations made on Wakanow.com are subject to
+                third party operating Airline's rules and terms of carriage.{" "}
+              </p>
+
+              <p>
+                Wakanow merely acts as a travel agent of third party operating
+                Airlines and SHALL have NO responsibility, whatsoever, for any
+                additional cost (directly or indirectly) incurred by any
+                passenger due to any delay, loss, cancellation, change,
+                inaccurate/insufficient information arising whether during
+                booking reservation or after ticket issuance.
+              </p>
+              <p>
+                All the Arik Air flight bookings/reservations are subject to
+                airline availability and are valid for 1 (one) hour from time of
+                booking to payment confirmation and ticket issuance.
+              </p>
+              <p>
+                All flight fare quoted on www.wakanow.com are subject to
+                availability, and to change at any time by the third party
+                Airline operators
+              </p>
+              <p>
+                Passengers are liable for; all card transactions (whether
+                successful or not) travel details, compliance and adequacy of
+                visa requirements, travel itinerary and names (as appear on
+                passport) provided for bookings
+              </p>
+              <p>
+                Ticket issuance SHALL BE subject to payment confirmation by
+                Wakanow.
+              </p>
+              <p>
+                Please ensure that your International passport has at least 6
+                (six) months validity prior to its expiration date as Wakanow
+                shall not be liable for any default.
+              </p>
+              <p>
+                For all non-card transactions, please contact us at 07009252669,
+                01-6329250, 01-2773010 to confirm booking details, travel dates
+                and travel requirements before proceeding to payment.
+              </p>
+              <p>
+                Refund, cancellation and change requests, where applicable, are
+                subject to third party operating airline's policy, plus a
+                service charge of $50
+              </p>
+              <p>
+                Refund settlement in 9 above, shall be pursuant to fund
+                remittance by the operating airline
+              </p>
+              <p>
+                Passengers are advised to arrive at the airport at least 3-5
+                hours prior to flight departure.
+              </p>
+              <p>
+                First time travelers are advised to have a return flight ticket,
+                confirmed hotel/accommodation and a minimum of $1000 for
+                Personal Travel Allowance (PTA) or Business Travel Allowance
+                (BTA).
+              </p>
+              <p>
+                An original child's Birth Certificate and Consent letter from
+                parent(s) must be presented before the check-in counter at the
+                Airport.
+              </p>
+              <p>
+                All tickets are non-transferable at any time. Some tickets may
+                be non-refundable or non-changeable.
+              </p>
+              <p>
+                Some Airlines may require additional Medical Report/Documents in
+                the case of pregnant passenger(s).
+              </p>
+              <p>
+                The Passenger hereby confirms to have read and understood this
+                booking information notice and has agreed to waive all rights,
+                by law and to hold harmless and absolve Wakanow of all
+                liabilities that may arise thereof.
+              </p>
             </div>
-          </Overlay>}
+          </Overlay>
+        )}
       </TripInfoWrapper>
     );
   }

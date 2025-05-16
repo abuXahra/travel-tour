@@ -92,7 +92,7 @@ export default function OnewayCustomization() {
     const bookflights = async () => {
       try {
         const res = await flightPriceLookup(
-          oneWayFlightResult[2][oneWayFlightResultIndex]
+          oneWayFlightResult?.[2]?.[oneWayFlightResultIndex]
         );
 
         if (res) {
@@ -164,14 +164,14 @@ export default function OnewayCustomization() {
                 <div>
                   <p>
                     <b>
-                      {oneWayFlightResult[0]} ({oneWayFlightResult[3]}) TO{" "}
-                      {oneWayFlightResult[1]} ({oneWayFlightResult[4]})
+                      {oneWayFlightResult?.[0]} ({oneWayFlightResult?.[3]}) TO{" "}
+                      {oneWayFlightResult?.[1]} ({oneWayFlightResult?.[4]})
                     </b>
                   </p>
                   <p>
                     {" "}
                     {
-                      oneWayFlightResult[2][oneWayFlightResultIndex]
+                      oneWayFlightResult?.[2]?.[oneWayFlightResultIndex]
                         .travelerPricings[0].fareDetailsBySegment[0].cabin
                     }{" "}
                     Round Trip
@@ -235,30 +235,34 @@ export default function OnewayCustomization() {
               {/* Body */}
               {showTripSummary && (
                 <div>
-                  {oneWayFlightResult[2][
+                  {oneWayFlightResult?.[2][
                     oneWayFlightResultIndex
                   ].itineraries[0].segments?.map((flightData, Index) => (
                     <TripDetailBody mb={"20px"}>
                       <TripDetailClass>
                         <span>
                           <AirlineFlightLogo
-                            dictionaries={oneWayFlightResult[9]}
+                            dictionaries={oneWayFlightResult?.[9]}
                             data={
-                              oneWayFlightResult[2][oneWayFlightResultIndex]
+                              oneWayFlightResult?.[2]?.[oneWayFlightResultIndex]
                             }
                             keyWord={
                               flightData?.operating?.carrierCode
                                 ? flightData?.operating?.carrierCode
-                                : oneWayFlightResult[2][oneWayFlightResultIndex]
-                                    .validatingAirlineCodes[0]
+                                : oneWayFlightResult?.[2]?.[
+                                    oneWayFlightResultIndex
+                                  ].validatingAirlineCodes[0]
                             }
                             detail={true}
                           />
-                          <p style={{textAlign: "let", fontSize: "12px"}}> - 780</p>
+                          <p style={{ textAlign: "let", fontSize: "12px" }}>
+                            {" "}
+                            - {flightData?.number}
+                          </p>
                         </span>
                         <span>
                           {
-                            oneWayFlightResult[2][oneWayFlightResultIndex]
+                            oneWayFlightResult?.[2]?.[oneWayFlightResultIndex]
                               .travelerPricings[0].fareDetailsBySegment[0].cabin
                           }
                         </span>
@@ -391,10 +395,14 @@ export default function OnewayCustomization() {
                   </TripDetailClass> */}
                   <TripDetailTime>
                     <CustomizeTripDetail>
-                    <h4>(1) {travelDetail?.AdultData[0]?.firstName} {travelDetail?.AdultData[0]?.middleName} {travelDetail?.AdultData[0]?.lastName}</h4>
-                        <span>{travelDetail?.AdultData[0]?.selectedGender}</span>
-                        <span>{travelDetail?.AdultData[0]?.email}</span>
-                         <span>{travelDetail?.AdultData[0]?.phone}</span>
+                      <h4>
+                        (1) {travelDetail?.AdultData[0]?.firstName}{" "}
+                        {travelDetail?.AdultData[0]?.middleName}{" "}
+                        {travelDetail?.AdultData[0]?.lastName}
+                      </h4>
+                      <span>{travelDetail?.AdultData[0]?.selectedGender}</span>
+                      <span>{travelDetail?.AdultData[0]?.email}</span>
+                      <span>{travelDetail?.AdultData[0]?.phone}</span>
                       <EditIcon
                         onClick={() =>
                           navigate(

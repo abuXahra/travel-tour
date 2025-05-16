@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   OverviewContent,
   OverviewHeader,
@@ -59,6 +59,7 @@ export default function FlightOverview() {
     travelDetail,
     flightPriceLookup,
     flightCreateOrders,
+    FData,
   } = useAuthStore();
   const { flightResultIndex } = useParams();
   const navigate = useNavigate();
@@ -92,7 +93,8 @@ export default function FlightOverview() {
   const filterIataAirport = (iataCode) => {
     const newFilterData = iataAirports.find((item) => {
       return (
-        item.IATA && item.IATA.toLowerCase().includes(iataCode.toLowerCase())
+        item?.IATA &&
+        item?.IATA?.toLowerCase().includes(iataCode?.toLowerCase())
       );
     });
 
@@ -100,16 +102,16 @@ export default function FlightOverview() {
   };
   function parseDuration(duration) {
     const regex = /PT(\d+H)?(\d+M)?/;
-    const matches = duration.match(regex);
+    const matches = duration?.match(regex);
 
     let hours = 0;
     let minutes = 0;
 
-    if (matches[1]) {
-      hours = parseInt(matches[1].replace("H", ""));
+    if (matches?.[1]) {
+      hours = parseInt(matches?.[1].replace("H", ""));
     }
-    if (matches[2]) {
-      minutes = parseInt(matches[2].replace("M", ""));
+    if (matches?.[2]) {
+      minutes = parseInt(matches?.[2].replace("M", ""));
     }
 
     return { hours, minutes };
@@ -236,7 +238,12 @@ export default function FlightOverview() {
   const handleCheckboxChange = (event) => {
     setIsChecked(event.target.checked);
   };
-  let data = singleFlightResult?.[2][flightResultIndex];
+  useEffect(() => {
+    if (!FData) {
+      navigate("/flight-booking");
+    }
+  }, [FData, navigate]);
+  let data = singleFlightResult?.[2]?.[flightResultIndex];
   console.log(data);
   // Depart
   let DepartName = singleFlightResult?.[0];
@@ -274,12 +281,12 @@ export default function FlightOverview() {
 
   // // Return
   let ReturnCarrierName =
-    data?.itineraries[1]?.segments[0]?.operating &&
+    data?.itineraries?.[1]?.segments[0]?.operating &&
     singleFlightResult[9]?.carriers[
-      data?.itineraries[1]?.segments[0]?.operating?.carrierCode
+      data?.itineraries?.[1]?.segments[0]?.operating?.carrierCode
     ];
   let ReturnFullTimeAndDate = new Date(
-    data?.itineraries[1]?.segments[0]?.departure?.at
+    data?.itineraries?.[1]?.segments[0]?.departure?.at
   ).toLocaleString("en-US", {
     weekday: "long",
     month: "long",
@@ -288,21 +295,23 @@ export default function FlightOverview() {
   let ReturnCode = singleFlightResult?.[4];
   let ReturnName = singleFlightResult?.[1];
   let ReturnStartTime = new Date(
-    data?.itineraries[1]?.segments[0]?.departure?.at
+    data?.itineraries?.[1]?.segments[0]?.departure?.at
   ).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
   });
   let ReturnEndTime = new Date(
-    data.itineraries[1].segments[0].arrival.at
+    data?.itineraries?.[1].segments[0].arrival.at
   ).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
   });
   let ReturnPeriodOfHours = `${
-    parseDuration(data?.itineraries[1]?.segments[0]?.duration).hours
-  }hr ${parseDuration(data?.itineraries[1]?.segments[0]?.duration).minutes}min`;
-  let ReturnStops = data?.itineraries[1]?.segments[0]?.numberOfStops;
+    parseDuration(data?.itineraries?.[1]?.segments[0]?.duration).hours
+  }hr ${
+    parseDuration(data?.itineraries?.[1]?.segments[0]?.duration).minutes
+  }min`;
+  let ReturnStops = data?.itineraries?.[1]?.segments[0]?.numberOfStops;
 
   const money = new Intl.NumberFormat("en-us", {
     currency: "NGN",
@@ -549,7 +558,7 @@ export default function FlightOverview() {
                             singleFlightResult?.[9]?.carriers[
                               flightData?.operating?.carrierCode
                             ]}
-                             - 780
+                          - {flightData?.number}
                         </span>
                         <img
                           src={`https://images.wakanow.com/Images/flight-logos/${
@@ -563,7 +572,7 @@ export default function FlightOverview() {
                           alt=""
                           srcset=""
                         />
-                        
+
                         {/* <img
                           src={flightLogo}
                           height={20}
@@ -732,7 +741,7 @@ export default function FlightOverview() {
                             singleFlightResult?.[9]?.carriers[
                               flightData?.operating?.carrierCode
                             ]}
-                              - 780
+                          - {flightData?.number}
                         </span>
                         <img
                           src={`https://images.wakanow.com/Images/flight-logos/${
@@ -746,7 +755,7 @@ export default function FlightOverview() {
                           alt=""
                           srcset=""
                         />
-                       
+
                         {/* <img
                           src={flightLogo}
                           height={20}

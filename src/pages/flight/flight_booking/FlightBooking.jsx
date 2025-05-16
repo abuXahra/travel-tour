@@ -44,15 +44,15 @@ import FlightStatus from "./flight_status/FlightStatus";
 import Content from "../../../components/homepage_content/Content";
 import { useAuthStore } from "../../../store/store";
 import Loader from "../../../components/loader/Loader";
-import { ToastContainer, toast } from 'react-toastify';
-import "react-toastify/ReactToastify.css"
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 export default function FlightBooking() {
   const { loader } = useAuthStore();
 
   // Error Message if the depart and destination location is the same
-  const locationError = (toastMessage) => toast.error('Change destination location')
+  const locationError = (toastMessage) =>
+    toast.error("Change destination location");
 
   // Show/Hide Form
   const [showSingleMultCity, setShowSingleMultCity] = useState(true);
@@ -162,12 +162,10 @@ export default function FlightBooking() {
   const [mcBrColor, setMcBrColor] = useState("grey");
   const [mcCheckColor, setMcCheckColor] = useState("white");
 
-  
-
   const handleRoundTrip = () => {
     setTripType(roundTrip);
     setShowReturnDate(true);
-    setShowOnewayDate(false)
+    setShowOnewayDate(false);
     setShowMultiCityForm(false);
     setShowSingleForm(true);
 
@@ -237,7 +235,9 @@ export default function FlightBooking() {
               showItems={true}
             />
 
-            <FormWrapperContainer bgColor=''> {/*bg to change background color from blue*/}
+            <FormWrapperContainer bgColor="#ff6500c4">
+              {" "}
+              {/*bg to change background color from blue*/}
               <FormWrapper>
                 {/*================ Single City & Multi City Search Form ============== */}
 
@@ -259,7 +259,7 @@ export default function FlightBooking() {
                     showMultiCityForm={showMultiCityForm}
                     showReturnDate={showReturnDate}
                     showOnewayDate={showOnewayDate}
-                    locationError={locationError}  
+                    locationError={locationError}
                   />
                 )}
 
@@ -285,19 +285,19 @@ export default function FlightBooking() {
       <BodyContent>
         <Content />
       </BodyContent>
- {/* ===================Toast Message ================= */}
-            <ToastContainer
-              position="top-center"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick={false}
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-            />
+      {/* ===================Toast Message ================= */}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </FlightWrapper>
   );
 }
