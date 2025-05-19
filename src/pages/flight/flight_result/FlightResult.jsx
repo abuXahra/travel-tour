@@ -82,8 +82,8 @@ const filterIataAirport = (iataCode) => {
 };
 
 const calculateLayoverInfo = (prevSegment, nextSegment) => {
-  console.log(prevSegment?.arrival?.at);
-  console.log("nextSegment", nextSegment);
+  // console.log(prevSegment?.arrival?.at);
+  // console.log("nextSegment", nextSegment);
   if (!prevSegment || !nextSegment) return "Layover data not available";
   const arrivalTime = new Date(prevSegment?.arrival?.at);
   const departureTime = new Date(nextSegment?.departure?.at);
@@ -101,16 +101,11 @@ const calculateLayoverInfo = (prevSegment, nextSegment) => {
 export default function FlightResult() {
   const [data, setData] = useState([]);
   const { singleFlightResult, FData } = useAuthStore();
-
-  console.log(
-    "=================\n",
-    singleFlightResult.departDate,
-    "\n========================"
-  );
+  const [fIndex, setFIndex] = useState(0);
 
   const getCityName = (locationString) => {
-    const parts = locationString.split(",");
-    return parts.length >= 2 ? parts[1].trim() : "";
+    const parts = locationString?.split(",");
+    return parts?.length >= 2 ? parts[1]?.trim() : "";
   };
 
   const fromCityName = getCityName(singleFlightResult[0]);
@@ -203,7 +198,8 @@ export default function FlightResult() {
   const [showViewDetailCard, setShowViewDetailCard] = useState(false);
 
   //show view detail handler
-  const showViewDetail = () => {
+  const showViewDetail = (i) => {
+    setFIndex(Number(i));
     setShowViewDetailCard(true);
   };
 
@@ -214,7 +210,7 @@ export default function FlightResult() {
 
   // continue Booking Handler
   const continueBooking = () => {
-    navigate(`/trip-info/${index}`);
+    navigate(`/trip-info/${fIndex - 1}`);
     setShowViewDetailCard(false);
   };
 
@@ -267,7 +263,7 @@ export default function FlightResult() {
   // console.log(filterIataAirport("LOS"));
 
   const [showFlexibleDate, setShowFlexibleDate] = useState(false);
-
+  // console.log(singleFlightResult[2]);
   return (
     <FlightResultWrapper>
       {singleFlightResult[2]?.length === 0 ? (
@@ -321,12 +317,8 @@ export default function FlightResult() {
               StopsItems={StopsItems}
               flightSearchResultData={data}
               dictionaries={singleFlightResult[9]}
-              onFilterChange={(bool, flight) => {
-                if (bool === 0) {
-                  setData(singleFlightResult?.[2]);
-                } else {
-                  setData(flight);
-                }
+              onFilterChange={(flight) => {
+                setData(flight);
               }}
             />
 

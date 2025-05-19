@@ -71,7 +71,7 @@ const AirlineFlightLogo = React.memo(
           ) : (
             <div
               onClick={() => {
-                showViewDetail();
+                showViewDetail(data?.id);
                 setIndex(index);
               }}
             >

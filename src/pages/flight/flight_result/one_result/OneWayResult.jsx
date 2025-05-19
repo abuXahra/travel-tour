@@ -67,6 +67,7 @@ import FlightResultForm from "../../flight_booking/single_city/single_resultform
 
 export default function OneWayResult() {
   const [data, setData] = useState([]);
+  const [fIndex, setFIndex] = useState(0);
   const { oneWayFlightResult, FData } = useAuthStore();
   // const flightData = JSON.parse(myObject);
 
@@ -99,7 +100,8 @@ export default function OneWayResult() {
   const [showViewDetailCard, setShowViewDetailCard] = useState(false);
 
   //show view detail handler
-  const showViewDetail = () => {
+  const showViewDetail = (i) => {
+    setFIndex(Number(i));
     setShowViewDetailCard(true);
   };
 
@@ -110,7 +112,7 @@ export default function OneWayResult() {
 
   // continue Booking Handler
   const continueBooking = () => {
-    navigate(`/oneway-trip-info/${index}`);
+    navigate(`/oneway-trip-info/${fIndex - 1}`);
     setShowViewDetailCard(false);
   };
 
@@ -285,12 +287,8 @@ export default function OneWayResult() {
               StopsItems={StopsItems}
               flightSearchResultData={data}
               dictionaries={oneWayFlightResult[9]}
-              onFilterChange={(bool, flight) => {
-                if (bool === 0) {
-                  setData(oneWayFlightResult?.[2]);
-                } else {
-                  setData(flight);
-                }
+              onFilterChange={(flight) => {
+                setData(flight);
               }}
             />
 
