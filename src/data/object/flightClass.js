@@ -4,8 +4,8 @@ export const flightClassItems = [
     value: "Economy",
   },
   {
-    title: "Premium Economy",
-    value: "Premium Economy",
+    title: "Premium_Economy",
+    value: "Premium_Economy",
   },
   {
     title: "Business",

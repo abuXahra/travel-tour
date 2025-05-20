@@ -110,7 +110,7 @@ export const FlightInputWrapper = styled.div`
          padding-bottom: 25px;
         border-radius: 10px;
         font-size: 25px;
-        color: black;
+        color: #0D3984;
         text-transform: capitalize;
         background-color: transparent;
         border: none;

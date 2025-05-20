@@ -79,15 +79,18 @@ export default function FlightResult() {
   // }, [multiCityFlightResult, navigate]);
   // This is the Show View Detail Variable index
 
-  const getCityName = (locationString) => {
-    const parts = locationString.split(",");
-    return parts.length >= 2 ? parts[1].trim() : "";
-  };
+  // const getCityName = (locationString) => {
+  //   const parts = locationString.split(",");
+  //   return parts.length >= 2 ? parts[1].trim() : "";
+  // };
 
-  const fromCityName = getCityName(multiCityFlightResult[0]);
-  const toCityName = getCityName(multiCityFlightResult[1]);
-  const [takeOffAirport, setTakeOffAirport] = useState(fromCityName);
-  const [destinationAirport, setDestinationAirport] = useState(toCityName);
+  // const fromCityName = getCityName(multiCityFlightResult[0]);
+  // const toCityName = getCityName(multiCityFlightResult[1]);
+
+  // const [takeOffAirport, setTakeOffAirport] = useState(fromCityName);
+  // const [destinationAirport, setDestinationAirport] = useState(toCityName);
+  const [takeOffAirport, setTakeOffAirport] = useState(multiCityFlightResult[0]);
+  const [destinationAirport, setDestinationAirport] = useState(multiCityFlightResult[1]);
   const todayDate = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD (2025-02-29)
   const [departDate, setDepartDate] = useState(todayDate);
   const [returnDate, setReturnDate] = useState(todayDate);

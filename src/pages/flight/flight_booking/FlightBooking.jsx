@@ -235,7 +235,7 @@ export default function FlightBooking() {
               showItems={true}
             />
 
-            <FormWrapperContainer bgColor="#ff6500c4">
+            <FormWrapperContainer bgColor="">
               {" "}
               {/*bg to change background color from blue*/}
               <FormWrapper>

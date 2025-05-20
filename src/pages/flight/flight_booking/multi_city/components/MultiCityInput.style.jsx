@@ -53,7 +53,7 @@ export const MultiFlightClassTitle = styled.div`
            
 
             & span:nth-child(1){
-                text-transform: capitalize;
+                text-transform:uppercase;
             }
             & span:nth-child(2){
             display: flex;
@@ -87,6 +87,7 @@ export const MultiFlightClassDropdown = styled.div`
             padding: 10px;
             gap: 10px;
             cursor: pointer;
+            text-transform: uppercase;
 
             &:hover{
                 background-color: #80808040;

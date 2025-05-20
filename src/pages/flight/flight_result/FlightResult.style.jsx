@@ -15,10 +15,11 @@ export const FlightResultHeader = styled.div`
   align-items: start;
   background-color: ${({ resultHeaderbgColor }) =>
     resultHeaderbgColor || "#0D3984"};
-  padding: 10px;
+  padding: 5px;
   color: white;
   font-size: 25px;
   gap: 10px;
+  position: sticky;
 `;
 
 export const DateFlight = styled.p`

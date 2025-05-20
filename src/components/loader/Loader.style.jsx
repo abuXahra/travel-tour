@@ -28,7 +28,9 @@ export const LoaderIconWrapper = styled.div`
     gap: 10px;
     align-items: center;
     justify-content: center;
-    position: relative;
+    position: absolute;
+    left: 50%;
+    top: 46.5%;
     height: 40px;
     width: 40px;
 `
@@ -55,14 +57,14 @@ const rotate2 = keyframes`
 // Create a styled component with the animation
 export const RotatingIcon = styled(BiLoaderCircle)`
   animation: ${rotate2} 4s linear infinite;
-  font-size: 20px; // Customize size as needed
+  font-size: 10px; // Customize size as needed
   color: #FF6805;  // Customize color as needed
   position: absolute;
 `;
 
 export const RotatingIcon2 = styled(BiLoaderCircle)`
   animation: ${rotate} 3s linear infinite;
-  font-size: 35px; // Customize size as needed
+  font-size: 20px; // Customize size as needed
   color: #0d3984cf;  // Customize color as needed
   position: absolute;
 `;
