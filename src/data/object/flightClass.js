@@ -1,18 +1,18 @@
 export const flightClassItems = [
   {
-    title: "Economy",
-    value: "Economy",
+    title: "ECONOMY",
+    value: "ECONOMY",
   },
   {
-    title: "Premium_Economy",
-    value: "Premium_Economy",
+    title: "PREMIUM_ECONOMY",
+    value: "PREMIUM_ECONOMY",
   },
   {
-    title: "Business",
-    value: "Business",
+    title: "BUSINESS",
+    value: "BUSINESS",
   },
   {
-    title: "First",
-    value: "First",
+    title: "FIRST",
+    value: "FIRST",
   },
 ];

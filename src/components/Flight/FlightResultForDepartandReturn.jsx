@@ -233,12 +233,18 @@ const FlightResultForDepartandReturn = ({
           </FlightLogo> */}
 
           <PriceWrapper>
-            <p>
-              Price: {money.format(data.price.total)}
-            </p>
-            <span>
-              (Penalties upon Refunds)
-            </span>
+            <p>Price: {money.format(data.price.total)}</p>
+            {data?.fareRules?.rules?.[1]?.category === "REFUND" ? (
+              <>
+                {data?.fareRules?.rules?.[1]?.notApplicable ? (
+                  <span>(Non Refundable)</span>
+                ) : (
+                  <span>(Refundable, Penalty Applies )</span>
+                )}
+              </>
+            ) : (
+              <span>(Non Refundable)</span>
+            )}
           </PriceWrapper>
         </FlightCard>
       ))}

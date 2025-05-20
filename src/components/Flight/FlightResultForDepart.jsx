@@ -32,7 +32,7 @@ const FlightResultForDepart = ({
     if (currentIndex < flightSearchResultData?.length) {
       const timer = setTimeout(() => {
         setCurrentIndex(currentIndex + 1);
-      }, 2000); // Delay of 1 second for each item
+      }, 250); // Delay of 1 second for each item
       return () => clearTimeout(timer);
     }
   }, [currentIndex, flightSearchResultData?.length]);
@@ -141,7 +141,17 @@ const FlightResultForDepart = ({
 
           <PriceWrapper>
             <p>Price: {money.format(data.price.total)}</p>
-            <span>(Penalties upon Refunds)</span>
+            {data?.fareRules?.rules?.[1]?.category === "REFUND" ? (
+              <>
+                {data?.fareRules?.rules?.[1]?.notApplicable ? (
+                  <span>(Non Refundable)</span>
+                ) : (
+                  <span>(Refundable, Penalty Applies )</span>
+                )}
+              </>
+            ) : (
+              <span>(Non Refundable)</span>
+            )}
           </PriceWrapper>
         </FlightCard>
       ))}

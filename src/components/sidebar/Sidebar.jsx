@@ -29,10 +29,13 @@ export default function Sidebar({
   dictionaries,
   onFilterChange,
 }) {
+  const { singleFlightResult } = useAuthStore();
   const [flightData, setFlightData] = useState([]);
   const [checkedAirlineItems, setCheckedAirlineItems] = useState({});
   const [selectedAirlines, setSelectedAirlines] = useState(new Set());
-  console.log(checkedAirlineItems);
+  const [selectedFlightData, setSelectedFlightData] = useState([]);
+  const [selectedStops, setSelectedStops] = useState({});
+
   // depart time
   const [checkedDDepartTime, setCheckedDDepartTime] = useState({});
   const [checkedDArriveTime, setCheckedDDArriveTime] = useState({});
@@ -46,7 +49,7 @@ export default function Sidebar({
   // boolean
   const [showAll, setShowAll] = useState(false);
   const [showAirline, setShowAirline] = useState(true);
-  const [showFlightTime, setShowFlightTime] = useState(true);
+  const [showFlightTime, setShowFlightTime] = useState(false);
   const [showStops, setShowStops] = useState(true);
 
   const handleShows = (type) => {
@@ -86,10 +89,6 @@ export default function Sidebar({
         [index]: !prev[index],
       }));
     } else if (type === "depart-stops") {
-      setDepartStops((prev) => ({
-        ...prev,
-        [index]: !prev[index],
-      }));
     } else if (type === "return-stops") {
       setReturnStops((prev) => ({
         ...prev,
@@ -112,19 +111,25 @@ export default function Sidebar({
     // if (flightData.length === 0) {
     //   setFlightData(flightSearchResultData);
     // }
-    const filtered = flightSearchResultData.filter(
+    const filtered = flightSearchResultData?.filter(
       (item) =>
         selectedAirlines.size === 0 ||
         selectedAirlines.has(item.validatingAirlineCodes?.[0])
     );
-    onFilterChange(selectedAirlines.size, filtered); // 🔁 Send filtered data up);
-  }, [selectedAirlines, flightSearchResultData, onFilterChange]);
+
+    if (selectedAirlines.size === 0 && selectedFlightData.length === 0) {
+      onFilterChange(singleFlightResult?.[2]); // 🔁 Send filtered data up);
+    } else {
+      onFilterChange(selectedFlightData.concat(filtered));
+    }
+  }, [selectedAirlines, onFilterChange, selectedFlightData]);
+
   const handleShowAll = () => {
     setShowAll(!showAll);
   };
   const uniqueItems = Array.from(
     new Map(
-      flightSearchResultData.map((item) => [
+      flightSearchResultData?.map((item) => [
         item.validatingAirlineCodes?.[0],
         item,
       ])
@@ -145,7 +150,6 @@ export default function Sidebar({
     const groups = {};
     flights?.forEach((offer) => {
       offer?.itineraries.forEach((itinerary, i) => {
-        console.log("itinerary", i);
         itinerary?.segments?.forEach((segment) => {
           const time = segment[direction]?.at;
           if (!time) return;
@@ -160,6 +164,83 @@ export default function Sidebar({
       });
     });
     return groups;
+  };
+
+  const getStopFiltersForMultiCity = (data) => {
+    const cityLegs = {}; // { "CDG → FRA": { 0: [], 1: [], many: [] }, ... }
+
+    data?.forEach((offer) => {
+      offer?.itineraries.forEach((itinerary, idx) => {
+        if (!itinerary.segments.length) return;
+
+        const from = itinerary.segments[0].departure.iataCode;
+        const to =
+          itinerary.segments[itinerary.segments.length - 1].arrival.iataCode;
+        const key = `${from} → ${to}`;
+
+        const stops = itinerary.segments.length - 1;
+        if (!cityLegs[key]) {
+          cityLegs[key] = { 0: [], 1: [], many: [] };
+        }
+
+        if (stops === 0) cityLegs[key][0].push(offer);
+        else if (stops === 1) cityLegs[key][1].push(offer);
+        else cityLegs[key].many.push(offer);
+      });
+    });
+
+    // Format results with minimum price per stop group
+    const result = {};
+    for (const leg in cityLegs) {
+      const getMinPrice = (offers) =>
+        offers?.length
+          ? Math.min(...offers?.map((o) => parseFloat(o.price.grandTotal)))
+          : null;
+
+      result[leg] = {
+        "None Stop [0]": {
+          price: getMinPrice(cityLegs[leg][0]),
+          flight: cityLegs[leg][0],
+        },
+        "Stop [1]": {
+          price: getMinPrice(cityLegs[leg][1]),
+          flight: cityLegs[leg][1],
+        },
+        "Stop Any [1+]": {
+          price: getMinPrice(cityLegs[leg].many),
+          flight: cityLegs[leg].many,
+        },
+      };
+    }
+
+    return result;
+  };
+  const handleCheckboxChangeStops = (leg, label, flightData) => {
+    setSelectedStops((prev) => {
+      const currentLeg = prev[leg] || {};
+      const isChecked = currentLeg[label];
+
+      const updatedStops = {
+        ...prev,
+        [leg]: {
+          ...currentLeg,
+          [label]: !isChecked,
+        },
+      };
+
+      // Update selectedFlightData
+      setSelectedFlightData((prevFlights) => {
+        if (!isChecked) {
+          // Checkbox checked → add flights
+          return [...prevFlights, ...flightData];
+        } else {
+          // Checkbox unchecked → remove flights
+          return prevFlights.filter((flight) => !flightData.includes(flight));
+        }
+      });
+
+      return updatedStops;
+    });
   };
 
   return (
@@ -210,14 +291,14 @@ export default function Sidebar({
 
       {/* Departure section */}
       {/* Departure header */}
-      <SidebarItemWrapper>
+      {/* <SidebarItemWrapper>
         <SidebarItemHeader onClick={() => handleShows("show-time")}>
           <span>Flight time</span>
           <IconWrapper fontSize="20px">
             {showFlightTime ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
           </IconWrapper>
         </SidebarItemHeader>
-      </SidebarItemWrapper>
+      </SidebarItemWrapper> */}
       {/* Departure body */}
 
       <>
@@ -332,49 +413,40 @@ export default function Sidebar({
       {/* Stops body */}
       <>
         {showStops && (
-          <SidebarItemWrapper>
-            <h5>Stops from Lagos</h5>
-            <hr />
-            {StopsItems.map((data, i) => (
-              <StopItems>
-                <StopContent>
-                  <input
-                    type="checkbox"
-                    checked={departStops[i] || false}
-                    onChange={() => handleCheckboxChange(i, "depart-stops")}
-                  />
-                  <p>{data.title}</p>
-                  <p>[{data.count}]</p>
-                </StopContent>
-                <AirlinePrice>{data.price}</AirlinePrice>
-              </StopItems>
+          <>
+            {Object.entries(
+              getStopFiltersForMultiCity(flightSearchResultData)
+            ).map(([leg, stopGroups], idx) => (
+              <SidebarItemWrapper key={idx}>
+                <h5>Stops from {leg}</h5>
+                <hr />
+                {Object.entries(stopGroups).map(([label, price], i) => (
+                  <StopItems key={i}>
+                    <StopContent>
+                      <input
+                        type="checkbox"
+                        checked={selectedStops[leg]?.[label] || false}
+                        onChange={() =>
+                          handleCheckboxChangeStops(
+                            leg,
+                            label,
+                            price?.flight || []
+                          )
+                        }
+                      />
+                      <p> {label}</p>
+                    </StopContent>
+                    <AirlinePrice>
+                      {price?.price
+                        ? `₦${Number(price?.price).toLocaleString()}`
+                        : "N/A"}
+                    </AirlinePrice>
+                  </StopItems>
+                ))}
+              </SidebarItemWrapper>
             ))}
-          </SidebarItemWrapper>
+          </>
         )}
-      </>
-
-      {/* Return stops */}
-      <>
-        {showStops && (
-          <SidebarItemWrapper>
-            <h5>Stops from Dubai</h5>
-            <hr />
-            {StopsItems.map((data, i) => (
-              <StopItems>
-                <StopContent>
-                  <input
-                    type="checkbox"
-                    checked={returnStops[i] || false}
-                    onChange={() => handleCheckboxChange(i, "return-stops")}
-                  />
-                  <p>{data.title}</p>
-                  <p>[{data.count}]</p>
-                </StopContent>
-                <AirlinePrice>{data.price}</AirlinePrice>
-              </StopItems>
-            ))}
-          </SidebarItemWrapper>
-        )}{" "}
       </>
     </ResultSidebar>
   );

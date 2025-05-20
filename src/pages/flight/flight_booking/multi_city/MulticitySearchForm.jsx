@@ -8,24 +8,24 @@ import { useAuthStore } from "../../../../store/store";
 import { CheckboxWrapper } from "./MultiCity.style";
 
 const MulticitySearchForm = () => {
-  
-  
-    // Checkbox Validation: Terms and Agreement
-    // State for form values
-    const [isChecked, setIsChecked] = useState(false);
-  
-  
-    // Handler for checkbox change
-    const handleCheckboxChange = (event) => {
-      setIsChecked(event.target.checked);
-    };
-  
-  
-  const maxCities = 4; // Maximum number of city inputs
-  const { setMultiCityFlightResult, flightOffersSearchMultiCity, setLoader } =
-    useAuthStore();
+  // Checkbox Validation: Terms and Agreement
+  // State for form values
+  const [isChecked, setIsChecked] = useState(false);
 
-    const todayDate = new Date().toISOString().split('T')[0]; 
+  // Handler for checkbox change
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
+
+  const maxCities = 4; // Maximum number of city inputs
+  const {
+    setMultiCityFlightResult,
+    flightOffersSearchMultiCity,
+    setLoader,
+    setfData,
+  } = useAuthStore();
+
+  const todayDate = new Date().toISOString().split("T")[0];
 
   const [cities, setCities] = useState([
     { id: 1, from: "", to: "", departureDate: todayDate },
@@ -86,7 +86,6 @@ const MulticitySearchForm = () => {
   const [showFlightButton, setShowFlightButton] = useState(false);
 
   const flightSearch = async () => {
-
     setLoader(true);
     // console.log();
     // console.log();
@@ -99,8 +98,10 @@ const MulticitySearchForm = () => {
       },
       flightSearch: cities,
     });
+    console.log("res", res);
 
     if (res) {
+      setfData(true);
       setLoader(false);
       setMultiCityFlightResult([
         cities,
@@ -123,7 +124,6 @@ const MulticitySearchForm = () => {
 
   return (
     <FlightForm>
-
       {/* Passenger component */}
       <PassengerCard
         totalPassenger={totalPassengers}
@@ -159,31 +159,36 @@ const MulticitySearchForm = () => {
       ))}
 
       {/* Checkbox for flight result multiple date */}
-      <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <CheckboxWrapper>
-        <input
-           type="checkbox"
-           id="terms"
-           checked={isChecked}
-           onChange={handleCheckboxChange}
-        />
-        <p>My dates are flexible(+/- 3days)</p>
-      </CheckboxWrapper>
-
-      {/* flight search button */}
-      {showFlightButton && (
-        <div>
-          {" "}
-          <Button
-            onClick={() => {
-              flightSearch();
-            }}
-            text={"Search Flight"}
+          <input
+            type="checkbox"
+            id="terms"
+            checked={isChecked}
+            onChange={handleCheckboxChange}
           />
-        </div>
-      )}
+          <p>My dates are flexible(+/- 3days)</p>
+        </CheckboxWrapper>
+
+        {/* flight search button */}
+        {showFlightButton && (
+          <div>
+            {" "}
+            <Button
+              onClick={() => {
+                flightSearch();
+              }}
+              text={"Search Flight"}
+            />
+          </div>
+        )}
       </div>
-      
     </FlightForm>
   );
 };
