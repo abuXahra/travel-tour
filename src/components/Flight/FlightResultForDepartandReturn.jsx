@@ -237,13 +237,13 @@ const FlightResultForDepartandReturn = ({
             {data?.fareRules?.rules?.[1]?.category === "REFUND" ? (
               <>
                 {data?.fareRules?.rules?.[1]?.notApplicable ? (
-                  <span>(No Refunds)</span>
+                  <span>(Non Refundable)</span>
                 ) : (
-                  <span>(Penalties upon Refunds)</span>
+                  <span>(Refundable, Penalty Applies )</span>
                 )}
               </>
             ) : (
-              <span>(No Refunds)</span>
+              <span>(Non Refundable)</span>
             )}
           </PriceWrapper>
         </FlightCard>

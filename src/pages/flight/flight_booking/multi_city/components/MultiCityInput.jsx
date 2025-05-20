@@ -25,50 +25,58 @@ import {
 import { IoMdArrowDropdown, IoMdArrowDropright } from "react-icons/io";
 import { useDebounce } from "../../../../../components/dalay";
 import { FaTimes } from "react-icons/fa";
-import cityList from "../../../../../flightDB/airports.json";
+import iataAirports from "../../../../../flightDB/IATA_airports.json";
 import { flightClassItems } from "../../../../../data/object/flightClass";
 import DateSinglePickerCalender from "../../../../../components/DateSingle";
 
 const defaultCityList = [
   {
-    code: "LOS",
-    lat: "6.575",
-    lon: "3.3222",
-    name: "Lagos Murtala Muhammed Airport",
-    city: "Ikeja",
-    state: "Lagos",
-    country: "Nigeria",
-    woeid: "12515073",
-    tz: "Africa/Lagos",
-    phone: "",
-    type: "Airports",
-    email: "",
-    url: "",
-    runway_length: "12795",
-    elev: "135",
-    icao: "DNMM",
-    direct_flights: "42",
-    carriers: "37",
+    IATA: "LOS",
+    ICAO: "DNMM",
+    Airport_name: "Murtala Muhammed International Airport",
+    Location_served: "Lagos,\u00a0Nigeria",
+    Time: "UTC+01:00",
+    DST: null,
   },
   {
-    code: "ABV",
-    lat: "9.0056",
-    lon: "7.2661",
-    name: "Abuja International Airport",
-    city: "Gwagwa",
-    state: "Abuja Capital Territory",
-    country: "Nigeria",
-    woeid: "12515056",
-    tz: "Africa/Lagos",
-    phone: "",
-    type: "Airports",
-    email: "",
-    url: "",
-    runway_length: "11808",
-    elev: "1122",
-    icao: "DNAA",
-    direct_flights: "9",
-    carriers: "12",
+    IATA: "ABV",
+    ICAO: "DNAA",
+    Airport_name: "Nnamdi Azikiwe International Airport",
+    Location_served: "Abuja,\u00a0Nigeria",
+    Time: "UTC+01:00",
+    DST: null,
+  },
+  {
+    IATA: "DXB",
+    ICAO: "OMDB",
+    Airport_name: "Dubai International Airport",
+    Location_served: "Dubai,\u00a0United Arab Emirates",
+    Time: "UTC+04:00",
+    DST: null,
+  },
+  {
+    IATA: "LHR",
+    ICAO: "EGLL",
+    Airport_name: "Heathrow Airport",
+    Location_served: "London,\u00a0England, United Kingdom",
+    Time: "UTC\u00b100:00",
+    DST: "Mar-Oct",
+  },
+  {
+    IATA: "KAN",
+    ICAO: "DNKN",
+    Airport_name: "Mallam Aminu Kano International Airport",
+    Location_served: "Kano,\u00a0Nigeria",
+    Time: "UTC+01:00",
+    DST: null,
+  },
+  {
+    IATA: "LGA",
+    ICAO: "KLGA",
+    Airport_name: "LaGuardia Airport",
+    Location_served: "New York City,\u00a0New York, United States",
+    Time: "UTC\u221205:00",
+    DST: "Mar-Nov",
   },
 ];
 
@@ -78,7 +86,7 @@ const MultiCityInput = ({
   onCityChange,
   onRemove,
   setShowFlightButton,
-  locationError
+  locationError,
 }) => {
   const [showFromDropdown, setShowFromDropdown] = useState(false);
   const [showToDropdown, setShowToDropdown] = useState(false);
@@ -93,69 +101,57 @@ const MultiCityInput = ({
   const originLocation = useDebounce(searchTakeOffInputValue);
   const destinationLocation = useDebounce(searchDestinationInputValue);
 
-
   useEffect(() => {
     if (originLocation !== "") {
       // airports(originLocation, 0);
-      const newFilterData = cityList.filter((item) => {
-        if (
-          (item.name &&
-            item.name.toLowerCase().includes(originLocation.toLowerCase())) ||
-          (item.city &&
-            item.city.toLowerCase().includes(originLocation.toLowerCase())) ||
-          (item.state &&
-            item.state.toLowerCase().includes(originLocation.toLowerCase())) ||
-          (item.country &&
-            item.country
-              .toLowerCase()
-              .includes(originLocation.toLowerCase())) ||
-          (item.code &&
-            item.code.toLowerCase().includes(originLocation.toLowerCase()))
-        ) {
-          return item;
-        }
-      });
+      const searchTerm = originLocation.toLowerCase();
+      // First, try to match IATA codes
+      let newFilterData = iataAirports.filter((item) =>
+        item.IATA?.toLowerCase().startsWith(searchTerm)
+      );
+
+      // If no IATA matches, fall back to other fields
+      if (newFilterData.length === 0) {
+        newFilterData = iataAirports.filter((item) =>
+          ["Location_served", "Airport_name"].some((key) =>
+            item[key]?.toLowerCase().startsWith(searchTerm)
+          )
+        );
+      }
       setTakeOffAportList(newFilterData);
     }
   }, [originLocation]);
   useEffect(() => {
     if (destinationLocation !== "") {
-      const newFilterData = cityList.filter((item) => {
-        if (
-          (item.name &&
-            item.name
-              .toLowerCase()
-              .includes(destinationLocation.toLowerCase())) ||
-          (item.city &&
-            item.city
-              .toLowerCase()
-              .includes(destinationLocation.toLowerCase())) ||
-          (item.state &&
-            item.state
-              .toLowerCase()
-              .includes(destinationLocation.toLowerCase())) ||
-          (item.country &&
-            item.country
-              .toLowerCase()
-              .includes(destinationLocation.toLowerCase())) ||
-          (item.code &&
-            item.code.toLowerCase().includes(destinationLocation.toLowerCase()))
-        ) {
-          // airports(destinationLocation, 1);
-          return item;
-        }
-      });
+      const searchTerm = destinationLocation.toLowerCase();
+      // First, try to match IATA codes
+      let newFilterData = iataAirports.filter((item) =>
+        item.IATA?.toLowerCase().startsWith(searchTerm)
+      );
+
+      // If no IATA matches, fall back to other fields
+      if (newFilterData.length === 0) {
+        newFilterData = iataAirports.filter((item) =>
+          ["Location_served", "Airport_name"].some((key) =>
+            item[key]?.toLowerCase().startsWith(searchTerm)
+          )
+        );
+      }
       setDestinationAriporList(newFilterData);
     }
   }, [destinationLocation]);
   const handleInputChange = (key, value) => {
     onCityChange(index, key, value);
   };
+
+  const [classSelect, setClassSelect] = useState(flightClassItems[0].value);
+
   useEffect(() => {
     handleInputChange("originLocationCode", originLocationCode);
     handleInputChange("destinationLocationCode", destinationLocationCode);
-  }, [originLocationCode, destinationLocationCode]);
-  
+    handleInputChange("tripClass", classSelect);
+  }, [originLocationCode, destinationLocationCode, classSelect]);
+
   const toggleFromDropdown = () => {
     setShowFromDropdown(!showFromDropdown);
     setShowToDropdown(false); // Close 'To' dropdown if open
@@ -192,53 +188,48 @@ const MultiCityInput = ({
   const [destinationAriporList, setDestinationAriporList] =
     useState(defaultCityList);
 
-  const [classSelect, setClassSelect] = useState(flightClassItems[0].value);
-
   const handSelect = (e) => {
     setClassSelect(e);
     handleInputChange("tripClass", classSelect);
   };
 
-// handle the switch button
- const handleSwitchInput = () => {
-  // Store current values before updating anything
-  const fromValue = city.from;
-  const toValue = city.to;
-  const fromCode = originLocationCode;
-  const toCode = destinationLocationCode;
+  // handle the switch button
+  const handleSwitchInput = () => {
+    // Store current values before updating anything
+    const fromValue = city.from;
+    const toValue = city.to;
+    const fromCode = originLocationCode;
+    const toCode = destinationLocationCode;
 
-  // Swap input values
-  setSearchTakeOffInputValue(toValue);
-  setSearchDestinationInputValue(fromValue);
+    // Swap input values
+    setSearchTakeOffInputValue(toValue);
+    setSearchDestinationInputValue(fromValue);
 
-  // Update bound city object
-  handleInputChange("from", toValue);
-  handleInputChange("to", fromValue);
+    // Update bound city object
+    handleInputChange("from", toValue);
+    handleInputChange("to", fromValue);
 
-  // Swap airport codes
-  setOriginLocationCode(toCode);
-  setDestinationLocationCode(fromCode);
-};
+    // Swap airport codes
+    setOriginLocationCode(toCode);
+    setDestinationLocationCode(fromCode);
+  };
 
-const setDepartDate = (formattedDate) => {
-  handleInputChange("departureDate", formattedDate);
-};
+  const setDepartDate = (formattedDate) => {
+    handleInputChange("departureDate", formattedDate);
+  };
 
-
-const labelTopFrom = city.from ? "10px" : "35px";
-const labelTopTo = city.to ? "10px" : "35px";
-
+  const labelTopFrom = city.from ? "10px" : "35px";
+  const labelTopTo = city.to ? "10px" : "35px";
 
   const getCityName = (locationString) => {
-     const parts = locationString.split(',');
-      return parts.length >= 2 ? parts[1].trim() : '';
-      // const parts = locationString.split(',');
-      // return parts.length >= 1 ? parts[0].trim() : '';
-};
+    const parts = locationString.split(",");
+    return parts.length >= 2 ? parts[1].trim() : "";
+    // const parts = locationString.split(',');
+    // return parts.length >= 1 ? parts[0].trim() : '';
+  };
 
-const fromCityName = getCityName(city.from);
-const toCityName = getCityName(city.to);
-
+  const fromCityName = getCityName(city.from);
+  const toCityName = getCityName(city.to);
 
   return (
     <InputWrapper>
@@ -246,24 +237,25 @@ const toCityName = getCityName(city.to);
         {/* takeoff input */}
         <FlightInputAndDropDown>
           <FlightInputWrapper onClick={toggleFromDropdown}>
-            <Label top={labelTopFrom} for="depart">From where?</Label>
+            <Label top={labelTopFrom} for="depart">
+              From where?
+            </Label>
             <p>{city.from}</p>
             <input
               type="text"
               // placeholder="From"
-              value={fromCityName? fromCityName : city.from}
+              value={fromCityName ? fromCityName : city.from}
               // value={city.from}
               onChange={(e) => {
                 handleInputChange("from", e.target.value);
                 setSearchTakeOffInputValue(e.target.value);
-                handleFromSelect(e.target.value);                
-                  if(e.target.value.length > 0){
-                    setShowFromDropdown(true);
-                  }else{
-                    setShowFromDropdown(false);
-                  }
-              }
-              }
+                handleFromSelect(e.target.value);
+                if (e.target.value.length > 0) {
+                  setShowFromDropdown(true);
+                } else {
+                  setShowFromDropdown(false);
+                }
+              }}
             />
             <span>
               <MdFlightTakeoff />
@@ -295,19 +287,21 @@ const toCityName = getCityName(city.to);
         {/*Destination input  */}
         <FlightInputAndDropDown>
           <FlightInputWrapper onClick={toggleToDropdown}>
-             <Label top={labelTopTo } for="depart">To where?</Label>
-             <p>{city.to}</p>
+            <Label top={labelTopTo} for="depart">
+              To where?
+            </Label>
+            <p>{city.to}</p>
             <input
               type="text"
               // placeholder="To"
-              value={toCityName? toCityName : city.to}
+              value={toCityName ? toCityName : city.to}
               onChange={(e) => {
                 handleInputChange("to", e.target.value);
                 handleToSelect(e.target.value);
                 setSearchDestinationInputValue(e.target.value);
-                if(e.target.value.length > 0){
+                if (e.target.value.length > 0) {
                   setShowToDropdown(true);
-                }else{
+                } else {
                   setShowToDropdown(false);
                 }
               }}
@@ -356,15 +350,15 @@ const toCityName = getCityName(city.to);
             />
           </FlightDepatWrapContent> */}
 
-                      <FlightDepatWrapContent 
-                        contWidth={"100%"} 
-                        bgColor={'#0d398428'}
-                        borderRadius={"10px"}
-                        >
-                            <Label for="depart">Departure Date</Label>
-                            <DateSinglePickerCalender setDepartDate={setDepartDate}/>
-                      </FlightDepatWrapContent>
-     
+          <FlightDepatWrapContent
+            contWidth={"100%"}
+            bgColor={"#0d398428"}
+            borderRadius={"10px"}
+          >
+            <Label for="depart">Departure Date</Label>
+            <DateSinglePickerCalender setDepartDate={setDepartDate} />
+          </FlightDepatWrapContent>
+
           {/* <FlightDepatWrapContent>
         <Label for="depart">Returning</Label>
         <input
@@ -376,7 +370,7 @@ const toCityName = getCityName(city.to);
     </FlightDepatWrapContent> */}
 
           <FlightDepatWrapContent>
-             <Label for="depart">Class</Label>
+            <Label for="depart">Class</Label>
             <MultiFlightClass
               onClick={() => {
                 setShowClass(!showClass);
@@ -393,7 +387,13 @@ const toCityName = getCityName(city.to);
               {showClass && (
                 <MultiFlightClassDropdown>
                   {flightClassItems.map((item, i) => (
-                    <span key={i} onClick={() => handSelect(item.title)}>
+                    <span
+                      key={i}
+                      onClick={() => {
+                        handSelect(item.title);
+                        handleInputChange("tripClass", classSelect);
+                      }}
+                    >
                       <IoMdArrowDropright />
                       {item.title}
                     </span>

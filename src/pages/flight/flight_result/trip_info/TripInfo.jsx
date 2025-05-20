@@ -758,7 +758,7 @@ export default function TripInfo() {
                               />
                               <p style={{ textAlign: "let", fontSize: "12px" }}>
                                 {" "}
-                                - 780
+                                - {flightData?.number}
                               </p>
                             </span>
                             <span>

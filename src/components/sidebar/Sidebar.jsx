@@ -49,7 +49,7 @@ export default function Sidebar({
   // boolean
   const [showAll, setShowAll] = useState(false);
   const [showAirline, setShowAirline] = useState(true);
-  const [showFlightTime, setShowFlightTime] = useState(true);
+  const [showFlightTime, setShowFlightTime] = useState(false);
   const [showStops, setShowStops] = useState(true);
 
   const handleShows = (type) => {
@@ -291,14 +291,14 @@ export default function Sidebar({
 
       {/* Departure section */}
       {/* Departure header */}
-      <SidebarItemWrapper>
+      {/* <SidebarItemWrapper>
         <SidebarItemHeader onClick={() => handleShows("show-time")}>
           <span>Flight time</span>
           <IconWrapper fontSize="20px">
             {showFlightTime ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
           </IconWrapper>
         </SidebarItemHeader>
-      </SidebarItemWrapper>
+      </SidebarItemWrapper> */}
       {/* Departure body */}
 
       <>

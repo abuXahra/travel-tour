@@ -263,7 +263,7 @@ export default function FlightResult() {
   // console.log(filterIataAirport("LOS"));
 
   const [showFlexibleDate, setShowFlexibleDate] = useState(false);
-  // console.log(singleFlightResult[2]);
+  console.log(singleFlightResult[2]);
   return (
     <FlightResultWrapper>
       {singleFlightResult[2]?.length === 0 ? (
