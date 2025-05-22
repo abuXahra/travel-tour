@@ -64,7 +64,7 @@ const AirlineFlightLogo = React.memo(
               src={`https://images.wakanow.com/Images/flight-logos/${keyWord}.gif`}
               alt={keyWord}
             />
-            <h5>{carrierCode}</h5>
+            <h4>{carrierCode}</h4>
           </span>
           {detail ? (
             <></>

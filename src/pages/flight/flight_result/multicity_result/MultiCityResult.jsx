@@ -11,6 +11,7 @@ import {
   DNRDetailBaggage,
   DNRDetailFlightImage,
   DNRDetailTime,
+  DNRDetailTimeSec,
   DnRHeader,
   DnRWrapper,
   FlightCard,
@@ -26,6 +27,7 @@ import {
   FlightResultHeader,
   FlightResultMain,
   FlightResultWrapper,
+  FlightTitleWrapper,
   LayoverWrapper,
   MdFlightStyled,
   PriceWrapper,
@@ -492,7 +494,7 @@ export default function FlightResult() {
                         return (
                           <>
                             <span>
-                              <div>
+                              <FlightTitleWrapper>
                                 <FlightIcon
                                   rotate={"90deg"}
                                   iconColor={"#0D3984"}
@@ -503,7 +505,7 @@ export default function FlightResult() {
                                       flightData?.departure?.iataCode
                                     )?.Airport_name
                                   }
-                                  ,
+                                  
                                   {/* {`Flight From ${` ${
                             filterIataAirport(flightData?.departure?.iataCode)
                               ?.Airport_name
@@ -518,7 +520,7 @@ export default function FlightResult() {
                               ?.Location_served
                           }`}`} */}
                                 </h5>
-                              </div>
+                                </FlightTitleWrapper>
                               <p>Outbound</p>
                             </span>
                             <DNRDetail>
@@ -538,56 +540,52 @@ export default function FlightResult() {
                               </DNRDetailFlightImage>
 
                               <DNRDetailTime>
-                                <span>
-                                  <h3>
+                                  <DNRDetailTimeSec>
+                                  <h5>
                                     {new Date(
                                       flightData?.departure.at
                                     ).toLocaleTimeString("en-US", {
                                       hour: "2-digit",
                                       minute: "2-digit",
                                     })}
-                                  </h3>
-                                  {/* Lagos */}
-                                </span>
-                                <span>
-                                  {`${
-                                    parseDuration(flightData?.duration).hours
-                                  }hr ${
-                                    parseDuration(flightData?.duration).minutes
-                                  }min`}
-                                  <FlightIcon
-                                    rotate={"90deg"}
-                                    iconColor={"#0D3984"}
-                                  />
-                                  {flightData?.numberOfStops}-Stop
-                                </span>
-                                <span>
-                                  <h3>
+                                  </h5>
+                                  {/* Lagos */}                          
+                                  <p>{`${
+                                    filterIataAirport(
+                                      flightData?.departure?.iataCode
+                                    )?.Airport_name
+                                  },  ${
+                                    filterIataAirport(
+                                      flightData?.departure?.iataCode
+                                    )?.Location_served
+                                  }`}
+                                </p>
+                                   </DNRDetailTimeSec>
+                                  <DNRDetailTimeSec>
+                                    <p>
+                                      {`${
+                                        parseDuration(flightData?.duration).hours
+                                      }hr ${
+                                        parseDuration(flightData?.duration).minutes
+                                      }min`}
+                                      </p>
+                                      <FlightIcon
+                                        rotate={"90deg"}
+                                        iconColor={"#0D3984"}
+                                      />
+                                    <p>{flightData?.numberOfStops}-Stop</p>
+                                </DNRDetailTimeSec>
+                                <DNRDetailTimeSec>
+                                  <h5>
                                     {new Date(
                                       flightData?.arrival.at
                                     ).toLocaleTimeString("en-US", {
                                       hour: "2-digit",
                                       minute: "2-digit",
                                     })}
-                                  </h3>
-                                  {/* Abuja */}
-                                </span>
-                              </DNRDetailTime>
-
-                              <DNRDetailAirport>
-                                <div>
-                                  {` ${
-                                    filterIataAirport(
-                                      flightData?.departure?.iataCode
-                                    )?.Airport_name
-                                  },  ${
-                                    filterIataAirport(
-                                      flightData?.departure?.iataCode
-                                    )?.Location_served
-                                  }`}{" "}
-                                  ({flightData?.departure?.iataCode})
-                                </div>
-                                <div>
+                                  </h5>
+                              
+                                <p>
                                   {`${
                                     filterIataAirport(
                                       flightData?.arrival?.iataCode
@@ -596,9 +594,18 @@ export default function FlightResult() {
                                     filterIataAirport(
                                       flightData?.arrival?.iataCode
                                     )?.Location_served
-                                  }`}{" "}
-                                  ({flightData?.arrival?.iataCode})
-                                </div>
+                                  }`}
+                                </p>
+
+                                </DNRDetailTimeSec>
+                              </DNRDetailTime>
+                              <DNRDetailAirport>
+                                 <div>
+                                   Airport ({flightData?.departure?.iataCode})
+                                  </div>
+                                  <div>
+                                    Airport ({flightData?.arrival?.iataCode})
+                                  </div>
                               </DNRDetailAirport>
                               <DNRDetailBaggage>
                                 <span>

@@ -439,10 +439,13 @@ export default function SingleSearchCityForm({
     }
 
       // destination location
-    if (departDate === returnDate) {
-        toast.error('Change the flight return date')
-      return;
-    }
+      if(showReturnDate === true){
+        if (departDate === returnDate) {
+            toast.error('Change the flight return date')
+            return;
+        }
+      }
+
 
     setLoader(true);
     console.log(searchParams);

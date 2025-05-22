@@ -1071,7 +1071,7 @@ export default function TripInfo() {
                       <span>
                         <FaUser />
                       </span>
-                      <h3>Adult, {index + 1} (40yrs+)</h3>
+                      <h3>Adult, {index + 1} (12yrs Above)</h3>
                     </div>
                     <div>
                       <p>0/1 added</p>
@@ -1229,7 +1229,7 @@ export default function TripInfo() {
                       <span>
                         <FaUser />
                       </span>
-                      <h3>Children, {index + 1} (12yrs+)</h3>
+                      <h3>Children, {index + 1} (12yrs Above)</h3>
                     </div>
                     <div>
                       <p>0/1 added</p>
@@ -1395,7 +1395,7 @@ export default function TripInfo() {
                       <span>
                         <FaUser />
                       </span>
-                      <h3>Infants, {index + 1} (2yrs+)</h3>
+                      <h3>Infants, {index + 1} (2yrs Below)</h3>
                     </div>
                     <div>
                       <p>0/1 added</p>
