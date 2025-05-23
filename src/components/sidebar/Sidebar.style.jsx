@@ -92,7 +92,7 @@ export const AirlineTitle = styled.div`
 
 export const AirlinePrice = styled.div`
         font-weight:200;
-        font-size: 13px;
+        font-size: 11px;
 `
 
 export const ShowAll = styled.div`
@@ -162,7 +162,7 @@ export const DepartureContent = styled.div`
 }
      
         p{
-            font-size: 12px;
+            font-size: 11px;
 
         } 
 

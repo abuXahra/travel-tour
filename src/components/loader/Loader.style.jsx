@@ -14,10 +14,17 @@ export const LoaderWrapper = styled.div`
     color: #0d3984cf;
     z-index: 9999;
     margin-top: -120px;
-    
+    gap: 10px;
     img{
-           width: 100px;
+           width: 200px;
     }
+
+
+  @media (max-width: 768px) {
+       img{
+           width: 150px;
+    }
+  }
   `
 
 
@@ -28,9 +35,16 @@ export const LoaderIconWrapper = styled.div`
     gap: 10px;
     align-items: center;
     justify-content: center;
-    position: relative;
+    position: absolute;
     height: 40px;
     width: 40px;
+    bottom: 41.3%;
+    right: 41.9%;
+
+  @media (max-width: 768px) {
+    bottom: 45%;
+    right: 30%;
+  }
 `
 
 
@@ -55,16 +69,24 @@ const rotate2 = keyframes`
 // Create a styled component with the animation
 export const RotatingIcon = styled(BiLoaderCircle)`
   animation: ${rotate2} 4s linear infinite;
-  font-size: 20px; // Customize size as needed
+  font-size: 40px; // Customize size as needed
   color: #FF6805;  // Customize color as needed
   position: absolute;
+  display: none;
+
+    @media (max-width: 768px) {
+       font-size: 30px;
+  }
 `;
 
 export const RotatingIcon2 = styled(BiLoaderCircle)`
   animation: ${rotate} 3s linear infinite;
-  font-size: 35px; // Customize size as needed
+  font-size: 60px; // Customize size as needed
   color: #0d3984cf;  // Customize color as needed
   position: absolute;
+      @media (max-width: 768px) {
+       font-size: 40px;
+  }
 `;
 
 

@@ -468,6 +468,8 @@ export default function FlightResult() {
                                   rotate={"90deg"}
                                   iconColor={"#0D3984"}
                                 />
+                                  {flightData?.numberOfStops}
+                                -Stop
                               </DNRDetailTimeSec>
                               <DNRDetailTimeSec>
                                 <h5>
@@ -596,7 +598,7 @@ export default function FlightResult() {
                             </DNRDetailFlightImage>
 
                             <DNRDetailTime>
-                              <span>
+                              <DNRDetailTimeSec>
                                 <h5>
                                   {new Date(
                                     flightData?.departure.at
@@ -620,8 +622,8 @@ export default function FlightResult() {
                           .departure.iataCode
                       }
                     /> */}
-                              </span>
-                              <span>
+                              </DNRDetailTimeSec>
+                              <DNRDetailTimeSec>
                                 <p style={{ fontSize: "8px" }}>
                                   {" "}
                                   {`${
@@ -636,8 +638,8 @@ export default function FlightResult() {
                                 />
                                 {flightData?.numberOfStops}
                                 -Stop
-                              </span>
-                              <span>
+                              </DNRDetailTimeSec>
+                              <DNRDetailTimeSec>
                                 <h5>
                                   {new Date(
                                     flightData?.arrival.at
@@ -661,7 +663,7 @@ export default function FlightResult() {
                           .arrival.iataCode
                       }
                     /> */}
-                              </span>
+                              </DNRDetailTimeSec>
                             </DNRDetailTime>
 
                             <DNRDetailAirport>

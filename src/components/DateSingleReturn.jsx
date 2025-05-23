@@ -17,7 +17,7 @@ const StyledDatePickerWrapper = styled.div`
      z-index: 9999;
 
     @media (max-width: 768px) {
-      width: 175%;
+      width: 100%;
     }
   }
 `;
@@ -37,7 +37,7 @@ export default function DateSingleReturnCalender({ setReturnDate }) {
       <DatePicker
         value={dateValue}
         onChange={handleDateChange}
-        numberOfMonths={1}
+        numberOfMonths={2}
         portal={false}  // Use inline calendar
         calendarPosition="bottom-left"
       />

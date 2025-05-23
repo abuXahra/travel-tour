@@ -48,6 +48,7 @@ import DateRangePickerCalender from "../../../../components/DateRangePickerCalen
 import { CheckboxWrapper } from "../multi_city/MultiCity.style";
 import DateSinglePickerCalender from "../../../../components/DateSingle";
 import DateSingleReturnCalender from "../../../../components/DateSingleReturn";
+import { toast } from "react-toastify";
 
 const defaultCityList = [
   {
@@ -450,6 +451,15 @@ export default function SingleSearchCityForm({
     }
     if (showFlexibleDate) {
     }
+
+      // destination location
+      if(showReturnDate === true){
+        if (departDate === returnDate) {
+            toast.error('Change the flight return date')
+            return;
+        }
+      }
+
 
     setLoader(true);
     console.log(searchParams);

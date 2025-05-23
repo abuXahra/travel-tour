@@ -96,7 +96,7 @@ export const menuItems = [
       },
       {
         subTile: "Contact Us",
-        href: "#",
+        href: "/contact",
       },
     ],
   },

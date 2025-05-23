@@ -15,10 +15,11 @@ export const FlightResultHeader = styled.div`
   align-items: start;
   background-color: ${({ resultHeaderbgColor }) =>
     resultHeaderbgColor || "#0D3984"};
-  padding: 10px;
+  padding: 5px;
   color: white;
   font-size: 25px;
   gap: 10px;
+  position: sticky;
 `;
 
 export const DateFlight = styled.p`
@@ -285,7 +286,7 @@ export const FLightDetailContent = styled.div`
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
-  align-items: center;
+  align-items: start;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -375,6 +376,8 @@ export const DNRDetailTimeSec = styled.span`
   justify-content: center;
   align-items: start;
   font-size: 9.5px;
+  border-bottom: none !important;
+    border: none !important;
 `;
 
 export const DNRDetailAirport = styled.div`

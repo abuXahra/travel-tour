@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -7,6 +8,7 @@ import {
   DNRDetailBaggage,
   DNRDetailFlightImage,
   DNRDetailTime,
+  DNRDetailTimeSec,
   DnRHeader,
   DnRWrapper,
   FlightCard,
@@ -22,6 +24,7 @@ import {
   FlightResultHeader,
   FlightResultMain,
   FlightResultWrapper,
+  FlightTitleWrapper,
   LayoverWrapper,
   MdFlightStyled,
   ResultCounter,
@@ -370,10 +373,9 @@ export default function OneWayResult() {
                       return (
                         <>
                           <span>
-                            <div>
+                            <FlightTitleWrapper>
                               {/* <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} /> */}
-                              <h4>
-                                {`Flight From ${` ${
+                              <h5>{`Flight From ${` ${
                                   filterIataAirport(
                                     flightData?.departure?.iataCode
                                   )?.Airport_name
@@ -390,9 +392,10 @@ export default function OneWayResult() {
                                     flightData?.arrival?.iataCode
                                   )?.Location_served
                                 }`}`}
-                              </h4>
-                            </div>
-                            <b>Outbound</b>
+                                </h5>
+                            </FlightTitleWrapper>
+                                 
+                            <p>Outbound</p>
                           </span>
 
                           <DNRDetail>
@@ -408,15 +411,15 @@ export default function OneWayResult() {
                             </DNRDetailFlightImage>
 
                             <DNRDetailTime>
-                              <span>
-                                <h5>
+                              <DNRDetailTimeSec>
+                                <h4>
                                   {new Date(
                                     flightData?.departure.at
                                   ).toLocaleTimeString("en-US", {
                                     hour: "2-digit",
                                     minute: "2-digit",
                                   })}
-                                </h5>
+                                </h4>
                                 <p>{`${
                                   filterIataAirport(
                                     flightData?.departure?.iataCode
@@ -432,8 +435,8 @@ export default function OneWayResult() {
                           .departure.iataCode
                       }
                     /> */}
-                              </span>
-                              <span>
+                              </DNRDetailTimeSec>
+                              <DNRDetailTimeSec>
                                 <p>
                                   {" "}
                                   {`${
@@ -446,12 +449,12 @@ export default function OneWayResult() {
                                   rotate={"90deg"}
                                   iconColor={"#0D3984"}
                                 />
-                                <p>
+                                
                                   {flightData?.numberOfStops}
                                   -Stop
-                                </p>
-                              </span>
-                              <span>
+                                
+                              </DNRDetailTimeSec>
+                              <DNRDetailTimeSec>
                                 <h5>
                                   {" "}
                                   {new Date(
@@ -476,7 +479,7 @@ export default function OneWayResult() {
                           .arrival.iataCode
                       }
                     /> */}
-                              </span>
+                              </DNRDetailTimeSec>
                             </DNRDetailTime>
 
                             <DNRDetailAirport>
