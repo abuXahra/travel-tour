@@ -359,6 +359,7 @@ export default function SingleSearchCityForm({
   };
   if (showReturnDate) {
     searchParams = {
+      flexible: showFlexibleDate ? "I3D" : false,
       passenger: {
         adults: adults,
         children: children,
@@ -395,6 +396,7 @@ export default function SingleSearchCityForm({
     };
   } else {
     searchParams = {
+      flexible: showFlexibleDate ? "I3D" : false,
       passenger: {
         adults: adults,
         children: children,
@@ -427,14 +429,26 @@ export default function SingleSearchCityForm({
   const bookflights = async () => {
     // destination location
     if (takeOffAirport === destinationAirport) {
-      locationError();
+      locationError("Change destination location.");
+      return;
+    }
+
+    const firstDeparture = new Date(queryParams?.departureDate);
+    const secondDeparture = new Date(queryParams?.returnDate);
+    if (queryParams?.departureDate === queryParams?.returnDate) {
+      locationError("Change date they can not be the same.");
+      return;
+    } else if (secondDeparture < firstDeparture) {
+      locationError("Return flight date must be after outbound flight date.");
       return;
     }
 
     // destination location
     if (fromCityName === toCityName) {
-      locationError();
+      locationError("Change destination location.");
       return;
+    }
+    if (showFlexibleDate) {
     }
 
     setLoader(true);
