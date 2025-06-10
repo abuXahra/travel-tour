@@ -20,12 +20,29 @@ export const FlightResultHeader = styled.div`
   font-size: 25px;
   gap: 10px;
   position: sticky;
+  z-index: 100;
 `;
 
 export const DateFlight = styled.p`
   font-size: 12px;
 `;
 
+export const IconWrapper = styled.div`
+  rotate: ${({ rotateIcon }) => rotateIcon || "180deg"};
+  transition: ease-in-out;
+`;
+
+export const RulesAndCondHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  color: #696969;
+  border-top: ${({ bt }) => bt || "1px solid #48484868"};
+  border-bottom: 1px solid #48484868;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: "12px";
+  cursor: pointer;
+`;
 export const FlightResultContent = styled.div`
   width: 100%;
   display: flex;
@@ -37,6 +54,17 @@ export const FlightResultContent = styled.div`
 
   @media (max-width: 768px) {
     padding: 5px;
+  }
+`;
+export const ContainerWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 12px;
+
+  @media (max-width: 768px) {
+    width: 100%;
   }
 `;
 
@@ -348,9 +376,9 @@ export const DNRDetailFlightImage = styled.div`
 
 export const DNRDetailTime = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 180px;
   width: 100%;
   padding-top: 10px;
   border-bottom: 1px solid #8080804a;
@@ -359,6 +387,7 @@ export const DNRDetailTime = styled.div`
   span {
     width: 100%;
     display: flex;
+    gap: 20px;
     /* justify-content: space-between;
             align-items: center;
             border: none; */
@@ -366,6 +395,9 @@ export const DNRDetailTime = styled.div`
     justify-content: center;
     align-items: start;
     font-size: 9.5px;
+  }
+  @media (max-width: 668px) {
+    gap: 30px;
   }
 `;
 
@@ -377,7 +409,7 @@ export const DNRDetailTimeSec = styled.span`
   align-items: start;
   font-size: 9.5px;
   border-bottom: none !important;
-    border: none !important;
+  border: none !important;
 `;
 
 export const DNRDetailAirport = styled.div`

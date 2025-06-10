@@ -96,7 +96,7 @@ export default function OnewayTripinfo() {
 
       if (flightPrice) {
         console.log(flightPrice);
-        setData(flightPrice?.flightOffers?.[0]);
+        setData(flightPrice?.data?.flightOffers?.[0]);
       }
     };
     flightPrice();
@@ -783,10 +783,19 @@ export default function OnewayTripinfo() {
                             </div>
                             <div>
                               <span>
-                                <h5>BAGGAGE:</h5> <p>ADULT</p>
+                                <h5>BAGGAGE:</h5>{" "}
+                                <p>
+                                  {
+                                    oneWayFlightResult?.[2]?.[
+                                      oneWayFlightResultIndex
+                                    ]?.travelerPricings[0]
+                                      ?.fareDetailsBySegment[Index]
+                                      ?.includedCheckedBags?.quantity
+                                  }
+                                </p>
                               </span>
                               <span>
-                                <h5>CHECK IN:</h5> <p>20KG</p>{" "}
+                                <h5>CHECK IN:</h5> <p>ADULT</p>{" "}
                               </span>
                             </div>
                           </TripAirport>
@@ -816,7 +825,7 @@ export default function OnewayTripinfo() {
                   <span>
                     <FaUser />
                   </span>
-                  <h3>Adult, {index + 1} (40yrs+)</h3>
+                  <h3>Adult, {index + 1} (12yrs+)</h3>
                 </div>
                 <div>
                   <p>0/1 added</p>
@@ -967,7 +976,7 @@ export default function OnewayTripinfo() {
                   <span>
                     <FaUser />
                   </span>
-                  <h3>Children, {index + 1} (12yrs+)</h3>
+                  <h3>Children, {index + 1} (2 - 12yrs+)</h3>
                 </div>
                 <div>
                   <p>0/1 added</p>
@@ -1130,7 +1139,7 @@ export default function OnewayTripinfo() {
                   <span>
                     <FaUser />
                   </span>
-                  <h3>Infants, {index + 1} (2yrs+)</h3>
+                  <h3>Infants, {index + 1} (2yrs-)</h3>
                 </div>
                 <div>
                   <p>0/1 added</p>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+		<!--	created with www.mysitemapgenerator.com	-->
+		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+	<loc>https://manzotravels.com/</loc>
+	<lastmod>2025-05-22T07:22:35+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://manzo.com.ng/</loc>
+	<lastmod>2025-05-22T07:22:35+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+ <url>
+        <loc>https://manzo.ng/</loc>
+        <lastmod>2025-05-22T07:22:35+01:00</lastmod>
+        <priority>0.8</priority>
+    </url>
+  <url>
+	<loc>https://manzotravels.com/flight-booking</loc>
+	<lastmod>2025-05-22T07:22:35+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://manzo.com.ng/flight-booking</loc>
+	<lastmod>2025-05-22T07:22:35+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+ <url>
+        <loc>https://manzo.ng/flight-booking</loc>
+        <lastmod>2025-05-22T07:22:35+01:00</lastmod>
+        <priority>0.8</priority>
+    </url>
+    
+       
+</urlset>

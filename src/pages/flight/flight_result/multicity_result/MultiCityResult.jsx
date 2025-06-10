@@ -47,6 +47,8 @@ import iataAirports from "../../../../flightDB/IATA_airports.json";
 import AirlineFlightLogo from "../../../../components/Flight/AirlineFlightLogo";
 import NoResult from "../../../../components/no_result/NoResult";
 import Sidebar from "../../../../components/sidebar/Sidebar";
+import Loader from "../../../../components/loader/Loader";
+import { TbShoppingBag } from "react-icons/tb";
 import {
   ArilineListItems,
   DepartFlightTime,
@@ -89,7 +91,7 @@ const calculateLayoverInfo = (prevSegment, nextSegment) => {
 export default function FlightResult() {
   const [data, setData] = useState([]);
   const [fIndex, setFIndex] = useState(0);
-  const { multiCityFlightResult } = useAuthStore();
+  const { multiCityFlightResult, loader } = useAuthStore();
 
   // const flightData = JSON.parse(myObject);
 
@@ -245,7 +247,7 @@ export default function FlightResult() {
   console.log(data);
   return (
     <FlightResultWrapper>
-      {/* dklfj;ldfjkv n;kld;jjfldfjslk */}
+      {loader && <Loader text={"Retrieving Flights, Please Wait..."} />}
       {multiCityFlightResult[1]?.length === 0 ? (
         <NoResult />
       ) : (
@@ -488,6 +490,10 @@ export default function FlightResult() {
                     <FlightDetailDNR>
                       {data.segments?.map((flightData, Index, arr) => {
                         const isLastSegment = Index === arr.length - 1;
+                        let CB =
+                          multiCityFlightResult[1][index].itineraries.length -
+                          1;
+
                         const nextSegment = !isLastSegment
                           ? arr[Index + 1]
                           : null;
@@ -505,7 +511,7 @@ export default function FlightResult() {
                                       flightData?.departure?.iataCode
                                     )?.Airport_name
                                   }
-                                  
+
                                   {/* {`Flight From ${` ${
                             filterIataAirport(flightData?.departure?.iataCode)
                               ?.Airport_name
@@ -520,8 +526,8 @@ export default function FlightResult() {
                               ?.Location_served
                           }`}`} */}
                                 </h5>
-                                </FlightTitleWrapper>
-                              <p>Outbound</p>
+                              </FlightTitleWrapper>
+                              <p>{CB === index ? "Inbound" : "Outbound"}</p>
                             </span>
                             <DNRDetail>
                               <DNRDetailFlightImage>
@@ -540,7 +546,7 @@ export default function FlightResult() {
                               </DNRDetailFlightImage>
 
                               <DNRDetailTime>
-                                  <DNRDetailTimeSec>
+                                <DNRDetailTimeSec>
                                   <h5>
                                     {new Date(
                                       flightData?.departure.at
@@ -549,31 +555,33 @@ export default function FlightResult() {
                                       minute: "2-digit",
                                     })}
                                   </h5>
-                                  {/* Lagos */}                          
-                                  <p>{`${
-                                    filterIataAirport(
-                                      flightData?.departure?.iataCode
-                                    )?.Airport_name
-                                  },  ${
-                                    filterIataAirport(
-                                      flightData?.departure?.iataCode
-                                    )?.Location_served
-                                  }`}
-                                </p>
-                                   </DNRDetailTimeSec>
-                                  <DNRDetailTimeSec>
-                                    <p>
-                                      {`${
-                                        parseDuration(flightData?.duration).hours
-                                      }hr ${
-                                        parseDuration(flightData?.duration).minutes
-                                      }min`}
-                                      </p>
-                                      <FlightIcon
-                                        rotate={"90deg"}
-                                        iconColor={"#0D3984"}
-                                      />
-                                    <p>{flightData?.numberOfStops}-Stop</p>
+                                  {/* Lagos */}
+                                  <p>
+                                    {`${
+                                      filterIataAirport(
+                                        flightData?.departure?.iataCode
+                                      )?.Airport_name
+                                    },  ${
+                                      filterIataAirport(
+                                        flightData?.departure?.iataCode
+                                      )?.Location_served
+                                    }`}
+                                  </p>
+                                </DNRDetailTimeSec>
+                                <DNRDetailTimeSec>
+                                  <p>
+                                    {`${
+                                      parseDuration(flightData?.duration).hours
+                                    }hr ${
+                                      parseDuration(flightData?.duration)
+                                        .minutes
+                                    }min`}
+                                  </p>
+                                  <FlightIcon
+                                    rotate={"90deg"}
+                                    iconColor={"#0D3984"}
+                                  />
+                                  <p>{flightData?.numberOfStops}-Stop</p>
                                 </DNRDetailTimeSec>
                                 <DNRDetailTimeSec>
                                   <h5>
@@ -584,28 +592,27 @@ export default function FlightResult() {
                                       minute: "2-digit",
                                     })}
                                   </h5>
-                              
-                                <p>
-                                  {`${
-                                    filterIataAirport(
-                                      flightData?.arrival?.iataCode
-                                    )?.Airport_name
-                                  },  ${
-                                    filterIataAirport(
-                                      flightData?.arrival?.iataCode
-                                    )?.Location_served
-                                  }`}
-                                </p>
 
+                                  <p>
+                                    {`${
+                                      filterIataAirport(
+                                        flightData?.arrival?.iataCode
+                                      )?.Airport_name
+                                    },  ${
+                                      filterIataAirport(
+                                        flightData?.arrival?.iataCode
+                                      )?.Location_served
+                                    }`}
+                                  </p>
                                 </DNRDetailTimeSec>
                               </DNRDetailTime>
                               <DNRDetailAirport>
-                                 <div>
-                                   Airport ({flightData?.departure?.iataCode})
-                                  </div>
-                                  <div>
-                                    Airport ({flightData?.arrival?.iataCode})
-                                  </div>
+                                <div>
+                                  Airport ({flightData?.departure?.iataCode})
+                                </div>
+                                <div>
+                                  Airport ({flightData?.arrival?.iataCode})
+                                </div>
                               </DNRDetailAirport>
                               <DNRDetailBaggage>
                                 <span>
@@ -630,7 +637,42 @@ export default function FlightResult() {
                                 </span>
                                 <span>
                                   <h3>Baggage</h3>
-                                  100kg
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      fontSize: "12px",
+                                    }}
+                                  >
+                                    {" "}
+                                    <TbShoppingBag size={18} color="black" />
+                                    {
+                                      multiCityFlightResult[1][index]
+                                        ?.travelerPricings[0]
+                                        ?.fareDetailsBySegment[Index]
+                                        ?.includedCheckedBags?.quantity
+                                    }
+                                    {multiCityFlightResult[1][index]
+                                      ?.travelerPricings[0]
+                                      ?.fareDetailsBySegment[Index]
+                                      ?.includedCheckedBags?.quantity &&
+                                      "x Piece (s)"}
+                                    {"  "}
+                                    {multiCityFlightResult[1][index]
+                                      ?.travelerPricings[0]
+                                      ?.fareDetailsBySegment[Index]
+                                      ?.includedCheckedBags?.weight
+                                      ? multiCityFlightResult[1][index]
+                                          ?.travelerPricings[0]
+                                          ?.fareDetailsBySegment[Index]
+                                          ?.includedCheckedBags?.weight +
+                                        multiCityFlightResult[1][index]
+                                          ?.travelerPricings[0]
+                                          ?.fareDetailsBySegment[Index]
+                                          ?.includedCheckedBags?.weightUnit
+                                      : ""}
+                                  </div>
                                 </span>
                               </DNRDetailBaggage>
                             </DNRDetail>

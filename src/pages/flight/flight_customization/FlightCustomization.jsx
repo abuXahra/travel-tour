@@ -99,7 +99,7 @@ export default function FlightCustomization() {
         );
         if (res) {
           console.log(res);
-          setFResult(res?.flightOffers[0]);
+          setFResult(res?.data?.flightOffers[0]);
         }
       } catch (err) {
         console.log(err?.response?.data);
@@ -355,7 +355,23 @@ export default function FlightCustomization() {
                                 <h4>BAGGAGE:</h4> <p>ADULT</p>
                               </span>
                               <span>
-                                <h4>CHECK IN:</h4> <p>20KG</p>
+                                <h4>CHECK IN:</h4>{" "}
+                                <p>
+                                  {" "}
+                                  {singleFlightResult[2][flightResultIndex]
+                                    ?.travelerPricings[0]?.fareDetailsBySegment[
+                                    Index
+                                  ]?.includedCheckedBags?.weight
+                                    ? singleFlightResult[2][flightResultIndex]
+                                        ?.travelerPricings[0]
+                                        ?.fareDetailsBySegment[Index]
+                                        ?.includedCheckedBags?.weight +
+                                      singleFlightResult[2][flightResultIndex]
+                                        ?.travelerPricings[0]
+                                        ?.fareDetailsBySegment[Index]
+                                        ?.includedCheckedBags?.weightUnit
+                                    : ""}
+                                </p>
                               </span>
                             </div>
                             <div style={{ fontSize: "12px" }}>
@@ -394,127 +410,151 @@ export default function FlightCustomization() {
                     {/* Flight Return */}
                     {singleFlightResult[2][
                       flightResultIndex
-                    ].itineraries[1].segments?.map((flightData, Index) => (
-                      <TripDetailBody mb={"20px"}>
-                        <TripDetailClass>
-                          <span>
-                            <AirlineFlightLogo
-                              dictionaries={singleFlightResult[9]}
-                              data={singleFlightResult[2][flightResultIndex]}
-                              keyWord={
-                                flightData?.operating?.carrierCode
-                                  ? flightData?.operating?.carrierCode
-                                  : singleFlightResult[2][flightResultIndex]
-                                      .validatingAirlineCodes[0]
-                              }
-                              detail={true}
-                            />
-                            <p style={{ textAlign: "let", fontSize: "12px" }}>
-                              {" "}
-                              - {flightData?.number}
-                            </p>
-                          </span>
-                          <span>
-                            {" "}
-                            {
-                              singleFlightResult[2][flightResultIndex]
-                                .travelerPricings[0].fareDetailsBySegment[0]
-                                .cabin
-                            }
-                          </span>
-                        </TripDetailClass>
-                        <TripDetailTime>
-                          <TripHour>
+                    ].itineraries[1].segments?.map((flightData, Index) => {
+                      let fItinerary =
+                        singleFlightResult[2][flightResultIndex].itineraries[0]
+                          .segments.length;
+
+                      return (
+                        <TripDetailBody mb={"20px"}>
+                          <TripDetailClass>
                             <span>
+                              <AirlineFlightLogo
+                                dictionaries={singleFlightResult[9]}
+                                data={singleFlightResult[2][flightResultIndex]}
+                                keyWord={
+                                  flightData?.operating?.carrierCode
+                                    ? flightData?.operating?.carrierCode
+                                    : singleFlightResult[2][flightResultIndex]
+                                        .validatingAirlineCodes[0]
+                                }
+                                detail={true}
+                              />
+                              <p style={{ textAlign: "let", fontSize: "12px" }}>
+                                {" "}
+                                - {flightData?.number}
+                              </p>
+                            </span>
+                            <span>
+                              {" "}
+                              {
+                                singleFlightResult[2][flightResultIndex]
+                                  .travelerPricings[0].fareDetailsBySegment[0]
+                                  .cabin
+                              }
+                            </span>
+                          </TripDetailClass>
+                          <TripDetailTime>
+                            <TripHour>
+                              <span>
+                                <div>
+                                  <h5>
+                                    {new Date(
+                                      flightData?.departure?.at
+                                    ).toLocaleTimeString("en-US", {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </h5>
+                                  <h5>
+                                    {" "}
+                                    {new Date(
+                                      flightData?.arrival.at
+                                    ).toLocaleTimeString("en-US", {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </h5>
+                                </div>
+                                <div>
+                                  <hr />
+                                  <FlightIcon
+                                    rotate={"360deg"}
+                                    iconColor={"#FF6805"}
+                                  />
+                                  <hr />
+                                </div>
+                              </span>
+                            </TripHour>
+                            <TripAirport>
                               <div>
-                                <h5>
-                                  {new Date(
-                                    flightData?.departure?.at
-                                  ).toLocaleTimeString("en-US", {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
-                                </h5>
-                                <h5>
+                                <p>
+                                  {`${
+                                    filterIataAirport(
+                                      flightData?.departure?.iataCode
+                                    )?.Airport_name
+                                  },  ${
+                                    filterIataAirport(
+                                      flightData?.departure?.iataCode
+                                    )?.Location_served
+                                  }`}{" "}
+                                  <b>({flightData?.departure?.iataCode})</b>
+                                </p>
+                                <p>
+                                  {`${
+                                    filterIataAirport(
+                                      flightData?.arrival?.iataCode
+                                    )?.Airport_name
+                                  },  ${
+                                    filterIataAirport(
+                                      flightData?.arrival?.iataCode
+                                    )?.Location_served
+                                  }`}{" "}
+                                  <b>({flightData?.arrival?.iataCode})</b>
+                                </p>
+                              </div>
+                              <div>
+                                <span>
+                                  <h5>BAGGAGE:</h5> <p>ADULT</p>
+                                </span>
+                                <span>
+                                  <h5>CHECK IN:</h5>{" "}
+                                  <p>
+                                    {" "}
+                                    {singleFlightResult[2][flightResultIndex]
+                                      ?.travelerPricings[0]
+                                      ?.fareDetailsBySegment[fItinerary + Index]
+                                      ?.includedCheckedBags?.weight
+                                      ? singleFlightResult[2][flightResultIndex]
+                                          ?.travelerPricings[0]
+                                          ?.fareDetailsBySegment[
+                                          fItinerary + Index
+                                        ]?.includedCheckedBags?.weight +
+                                        singleFlightResult[2][flightResultIndex]
+                                          ?.travelerPricings[0]
+                                          ?.fareDetailsBySegment[
+                                          fItinerary + Index
+                                        ]?.includedCheckedBags?.weightUnit
+                                      : ""}
+                                  </p>
+                                </span>
+                              </div>
+                              <div style={{ fontSize: "12px" }}>
+                                <p>
                                   {" "}
                                   {new Date(
-                                    flightData?.arrival.at
-                                  ).toLocaleTimeString("en-US", {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
+                                    flightData?.departure?.at
+                                  ).toLocaleDateString("en-US", {
+                                    weekday: "long",
+                                    month: "long",
+                                    day: "numeric",
                                   })}
-                                </h5>
-                              </div>
-                              <div>
-                                <hr />
-                                <FlightIcon
-                                  rotate={"360deg"}
-                                  iconColor={"#FF6805"}
-                                />
-                                <hr />
-                              </div>
-                            </span>
-                          </TripHour>
-                          <TripAirport>
-                            <div>
-                              <p>
-                                {`${
-                                  filterIataAirport(
-                                    flightData?.departure?.iataCode
-                                  )?.Airport_name
-                                },  ${
-                                  filterIataAirport(
-                                    flightData?.departure?.iataCode
-                                  )?.Location_served
-                                }`}{" "}
-                                <b>({flightData?.departure?.iataCode})</b>
-                              </p>
-                              <p>
-                                {`${
-                                  filterIataAirport(
-                                    flightData?.arrival?.iataCode
-                                  )?.Airport_name
-                                },  ${
-                                  filterIataAirport(
-                                    flightData?.arrival?.iataCode
-                                  )?.Location_served
-                                }`}{" "}
-                                <b>({flightData?.arrival?.iataCode})</b>
-                              </p>
-                            </div>
-                            <div>
-                              <span>
-                                <h5>BAGGAGE:</h5> <p>ADULT</p>
-                              </span>
-                              <span>
-                                <h5>CHECK IN:</h5> <p>20KG</p>
-                              </span>
-                            </div>
-                            <div style={{ fontSize: "12px" }}>
-                              <p>
-                                {" "}
-                                {new Date(
-                                  flightData?.departure?.at
-                                ).toLocaleDateString("en-US", {
-                                  weekday: "long",
-                                  month: "long",
-                                  day: "numeric",
-                                })}
-                              </p>
+                                </p>
 
-                              <p>
-                                {flightData?.numberOfStops} Stops.{" "}
-                                {`${
-                                  parseDuration(flightData?.duration).hours
-                                }hr ${
-                                  parseDuration(flightData?.duration).minutes
-                                }min`}
-                              </p>
-                            </div>
-                          </TripAirport>
-                        </TripDetailTime>
-                      </TripDetailBody>
-                    ))}
+                                <p>
+                                  {flightData?.numberOfStops} Stops.{" "}
+                                  {`${
+                                    parseDuration(flightData?.duration).hours
+                                  }hr ${
+                                    parseDuration(flightData?.duration).minutes
+                                  }min`}
+                                </p>
+                              </div>
+                            </TripAirport>
+                          </TripDetailTime>
+                        </TripDetailBody>
+                      );
+                    })}
                   </div>
                 )}
               </FlightDetailWrapper>

@@ -102,7 +102,7 @@ export default function TripInfo() {
 
       if (flightPrice) {
         console.log(flightPrice);
-        setData(flightPrice?.flightOffers?.[0]);
+        setData(flightPrice?.data?.flightOffers?.[0]);
       }
     };
     flightPrice();
@@ -849,7 +849,17 @@ export default function TripInfo() {
                                   </p>{" "}
                                 </span>
                                 <span>
-                                  <h4>BAGGAGE:</h4> <p>1</p>
+                                  <h4>BAGGAGE:</h4>{" "}
+                                  <p>
+                                    {" "}
+                                    {
+                                      singleFlightResult?.[2]?.[
+                                        flightResultIndex
+                                      ]?.travelerPricings[0]
+                                        ?.fareDetailsBySegment[Index]
+                                        ?.includedCheckedBags?.quantity
+                                    }{" "}
+                                  </p>
                                 </span>
                               </div>
                             </TripAirport>
@@ -929,6 +939,9 @@ export default function TripInfo() {
                       const nextSegment = !isLastSegment
                         ? arr[Index + 1]
                         : null;
+                      let fItinerary =
+                        singleFlightResult[2][flightResultIndex].itineraries[0]
+                          .segments.length;
 
                       return (
                         <TripDetailBody>
@@ -1039,7 +1052,17 @@ export default function TripInfo() {
                                   </p>{" "}
                                 </span>
                                 <span>
-                                  <h4>BAGGAGE:</h4> <p>1</p>
+                                  <h4>BAGGAGE:</h4>{" "}
+                                  <p>
+                                    {
+                                      singleFlightResult?.[2]?.[
+                                        flightResultIndex
+                                      ]?.travelerPricings[0]
+                                        ?.fareDetailsBySegment[
+                                        fItinerary + Index
+                                      ]?.includedCheckedBags?.quantity
+                                    }
+                                  </p>
                                 </span>
                               </div>
                             </TripAirport>
@@ -1071,7 +1094,7 @@ export default function TripInfo() {
                       <span>
                         <FaUser />
                       </span>
-                      <h3>Adult, {index + 1} (12yrs Above)</h3>
+                      <h3>Adult, {index + 1} (12yrs +)</h3>
                     </div>
                     <div>
                       <p>0/1 added</p>
@@ -1229,7 +1252,7 @@ export default function TripInfo() {
                       <span>
                         <FaUser />
                       </span>
-                      <h3>Children, {index + 1} (12yrs Above)</h3>
+                      <h3>Children, {index + 1} (2-12 yrs+)</h3>
                     </div>
                     <div>
                       <p>0/1 added</p>
@@ -1395,7 +1418,7 @@ export default function TripInfo() {
                       <span>
                         <FaUser />
                       </span>
-                      <h3>Infants, {index + 1} (2yrs Below)</h3>
+                      <h3>Infants, {index + 1} (2yrs -)</h3>
                     </div>
                     <div>
                       <p>0/1 added</p>

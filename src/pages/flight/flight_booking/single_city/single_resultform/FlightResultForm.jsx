@@ -27,7 +27,24 @@ import Loader from "../../../../../components/loader/Loader";
 import DateRangePickerCalender from "../../../../../components/DateRangePickerCalender";
 
 import DateSinglePickerCalender from "../../../../../components/DateSingle";
-import { DestinationWrapper, FlightDepartWrapper, FlightDepatWrapContent, FlightForm, FlightInputAndDropDown, FlightInputContainer, FlightInputWrapper, FlightPassengerClass, FlightPassengerContent, FlightPassengerWrapper, FormInputs, Label, PassengerWrapper, RoundTripImg, SubmitButtonWrapper, TakeOffWrapper } from "./FlightResultForm.style";
+import {
+  DestinationWrapper,
+  FlightDepartWrapper,
+  FlightDepatWrapContent,
+  FlightForm,
+  FlightInputAndDropDown,
+  FlightInputContainer,
+  FlightInputWrapper,
+  FlightPassengerClass,
+  FlightPassengerContent,
+  FlightPassengerWrapper,
+  FormInputs,
+  Label,
+  PassengerWrapper,
+  RoundTripImg,
+  SubmitButtonWrapper,
+  TakeOffWrapper,
+} from "./FlightResultForm.style";
 // import { CheckboxWrapper } from "../../../multi_city/MultiCity.style";
 import { toast } from "react-toastify";
 import MulticitySearchForm from "../../multi_city/MulticitySearchForm";
@@ -86,48 +103,49 @@ const defaultCityList = [
 ];
 
 export default function FlightResultForm({
-    takeOffAirport, 
-    destinationAirport, 
-    setTakeOffAirport, 
-    setDestinationAirport, 
-    departDate, 
-    setDepartDate,
-    returnDate, 
-    setreturnDate,
-    handleRoundTrip,
-    rtBrColor,
-    rtCheckColor,
-    roundTrip,
-    handleOneWay,
-    owBrColor,
-    owCheckColor,
-    oneWay,
-    handleMulticity,
-    mcBrColor,
-    mcCheckColor,
-    multiCity,
-    showSingleForm,
-    showMultiCityForm,
-    showReturnDate,
-    showOnewayDate,
-    p,
+  takeOffAirport,
+  destinationAirport,
+  setTakeOffAirport,
+  destinationAirportCode,
+  takeOffAirportCode,
+  setDestinationAirport,
+  departDate,
+  setDepartDate,
+  returnDate,
+  setreturnDate,
+  handleRoundTrip,
+  rtBrColor,
+  rtCheckColor,
+  roundTrip,
+  handleOneWay,
+  owBrColor,
+  owCheckColor,
+  oneWay,
+  handleMulticity,
+  mcBrColor,
+  mcCheckColor,
+  multiCity,
+  showSingleForm,
+  showMultiCityForm,
+  showReturnDate,
+  showOnewayDate,
+  p,
 }) {
   const navigate = useNavigate();
 
   const getCityName = (locationString) => {
-  const parts = locationString.split(',');
-  return parts.length >= 2 ? parts[1].trim() : '';
-};
+    const parts = locationString.split(",");
+    return parts.length >= 2 ? parts[1].trim() : "";
+  };
 
-const fromCityName = getCityName(takeOffAirport);
-const toCityName = getCityName(destinationAirport);
+  const fromCityName = getCityName(takeOffAirport);
+  const toCityName = getCityName(destinationAirport);
 
   // const [showRoundTripDates, setShowRoundTripDates] = useState(true);
 
   //  query parameters
   let queryParams;
   let searchParams;
-
 
   // roundTrip is selected by default
   const [kickOff, setKickOff] = useState("");
@@ -146,28 +164,30 @@ const toCityName = getCityName(destinationAirport);
     setLoader,
   } = useAuthStore();
 
-  const [originLocationCode, setOriginLocationCode] = useState("");
-  const [destinationLocationCode, setDestinationLocationCode] = useState("");
+  const [originLocationCode, setOriginLocationCode] =
+    useState(takeOffAirportCode);
+  const [destinationLocationCode, setDestinationLocationCode] = useState(
+    destinationAirportCode
+  );
 
   const currencyCode = "NGN"; // default currency code
-  
 
   //DROPDOWN VARIABLES
-//   const [takeOffAirport, setTakeOffAirport] = useState("");
-//   const [destinationAirport, setDestinationAirport] = useState("");
+  //   const [takeOffAirport, setTakeOffAirport] = useState("");
+  //   const [destinationAirport, setDestinationAirport] = useState("");
 
   const [showFlightType, setShowFlightType] = useState(false);
   const [showFlightInputs, setshowFlightInputs] = useState(false);
 
-// switch the inputs
+  // switch the inputs
   const handleSwitchInput = () => {
     setTakeOffAirport((prevTakeOff) => {
-      setDestinationAirport(prevDestination => prevTakeOff);
+      setDestinationAirport((prevDestination) => prevTakeOff);
       return destinationAirport;
     });
 
     setOriginLocationCode((prevOriginCode) => {
-      setDestinationLocationCode(prevDestinationCode => prevOriginCode);
+      setDestinationLocationCode((prevDestinationCode) => prevOriginCode);
       return destinationLocationCode;
     });
   };
@@ -188,11 +208,17 @@ const toCityName = getCityName(destinationAirport);
     setreturnDate(e.target.value);
   };
 
- // Error Message if the depart and destination location is the same
-  const locationError = (toastMessage) => toast.error('Change destination location')
+  // Error Message if the depart and destination location is the same
+  const locationError = (toastMessage) =>
+    toast.error("Change destination location");
 
-
-  console.log('==============================\n Depart Date: ', departDate, '\n Depart Date: ' , returnDate, '\n====================================')
+  console.log(
+    "==============================\n Depart Date: ",
+    departDate,
+    "\n Depart Date: ",
+    returnDate,
+    "\n===================================="
+  );
 
   const handleIncrement = (type) => {
     if (type === "adults" && adults < 9) {
@@ -222,7 +248,6 @@ const toCityName = getCityName(destinationAirport);
   };
 
   const [showPassenger, setShowPassenger] = useState(false);
-  
 
   const [takeOffAportList, setTakeOffAportList] = useState(defaultCityList);
   const [destinationAriporList, setDestinationAriporList] =
@@ -321,10 +346,8 @@ const toCityName = getCityName(destinationAirport);
   const [showTakeOffAirports, setShowTakeOffAirports] = useState(false);
   const [showDestinationAirports, setShowDestinationAirports] = useState(false);
   const [showFlexibleDate, setShowFlexibleDate] = useState(false);
-  const [displayButton, setDisplayButton] = useState('none')
+  const [displayButton, setDisplayButton] = useState("none");
 
-
-  
   const onCloseTakOffDropdwon = () => {
     setShowTakeOffAirports(false);
   };
@@ -340,7 +363,7 @@ const toCityName = getCityName(destinationAirport);
     setshowFlightInputs(true);
     setShowFlightType(true);
     setShowFlexibleDate(true);
-    setDisplayButton('flex')
+    setDisplayButton("flex");
   };
 
   const handleShowFlightInputsB = () => {
@@ -349,9 +372,8 @@ const toCityName = getCityName(destinationAirport);
     setshowFlightInputs(true);
     setShowFlightType(true);
     setShowFlexibleDate(true);
-    setDisplayButton('flex')
+    setDisplayButton("flex");
   };
-
 
   if (showReturnDate) {
     searchParams = {
@@ -469,21 +491,14 @@ const toCityName = getCityName(destinationAirport);
     }
   };
 
-
-
-
-
   // Checkbox Validation: Terms and Agreement
-      // State for form values
-      const [isChecked, setIsChecked] = useState(false);
-    
-    
-      // Handler for checkbox change
-      const handleCheckboxChange = (event) => {
-        setIsChecked(event.target.checked);
-      };
+  // State for form values
+  const [isChecked, setIsChecked] = useState(false);
 
-
+  // Handler for checkbox change
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
 
   return (
     <SingleAndMulticityWrapper>
@@ -507,211 +522,203 @@ const toCityName = getCityName(destinationAirport);
 
       {showSingleForm && (
         <FlightForm>
-                <FormInputs>
-                <FlightInputContainer>
-                    {/* takeoff input */}
-                    <FlightInputAndDropDown>
-                    <FlightInputWrapper onClick={handleShowFlightInputsA}>
-                        <Label for="depart">From Where?</Label>
-                        <input
-                        type="text"
-                        placeholder="From"
-                        value={fromCityName? fromCityName : takeOffAirport}
-                        onChange={(e) => onChangeTakeOffHandler(e)}
-                        />
-                         <p>{p ? p[0] : takeOffAirport}</p>
-                    </FlightInputWrapper>
+          <FormInputs>
+            <FlightInputContainer>
+              {/* takeoff input */}
+              <FlightInputAndDropDown>
+                <FlightInputWrapper onClick={handleShowFlightInputsA}>
+                  <Label for="depart">From Where?</Label>
+                  <input
+                    type="text"
+                    placeholder="From"
+                    value={fromCityName ? fromCityName : takeOffAirport}
+                    onChange={(e) => onChangeTakeOffHandler(e)}
+                  />
+                  <p>{p ? p[0] : takeOffAirport}</p>
+                </FlightInputWrapper>
 
-                    {/*  Takeoff Airport Dropdown*/}
-                    {showTakeOffAirports && (
-                        <TakeOffWrapper>
-                        <LocationDropdown
-                            // onChange={onChangeTakeOffHandler}
-                            // searchInputValue={searchTakeOffInputValue}
-                            items={takeOffAportList}
-                            setAirportSelected={setTakeOffAirport}
-                            setCityCode={setOriginLocationCode}
-                            onCloseDropdwon={onCloseTakOffDropdwon}
-                            Icon={<MdFlightTakeoff />}
-                        />
-                        </TakeOffWrapper>
-                    )}
-                    </FlightInputAndDropDown>
-
-                    <RoundTripImg onClick={handleSwitchInput}>
-                    <img src={roundtrip} alt="trip icon" />
-                    </RoundTripImg>
-
-                    {/*Destination input  */}
-                    <FlightInputAndDropDown>
-                    <FlightInputWrapper onClick={handleShowFlightInputsB}>
-                        <Label for="depart">To Where?</Label>
-                        <input
-                        type="text"
-                        placeholder="To"
-                        value={toCityName ? toCityName : destinationAirport}
-                        onChange={(e) => onChangeDestinationHandler(e)}
-                        />
-                         <p>{p ? p[1] : destinationAirport}</p>
-                    </FlightInputWrapper>
-
-                    {/* dropdown */}
-                    {showDestinationAirports && (
-                        <DestinationWrapper>
-                        <LocationDropdown
-                            // onChange={onChangeDestinationHandler}
-                            items={destinationAriporList}
-                            // searchInputValue={searchDestinationInputValue}
-                            setAirportSelected={setDestinationAirport}
-                            setCityCode={setDestinationLocationCode}
-                            onCloseDropdwon={onCloseDestinationDropdwon}
-                            Icon={<MdFlightLand />}
-                        />
-                        </DestinationWrapper>
-                    )}
-                    </FlightInputAndDropDown>
-                </FlightInputContainer>
-
-                {/* <!-- Depature and destination container --> */}
-                {showFlightInputs && (
-                    <FlightDepartWrapper>
-
-
-
-
-       <FlightDepatWrapContent 
-                     contWidth={"100%"} 
-                     bgColor={'#0d398428'}
-                     borderRadius={"10px"}
-                             >
-                           <Label for="depart">Depart Date</Label>
-                           <DateSinglePickerCalender setDepartDate={setDepartDate}/>
-                     </FlightDepatWrapContent>
-                               
-     
-                { showReturnDate &&      
-                     <FlightDepatWrapContent  
-                         contWidth={"100%"} 
-                         bgColor={'#0d398428'}
-                         borderRadius={"10px"}
-                     >
-                         <Label for="depart">Return Date</Label>
-                          <DateSingleReturnCalender setReturnDate={setreturnDate}/>
-                      </FlightDepatWrapContent>
-               }
-                
-                    <FlightDepatWrapContent 
-                        contWidth={"100%"} 
-                        bgColor={'#0d398428'}
-                        borderRadius={"10px"}
-                    >
-                      <Label>Passenger/Class</Label>
-                        <FlightPassengerWrapper>
-                        <FlightPassengerClass
-                            onClick={() => setShowPassenger(!showPassenger)}
-                        >
-                          <div>
-                              <span id="passengerValue">{totalPassengers}</span>{" "}
-                              passenger and <span id="classValue">{flightClass}</span>{" "}
-                            </div>
-                        </FlightPassengerClass>
-                        {/* Passengers */}{" "}
-                        {showPassenger && (
-                            <FlightPassengerContent>
-                            <PassengerWrapper>
-                                <h3>Passenger</h3>
-                                <PassengerData
-                                title={"Adults"}
-                                Subtitle={"12y and up"}
-                                value={adults}
-                                reduceFunc={() => handleDecrement("adults")}
-                                addFunc={() => handleIncrement("adults")}
-                                />
-
-                                {/* <!-- number of children --> */}
-                                <PassengerData
-                                title={"Children"}
-                                Subtitle={"Ages (2y-11y)"}
-                                value={children}
-                                reduceFunc={() => handleDecrement("children")}
-                                addFunc={() => handleIncrement("children")}
-                                />
-
-                                {/* <!-- number of Infants --> */}
-                                <PassengerData
-                                title={"Infants"}
-                                Subtitle={"Below 2y"}
-                                value={infants}
-                                reduceFunc={() => handleDecrement("infants")}
-                                addFunc={() => handleIncrement("infants")}
-                                />
-
-                                <hr />
-                                <h4>Class</h4>
-                                <FlightClass
-                                name="flightClass"
-                                value="ECONOMY"
-                                isChecked={flightClass === "ECONOMY"}
-                                onChange={handleFlightClassChange}
-                                />
-
-                                <FlightClass
-                                name="flightClass"
-                                value="PREMIUM_ECONOMY"
-                                isChecked={flightClass === "PREMIUM_ECONOMY"}
-                                onChange={handleFlightClassChange}
-                                />
-
-                                <FlightClass
-                                name="flightClass"
-                                value="BUSINESS"
-                                isChecked={flightClass === "BUSINESS"}
-                                onChange={handleFlightClassChange}
-                                />
-
-                                <FlightClass
-                                name="flightClass"
-                                value="FIRST"
-                                isChecked={flightClass === "FIRST"}
-                                onChange={handleFlightClassChange}
-                                />
-
-                                {/* Continue Button */}
-                                <div>
-                                <Button
-                                    text={"Continue"}
-                                    onClick={() => setShowPassenger(false)}
-                                />
-                                </div>
-                            </PassengerWrapper>
-                            </FlightPassengerContent>
-                        )}
-                        </FlightPassengerWrapper>
-                    </FlightDepatWrapContent>
-                </FlightDepartWrapper>
+                {/*  Takeoff Airport Dropdown*/}
+                {showTakeOffAirports && (
+                  <TakeOffWrapper>
+                    <LocationDropdown
+                      // onChange={onChangeTakeOffHandler}
+                      // searchInputValue={searchTakeOffInputValue}
+                      items={takeOffAportList}
+                      setAirportSelected={setTakeOffAirport}
+                      setCityCode={setOriginLocationCode}
+                      onCloseDropdwon={onCloseTakOffDropdwon}
+                      Icon={<MdFlightTakeoff />}
+                    />
+                  </TakeOffWrapper>
                 )}
-        </FormInputs>
-      <SubmitButtonWrapper displayButton={displayButton}>
-            {/* Checkbox for flight result multiple date */}
-            {
-              showFlexibleDate &&
-                <CheckboxWrapper>
-                            <input
-                              type="checkbox"
-                              id="terms"
-                              checked={isChecked}
-                              onChange={handleCheckboxChange}
+              </FlightInputAndDropDown>
+
+              <RoundTripImg onClick={handleSwitchInput}>
+                <img src={roundtrip} alt="trip icon" />
+              </RoundTripImg>
+
+              {/*Destination input  */}
+              <FlightInputAndDropDown>
+                <FlightInputWrapper onClick={handleShowFlightInputsB}>
+                  <Label for="depart">To Where?</Label>
+                  <input
+                    type="text"
+                    placeholder="To"
+                    value={toCityName ? toCityName : destinationAirport}
+                    onChange={(e) => onChangeDestinationHandler(e)}
+                  />
+                  <p>{p ? p[1] : destinationAirport}</p>
+                </FlightInputWrapper>
+
+                {/* dropdown */}
+                {showDestinationAirports && (
+                  <DestinationWrapper>
+                    <LocationDropdown
+                      // onChange={onChangeDestinationHandler}
+                      items={destinationAriporList}
+                      // searchInputValue={searchDestinationInputValue}
+                      setAirportSelected={setDestinationAirport}
+                      setCityCode={setDestinationLocationCode}
+                      onCloseDropdwon={onCloseDestinationDropdwon}
+                      Icon={<MdFlightLand />}
+                    />
+                  </DestinationWrapper>
+                )}
+              </FlightInputAndDropDown>
+            </FlightInputContainer>
+
+            {/* <!-- Depature and destination container --> */}
+            {showFlightInputs && (
+              <FlightDepartWrapper>
+                <FlightDepatWrapContent
+                  contWidth={"100%"}
+                  bgColor={"#0d398428"}
+                  borderRadius={"10px"}
+                >
+                  <Label for="depart">Depart Date</Label>
+                  <DateSinglePickerCalender setDepartDate={setDepartDate} />
+                </FlightDepatWrapContent>
+
+                {showReturnDate && (
+                  <FlightDepatWrapContent
+                    contWidth={"100%"}
+                    bgColor={"#0d398428"}
+                    borderRadius={"10px"}
+                  >
+                    <Label for="depart">Return Date</Label>
+                    <DateSingleReturnCalender setReturnDate={setreturnDate} />
+                  </FlightDepatWrapContent>
+                )}
+
+                <FlightDepatWrapContent
+                  contWidth={"100%"}
+                  bgColor={"#0d398428"}
+                  borderRadius={"10px"}
+                >
+                  <Label>Passenger/Class</Label>
+                  <FlightPassengerWrapper>
+                    <FlightPassengerClass
+                      onClick={() => setShowPassenger(!showPassenger)}
+                    >
+                      <div>
+                        <span id="passengerValue">{totalPassengers}</span>{" "}
+                        passenger and <span id="classValue">{flightClass}</span>{" "}
+                      </div>
+                    </FlightPassengerClass>
+                    {/* Passengers */}{" "}
+                    {showPassenger && (
+                      <FlightPassengerContent>
+                        <PassengerWrapper>
+                          <h3>Passenger</h3>
+                          <PassengerData
+                            title={"Adults"}
+                            Subtitle={"12y and up"}
+                            value={adults}
+                            reduceFunc={() => handleDecrement("adults")}
+                            addFunc={() => handleIncrement("adults")}
+                          />
+
+                          {/* <!-- number of children --> */}
+                          <PassengerData
+                            title={"Children"}
+                            Subtitle={"Ages (2y-11y)"}
+                            value={children}
+                            reduceFunc={() => handleDecrement("children")}
+                            addFunc={() => handleIncrement("children")}
+                          />
+
+                          {/* <!-- number of Infants --> */}
+                          <PassengerData
+                            title={"Infants"}
+                            Subtitle={"Below 2y"}
+                            value={infants}
+                            reduceFunc={() => handleDecrement("infants")}
+                            addFunc={() => handleIncrement("infants")}
+                          />
+
+                          <hr />
+                          <h4>Class</h4>
+                          <FlightClass
+                            name="flightClass"
+                            value="ECONOMY"
+                            isChecked={flightClass === "ECONOMY"}
+                            onChange={handleFlightClassChange}
+                          />
+
+                          <FlightClass
+                            name="flightClass"
+                            value="PREMIUM_ECONOMY"
+                            isChecked={flightClass === "PREMIUM_ECONOMY"}
+                            onChange={handleFlightClassChange}
+                          />
+
+                          <FlightClass
+                            name="flightClass"
+                            value="BUSINESS"
+                            isChecked={flightClass === "BUSINESS"}
+                            onChange={handleFlightClassChange}
+                          />
+
+                          <FlightClass
+                            name="flightClass"
+                            value="FIRST"
+                            isChecked={flightClass === "FIRST"}
+                            onChange={handleFlightClassChange}
+                          />
+
+                          {/* Continue Button */}
+                          <div>
+                            <Button
+                              text={"Continue"}
+                              onClick={() => setShowPassenger(false)}
                             />
-                            <p>My dates are flexible(+/- 3days)</p>
-                    </CheckboxWrapper>
-            }        
+                          </div>
+                        </PassengerWrapper>
+                      </FlightPassengerContent>
+                    )}
+                  </FlightPassengerWrapper>
+                </FlightDepatWrapContent>
+              </FlightDepartWrapper>
+            )}
+          </FormInputs>
+          <SubmitButtonWrapper displayButton={displayButton}>
+            {/* Checkbox for flight result multiple date */}
+            {showFlexibleDate && (
+              <CheckboxWrapper>
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={isChecked}
+                  onChange={handleCheckboxChange}
+                />
+                <p>My dates are flexible(+/- 3days)</p>
+              </CheckboxWrapper>
+            )}
 
-               { showFlexibleDate &&
-                      <Button onClick={() => bookflights()} text={"Search Flight"} />
-                }
-        </SubmitButtonWrapper>
-
-
+            {showFlexibleDate && (
+              <Button onClick={() => bookflights()} text={"Search Flight"} />
+            )}
+          </SubmitButtonWrapper>
         </FlightForm>
       )}
       {showMultiCityForm && <MulticitySearchForm />}
@@ -719,16 +726,9 @@ const toCityName = getCityName(destinationAirport);
   );
 }
 
-
-
-
-
-
-
-
-//  { showReturnDate &&      
-//                 <FlightDepatWrapContent  
-//                     contWidth={"100%"} 
+//  { showReturnDate &&
+//                 <FlightDepatWrapContent
+//                     contWidth={"100%"}
 //                     bgColor={'#0d398428'}
 //                     borderRadius={"10px"}
 //                 >
@@ -738,9 +738,9 @@ const toCityName = getCityName(destinationAirport);
 //           }
 
 //                 {/* Date range picker round trip*/}
-//                 { showReturnDate &&      
-//                         <FlightDepatWrapContent  
-//                             contWidth={"100%"} 
+//                 { showReturnDate &&
+//                         <FlightDepatWrapContent
+//                             contWidth={"100%"}
 //                             bgColor={'#0d398428'}
 //                             borderRadius={"10px"}
 //                         >

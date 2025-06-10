@@ -308,8 +308,8 @@ export default function OnewayOverview() {
     const resPriceLookup = await flightPriceLookup(data);
 
     if (resPriceLookup) {
-      Price = resPriceLookup.flightOffers[0]?.price?.total;
-      priceChecked = resPriceLookup?.flightOffers[0];
+      Price = resPriceLookup.data?.flightOffers[0]?.price?.total;
+      priceChecked = resPriceLookup?.data?.flightOffers[0];
     } else {
       setBottonLoading(false);
     }
@@ -557,17 +557,34 @@ export default function OnewayOverview() {
                     </ContainerHeader>
                     <Containerbody>
                       <div>
-                        <ContainerTime>Economy (F)</ContainerTime>
+                        <ContainerTime>
+                          {" "}
+                          {
+                            data?.travelerPricings[0]?.fareDetailsBySegment[
+                              Index
+                            ]?.cabin
+                          }{" "}
+                          (
+                          {
+                            data?.travelerPricings[0]?.fareDetailsBySegment[
+                              Index
+                            ]?.class
+                          }
+                          )
+                        </ContainerTime>
                         <span>
-                          Adult: {oneWayFlightResult?.[6]} piece(s), upto 23kg
-                          each
+                          Adult: {oneWayFlightResult?.[6]}
+                          {/* piece(s), upto 23kg
+                          each */}
                         </span>
                         <span>
-                          Child: {oneWayFlightResult?.[7]} piece(s), upto 23kg
-                          each
+                          Child: {oneWayFlightResult?.[7]}
+                          {/* piece(s), upto 23kg
+                          each */}
                         </span>
                         <span>
-                          Infant: {oneWayFlightResult?.[8]} piece(s), upto 23kg
+                          Infant: {oneWayFlightResult?.[8]}
+                          {/* piece(s), upto 23kg */}
                         </span>
                       </div>
                       <div></div>

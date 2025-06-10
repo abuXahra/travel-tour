@@ -238,7 +238,7 @@ const MultiCityInput = ({
         <FlightInputAndDropDown>
           <FlightInputWrapper onClick={toggleFromDropdown}>
             <Label top={labelTopFrom} for="depart">
-              From where?
+              Departure?
             </Label>
             <p>{city.from}</p>
             <input
@@ -288,7 +288,7 @@ const MultiCityInput = ({
         <FlightInputAndDropDown>
           <FlightInputWrapper onClick={toggleToDropdown}>
             <Label top={labelTopTo} for="depart">
-              To where?
+              Destination?
             </Label>
             <p>{city.to}</p>
             <input

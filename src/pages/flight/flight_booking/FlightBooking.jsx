@@ -51,8 +51,9 @@ export default function FlightBooking() {
   const { loader } = useAuthStore();
 
   // Error Message if the depart and destination location is the same
-  const locationError = (toastMessage) =>
-    toast.error("Change destination location");
+  const locationError = (toastMessage) => {
+    toast.error(toastMessage);
+  };
 
   // Show/Hide Form
   const [showSingleMultCity, setShowSingleMultCity] = useState(true);

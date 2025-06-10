@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -62,16 +61,18 @@ import {
   ReturnFlightTime,
   StopsItems,
 } from "../../../../data/object/flight_sidebar/FlightResultSidebar";
+import { TbShoppingBag } from "react-icons/tb";
 import FlexibleCalender from "../../../../components/Flight/flexible_Calender/FlexibleCalender";
 import { mockFlightData } from "../../../../data/object/FlexibleCalenderItems";
 import FlightFare from "../../../../components/Flight/flight_fare/FlightFare";
 import PriceMatrix from "../../../../components/Flight/price_matrix/PriceMatrix";
+import Loader from "../../../../components/loader/Loader";
 import FlightResultForm from "../../flight_booking/single_city/single_resultform/FlightResultForm";
 
 export default function OneWayResult() {
   const [data, setData] = useState([]);
   const [fIndex, setFIndex] = useState(0);
-  const { oneWayFlightResult, FData } = useAuthStore();
+  const { oneWayFlightResult, FData, loader, flexible } = useAuthStore();
   // const flightData = JSON.parse(myObject);
 
   const getCityName = (locationString) => {
@@ -235,11 +236,12 @@ export default function OneWayResult() {
     setOwBrColor("grey");
     setOwCheckColor("white");
   };
-
-  console.log(data);
+  // let loaderl = true;
+  // console.log(data);
   const [showFlexibleDate, setShowFlexibleDate] = useState(false);
   return (
     <FlightResultWrapper>
+      {loader && <Loader text={"Retrieving Flights, Please Wait..."} />}
       {data?.length === 0 ? (
         <NoResult />
       ) : (
@@ -251,6 +253,8 @@ export default function OneWayResult() {
               <FlightResultForm
                 takeOffAirport={takeOffAirport}
                 destinationAirport={destinationAirport}
+                takeOffAirportCode={oneWayFlightResult?.[4]}
+                destinationAirportCode={oneWayFlightResult?.[3]}
                 setTakeOffAirport={setTakeOffAirport}
                 setDestinationAirport={setDestinationAirport}
                 departDate={departDate}
@@ -315,15 +319,17 @@ export default function OneWayResult() {
                 <h3>
                   From {fromCityName} to {toCityName}
                 </h3>
-                <Button
-                  btnBorder={"1px solid white"}
-                  bgColor={"#FF6805"}
-                  textColor={"white"}
-                  onClick={() => setShowFlexibleDate(true)}
-                  text={"Flexible Dates"}
-                  rightIcon={<MdDateRange />}
-                  fontSize={"12px"}
-                />
+                {flexible && (
+                  <Button
+                    btnBorder={"1px solid white"}
+                    bgColor={"#FF6805"}
+                    textColor={"white"}
+                    onClick={() => setShowFlexibleDate(true)}
+                    text={"Flexible Dates"}
+                    rightIcon={<MdDateRange />}
+                    fontSize={"12px"}
+                  />
+                )}
               </FlightMainHeader>
 
               {/* Price matrix with regards to stops */}
@@ -375,7 +381,8 @@ export default function OneWayResult() {
                           <span>
                             <FlightTitleWrapper>
                               {/* <FlightIcon rotate={"90deg"} iconColor={"#0D3984"} /> */}
-                              <h5>{`Flight From ${` ${
+                              <h5>
+                                {`Flight From ${` ${
                                   filterIataAirport(
                                     flightData?.departure?.iataCode
                                   )?.Airport_name
@@ -392,9 +399,9 @@ export default function OneWayResult() {
                                     flightData?.arrival?.iataCode
                                   )?.Location_served
                                 }`}`}
-                                </h5>
+                              </h5>
                             </FlightTitleWrapper>
-                                 
+
                             <p>Outbound</p>
                           </span>
 
@@ -449,10 +456,8 @@ export default function OneWayResult() {
                                   rotate={"90deg"}
                                   iconColor={"#0D3984"}
                                 />
-                                
-                                  {flightData?.numberOfStops}
-                                  -Stop
-                                
+                                {flightData?.numberOfStops}
+                                -Stop
                               </DNRDetailTimeSec>
                               <DNRDetailTimeSec>
                                 <h5>
@@ -510,7 +515,37 @@ export default function OneWayResult() {
                               </span>
                               <span>
                                 <h5>Baggage</h5>
-                                100kg
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  {" "}
+                                  <TbShoppingBag size={18} color="black" />
+                                  {
+                                    data[index]?.travelerPricings[0]
+                                      ?.fareDetailsBySegment[Index]
+                                      ?.includedCheckedBags?.quantity
+                                  }
+                                  {data[index]?.travelerPricings[0]
+                                    ?.fareDetailsBySegment[Index]
+                                    ?.includedCheckedBags?.quantity &&
+                                    "x Piece (s)"}
+                                  {"  "}
+                                  {data[index]?.travelerPricings[0]
+                                    ?.fareDetailsBySegment[Index]
+                                    ?.includedCheckedBags?.weight
+                                    ? data[index]?.travelerPricings[0]
+                                        ?.fareDetailsBySegment[Index]
+                                        ?.includedCheckedBags?.weight +
+                                      data[index]?.travelerPricings[0]
+                                        ?.fareDetailsBySegment[Index]
+                                        ?.includedCheckedBags?.weightUnit
+                                    : ""}
+                                </div>
                               </span>
                             </DNRDetailBaggage>
                           </DNRDetail>
@@ -534,14 +569,19 @@ export default function OneWayResult() {
               </FlightDetailButton>
             </FLightDetail>
           )}
-
-          {showFlexibleDate && (
-            <FlexibleCalender
-              overlayButtonClick={() => setShowFlexibleDate(false)}
-              closeOverlayOnClick={() => setShowFlexibleDate(false)}
-              selectedDate={""}
-              flightData={mockFlightData}
-            />
+          {flexible && (
+            <>
+              {showFlexibleDate && (
+                <FlexibleCalender
+                  overlayButtonClick={() => setShowFlexibleDate(false)}
+                  closeOverlayOnClick={() => setShowFlexibleDate(false)}
+                  selectedDate={""}
+                  selectedDepartureDate={oneWayFlightResult?.[11]}
+                  selectedReturnDate={oneWayFlightResult?.[12]}
+                  flightData={data}
+                />
+              )}
+            </>
           )}
         </>
       )}
