@@ -5,7 +5,7 @@ export const TableWrapper = styled.div`
   position: relative;
   background-color: #ffffff;
   border-radius: 10px;
-  border: 1px solid #0D3984;
+  border: 1px solid #0d3984;
   /* padding: 10px; */
   overflow: hidden;
   display: flex;
@@ -21,8 +21,7 @@ export const TableContainer = styled.div`
   border-bottom-left-radius: 10px;
 `;
 
-
-const CELL_WIDTH = '120px';
+const CELL_WIDTH = "120px";
 
 export const StickyCol = styled.div`
   position: sticky;
@@ -40,7 +39,8 @@ export const StickyCol = styled.div`
     table-layout: fixed;
     width: 100%;
 
-    th, td {
+    th,
+    td {
       /* border: 1px solid #ddd; */
       border: none;
       padding: 10px;
@@ -56,25 +56,23 @@ export const StickyCol = styled.div`
   }
 `;
 
-
 export const ScrollableContent = styled.div`
   overflow-x: auto;
   display: inline-block;
   scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* IE 10+ */
+  -ms-overflow-style: none; /* IE 10+ */
 
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
 `;
 
-
-
 export const TableStyle = styled.table`
   border-collapse: collapse;
   table-layout: fixed;
 
-  th, td {
+  th,
+  td {
     border: 1px solid #ddd;
     padding: 10px;
     width: ${CELL_WIDTH};
@@ -94,19 +92,16 @@ export const TableStyle = styled.table`
     background-color: #0d398413;
   }
 
-  td{
+  td {
     cursor: pointer;
-   
-   &:hover{
-      color:  #0D3984;
+
+    &:hover {
+      color: #0d3984;
       cursor: pointer;
       font-weight: bold;
     }
   }
 `;
-
-
-
 
 export const NavButton = styled.button`
   position: absolute;
@@ -119,11 +114,11 @@ export const NavButton = styled.button`
   width: 25px;
   height: 25px;
   cursor: pointer;
-   display: flex;
-   justify-content: center;
-   align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 10px;
-  color: #FF6805;
+  color: #ff6805;
 
   &:first-of-type {
     left: 2px;

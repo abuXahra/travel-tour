@@ -258,8 +258,8 @@ export default function MulticityOverview() {
     );
 
     if (resPriceLookup) {
-      Price = resPriceLookup.flightOffers[0]?.price?.total;
-      priceChecked = resPriceLookup?.flightOffers[0];
+      Price = resPriceLookup.data?.flightOffers[0]?.price?.total;
+      priceChecked = resPriceLookup?.data?.flightOffers[0];
     } else {
       setBottonLoading(false);
     }

@@ -12,18 +12,26 @@ export const ButtonStyle = styled.button`
   border-top-left-radius: 10px;
   border-bottom-right-radius: 10px;
   padding: ${({ pd }) => pd || "14px 25px"};
-  display: ${({btnDisplay}) => btnDisplay || 'flex'};
-  font-size: ${({fontSize}) => fontSize || '10px'};
+  display: ${({ btnDisplay }) => btnDisplay || "flex"};
+  font-size: ${({ fontSize }) => fontSize || "10px"};
   gap: 10px;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   position: relative;
+  &:hover {
+    background-color: ${({ hoverBgColor }) =>
+      hoverBgColor || "rgb(25, 22, 199)"};
+    color: ${({ hoverTextColor }) => hoverTextColor || "white"};
+    transform: scale(1.05); /* Optional: adds a slight zoom effect */
+    transition: all 0.3s ease; /* Smooth transition for hover */
+  }
   &:disabled {
     cursor: not-allowed;
     opacity: 0.7;
   }
 `;
+//rgb(25, 22, 199)
 
 export const Loader = styled.div`
   border: 3px solid rgba(255, 255, 255, 0.3);

@@ -12,6 +12,7 @@ import {
   DnRWrapper,
   FlightCard,
   FlightCardContent,
+  ContainerWrapper,
   FLightDetail,
   FlightDetailButton,
   FlightDetailClose,
@@ -19,6 +20,7 @@ import {
   FlightDetailDNR,
   FlightDetialButton,
   FlightLogo,
+  RulesAndCondHeader,
   FlightMainHeader,
   FlightResultContent,
   FlightResultHeader,
@@ -31,12 +33,14 @@ import {
   ResultCounter,
   ResultCounterLeft,
   ResultCounterRight,
+  IconWrapper,
   ResultSidebar,
   ResultSideBar,
 } from "./FlightResult.style";
 import { MdFlight, MdFlightTakeoff, MdHotel } from "react-icons/md";
 import flightLogo from "../../../images/aire-peace.png";
 import { FaCircle, FaTimes } from "react-icons/fa";
+import { IoIosArrowDown } from "react-icons/io";
 import Button from "../../../components/button/Button";
 import FlightIcon from "../../../components/flight_icon/FlightIcon";
 import FlightResultForDepartandReturn from "../../../components/Flight/FlightResultForDepartandReturn";
@@ -51,13 +55,14 @@ import {
 import SingleSearchCityForm from "../flight_booking/single_city/SingleSearchCityForm";
 import MulticitySearchForm from "../flight_booking/multi_city/MulticitySearchForm";
 import { LiaCcVisa } from "react-icons/lia";
-
+import { TbShoppingBag } from "react-icons/tb";
 import AirlineCodeLookup from "../../../components/Flight/AirlineCodeLookup";
 import AirlineFlightLogo from "../../../components/Flight/AirlineFlightLogo";
 import { useAuthStore } from "../../../store/store";
 import iataAirports from "../../../flightDB/IATA_airports.json";
 import NoResult from "../../../components/no_result/NoResult";
 import Sidebar from "../../../components/sidebar/Sidebar";
+import Loader from "../../../components/loader/Loader";
 import {
   ArilineListItems,
   DepartFlightTime,
@@ -65,6 +70,7 @@ import {
   StopsItems,
 } from "../../../data/object/flight_sidebar/FlightResultSidebar";
 import { MdDateRange } from "react-icons/md";
+
 import FlexibleCalender from "../../../components/Flight/flexible_Calender/FlexibleCalender";
 import { mockFlightData } from "../../../data/object/FlexibleCalenderItems";
 import PriceMatrix from "../../../components/Flight/price_matrix/PriceMatrix";
@@ -100,8 +106,10 @@ const calculateLayoverInfo = (prevSegment, nextSegment) => {
 
 export default function FlightResult() {
   const [data, setData] = useState([]);
-  const { singleFlightResult, FData } = useAuthStore();
+  const { singleFlightResult, FData, flightPriceLookup, loader, flexible } =
+    useAuthStore();
   const [fIndex, setFIndex] = useState(0);
+  const [rotateIcon2, setRotateIcon2] = useState("360deg");
 
   const getCityName = (locationString) => {
     const parts = locationString?.split(",");
@@ -196,11 +204,13 @@ export default function FlightResult() {
 
   // Show View Detail Variable
   const [showViewDetailCard, setShowViewDetailCard] = useState(false);
+  const [showFareRules, setShowFareRules] = useState(false);
 
   //show view detail handler
-  const showViewDetail = (i) => {
+  const showViewDetail = async (i) => {
     setFIndex(Number(i));
     setShowViewDetailCard(true);
+    await flightPrice();
   };
 
   //hide view detail handler
@@ -241,6 +251,19 @@ export default function FlightResult() {
 
   // This is the Show View Detail Variable index
   const [index, setIndex] = useState(0);
+  const [price, setPrice] = useState({});
+
+  const flightPrice = async () => {
+    let flightPrice = await flightPriceLookup(singleFlightResult?.[2]?.[index]);
+    // Promise.resolve(accessToken)
+    setPrice(flightPrice ? flightPrice : false);
+    // return Promise.resolve(flightPrice ? flightPrice : false);
+  };
+
+  const handleOpenAndClose = () => {
+    setShowFareRules(!showFareRules);
+    setRotateIcon2(!rotateIcon2);
+  };
 
   // Cacula for duration
   function parseDuration(duration) {
@@ -266,6 +289,7 @@ export default function FlightResult() {
   console.log(singleFlightResult[2]);
   return (
     <FlightResultWrapper>
+      {loader && <Loader text={"Retrieving Flights, Please Wait..."} />}
       {singleFlightResult[2]?.length === 0 ? (
         <NoResult />
       ) : (
@@ -277,6 +301,8 @@ export default function FlightResult() {
               <FlightResultForm
                 takeOffAirport={takeOffAirport}
                 destinationAirport={destinationAirport}
+                takeOffAirportCode={singleFlightResult?.[4]}
+                destinationAirportCode={singleFlightResult?.[3]}
                 setTakeOffAirport={setTakeOffAirport}
                 setDestinationAirport={setDestinationAirport}
                 departDate={departDate}
@@ -330,15 +356,17 @@ export default function FlightResult() {
                 <h3>
                   From {fromCityName} to {toCityName}
                 </h3>
-                <Button
-                  btnBorder={"1px solid white"}
-                  bgColor={"#FF6805"}
-                  textColor={"black"}
-                  onClick={() => setShowFlexibleDate(true)}
-                  text={"Flexible Dates"}
-                  rightIcon={<MdDateRange />}
-                  fontSize={"12px"}
-                />
+                {flexible && (
+                  <Button
+                    btnBorder={"1px solid white"}
+                    bgColor={"#FF6805"}
+                    textColor={"black"}
+                    onClick={() => setShowFlexibleDate(true)}
+                    text={"Flexible Dates"}
+                    rightIcon={<MdDateRange />}
+                    fontSize={"12px"}
+                  />
+                )}
               </FlightMainHeader>
 
               {/* Price matrix with regards to stops */}
@@ -468,7 +496,7 @@ export default function FlightResult() {
                                   rotate={"90deg"}
                                   iconColor={"#0D3984"}
                                 />
-                                  {flightData?.numberOfStops}
+                                {flightData?.numberOfStops}
                                 -Stop
                               </DNRDetailTimeSec>
                               <DNRDetailTimeSec>
@@ -521,12 +549,42 @@ export default function FlightResult() {
                                     only={true}
                                   />
                                   {`
-                              - ${flightData?.number} - ${data[index]?.travelerPricings[0]?.fareDetailsBySegment[Index]?.cabin} - Class ${data[Index]?.travelerPricings[0]?.fareDetailsBySegment[Index]?.class} `}
+                              - ${flightData?.number} - ${data[index]?.travelerPricings[0]?.fareDetailsBySegment[Index]?.cabin} - Class ${data[index]?.travelerPricings[0]?.fareDetailsBySegment[Index]?.class} `}
                                 </div>
                               </span>
                               <span>
                                 <h5>Baggage</h5>
-                                100kg
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  {" "}
+                                  <TbShoppingBag size={18} color="black" />
+                                  {
+                                    data[index]?.travelerPricings[0]
+                                      ?.fareDetailsBySegment[Index]
+                                      ?.includedCheckedBags?.quantity
+                                  }
+                                  {data[index]?.travelerPricings[0]
+                                    ?.fareDetailsBySegment[Index]
+                                    ?.includedCheckedBags?.quantity &&
+                                    "x Piece (s)"}
+                                  {"  "}
+                                  {data[index]?.travelerPricings[0]
+                                    ?.fareDetailsBySegment[Index]
+                                    ?.includedCheckedBags?.weight
+                                    ? data[index]?.travelerPricings[0]
+                                        ?.fareDetailsBySegment[Index]
+                                        ?.includedCheckedBags?.weight +
+                                      data[index]?.travelerPricings[0]
+                                        ?.fareDetailsBySegment[Index]
+                                        ?.includedCheckedBags?.weightUnit
+                                    : ""}
+                                </div>
                               </span>
                             </DNRDetailBaggage>
                           </DNRDetail>
@@ -552,6 +610,8 @@ export default function FlightResult() {
                       const nextSegment = !isLastSegment
                         ? arr[Index + 1]
                         : null;
+                      let fItinerary =
+                        data[index].itineraries[0].segments.length;
 
                       return (
                         <>
@@ -691,22 +751,49 @@ export default function FlightResult() {
                                   {`
                                 - ${flightData?.number} - ${
                                     data[index]?.travelerPricings[0]
-                                      ?.fareDetailsBySegment[
-                                      data[index].itineraries[0].segments
-                                        .length + Index
-                                    ]?.cabin
+                                      ?.fareDetailsBySegment[fItinerary + Index]
+                                      ?.cabin
                                   } - Class ${
-                                    data[Index]?.travelerPricings[0]
-                                      ?.fareDetailsBySegment[
-                                      data[index].itineraries[0].segments
-                                        .length + Index
-                                    ]?.class
+                                    data[index]?.travelerPricings[0]
+                                      ?.fareDetailsBySegment[fItinerary + Index]
+                                      ?.class
                                   } `}
                                 </div>
                               </span>
                               <span>
                                 <h5>Baggage</h5>
-                                100kg
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  {" "}
+                                  <TbShoppingBag size={18} color="black" />
+                                  {
+                                    data[index]?.travelerPricings[0]
+                                      ?.fareDetailsBySegment[fItinerary + Index]
+                                      ?.includedCheckedBags?.quantity
+                                  }
+                                  {data[index]?.travelerPricings[0]
+                                    ?.fareDetailsBySegment[fItinerary + Index]
+                                    ?.includedCheckedBags?.quantity &&
+                                    "x Piece (s)"}{" "}
+                                  {data[index]?.travelerPricings[0]
+                                    ?.fareDetailsBySegment[fItinerary + Index]
+                                    ?.includedCheckedBags?.weight
+                                    ? data[index]?.travelerPricings[0]
+                                        ?.fareDetailsBySegment[
+                                        fItinerary + Index
+                                      ]?.includedCheckedBags?.weight +
+                                      data[index]?.travelerPricings[0]
+                                        ?.fareDetailsBySegment[
+                                        fItinerary + Index
+                                      ]?.includedCheckedBags?.weightUnit
+                                    : ""}
+                                </div>
                               </span>
                             </DNRDetailBaggage>
                           </DNRDetail>
@@ -724,20 +811,69 @@ export default function FlightResult() {
                   )}
                 </FlightDetailDNR>
 
+                <ContainerWrapper>
+                  <RulesAndCondHeader
+                    bt={"none"}
+                    onClick={() => handleOpenAndClose()}
+                  >
+                    <span>
+                      <h2 style={{ color: "black" }}>Refund Fare Rules</h2>
+                    </span>
+                    <span>
+                      <h2>
+                        <IconWrapper rotateIcon={rotateIcon2}>
+                          <IoIosArrowDown />
+                        </IconWrapper>
+                      </h2>
+                    </span>
+                  </RulesAndCondHeader>
+                </ContainerWrapper>
+                {showFareRules && (
+                  <div>
+                    <h4>Refunds Rules</h4>
+                    <br />
+                    <p style={{ whiteSpace: "pre-wrap" }}>
+                      {price?.included?.["detailed-fare-rules"]?.[
+                        "1"
+                      ]?.fareNotes?.descriptions?.map((data, idx) => {
+                        if (
+                          idx === 0 &&
+                          data?.text?.toUpperCase().includes("PENALTIES")
+                        ) {
+                          return data?.text;
+                        }
+                      })}
+                      <br />
+                      <br />
+                      {price?.included?.["detailed-fare-rules"]?.[
+                        `${data[index].itineraries[0].segments.length}`
+                      ]?.fareNotes?.descriptions?.map((data, idx) => {
+                        if (data?.text?.toUpperCase().includes("PENALTIES")) {
+                          return data?.text;
+                        }
+                      })}
+                    </p>
+                  </div>
+                )}
                 <FlightDetailButton>
                   <Button text={"Continue Booking"} onClick={continueBooking} />
                 </FlightDetailButton>
               </FLightDetailContent>
             </FLightDetail>
           )}
-
-          {showFlexibleDate && (
-            <FlexibleCalender
-              overlayButtonClick={() => setShowFlexibleDate(false)}
-              closeOverlayOnClick={() => setShowFlexibleDate(false)}
-              selectedDate={""}
-              flightData={mockFlightData}
-            />
+          {flexible && (
+            <>
+              {showFlexibleDate && (
+                <FlexibleCalender
+                  overlayButtonClick={() => setShowFlexibleDate(false)}
+                  closeOverlayOnClick={() => setShowFlexibleDate(false)}
+                  selectedDate={""}
+                  selectedDepartureDate={singleFlightResult?.[11]}
+                  selectedReturnDate={singleFlightResult?.[12]}
+                  flightData={data}
+                />
+              )}
+            </>
           )}
         </>
       )}

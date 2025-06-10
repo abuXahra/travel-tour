@@ -148,6 +148,7 @@ export default function SingleSearchCityForm({
     airportAndCitySearch,
     setLoader,
     setfData,
+    setFlexible,
   } = useAuthStore();
 
   const [originLocationCode, setOriginLocationCode] = useState("");
@@ -358,9 +359,19 @@ export default function SingleSearchCityForm({
     setShowFlexibleDate(true);
     setDisplayButton("flex");
   };
+
+  // Checkbox Validation: Terms and Agreement
+  // State for form values
+  const [isChecked, setIsChecked] = useState(false);
+
+  // Handler for checkbox change
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
+
   if (showReturnDate) {
     searchParams = {
-      flexible: showFlexibleDate ? "I3D" : false,
+      flexible: isChecked ? "I3D" : false,
       passenger: {
         adults: adults,
         children: children,
@@ -397,7 +408,7 @@ export default function SingleSearchCityForm({
     };
   } else {
     searchParams = {
-      flexible: showFlexibleDate ? "I3D" : false,
+      flexible: isChecked ? "I3D" : false,
       passenger: {
         adults: adults,
         children: children,
@@ -433,7 +444,8 @@ export default function SingleSearchCityForm({
       locationError("Change destination location.");
       return;
     }
-
+    let departureDate = new Date(queryParams?.departureDate);
+    let returnDate = new Date(queryParams?.returnDate);
     const firstDeparture = new Date(queryParams?.departureDate);
     const secondDeparture = new Date(queryParams?.returnDate);
     if (queryParams?.departureDate === queryParams?.returnDate) {
@@ -452,15 +464,14 @@ export default function SingleSearchCityForm({
     if (showFlexibleDate) {
     }
 
-      // destination location
-      if(showReturnDate === true){
-        if (departDate === returnDate) {
-            toast.error('Change the flight return date')
-            return;
-        }
+    // destination location
+    if (showReturnDate === true) {
+      if (departDate === returnDate) {
+        toast.error("Change the flight return date");
+        return;
       }
-
-
+    }
+    setFlexible(isChecked);
     setLoader(true);
     console.log(searchParams);
     const res = await flightOffersSearch(searchParams);
@@ -480,6 +491,8 @@ export default function SingleSearchCityForm({
         infants,
         res.flightRightsDictionaries,
         flightClass,
+        departureDate,
+        returnDate,
       ]);
       // setFlightSearch(res.data.data);
       if (showReturnDate) {
@@ -496,21 +509,14 @@ export default function SingleSearchCityForm({
           children,
           infants,
           res.flightRightsDictionaries,
+          flightClass,
+          departureDate,
         ]);
         navigate("/oneway-result");
       }
     } else {
       setLoader(false);
     }
-  };
-
-  // Checkbox Validation: Terms and Agreement
-  // State for form values
-  const [isChecked, setIsChecked] = useState(false);
-
-  // Handler for checkbox change
-  const handleCheckboxChange = (event) => {
-    setIsChecked(event.target.checked);
   };
 
   return (
@@ -540,7 +546,7 @@ export default function SingleSearchCityForm({
             <FlightInputAndDropDown>
               <FlightInputWrapper onClick={handleShowFlightInputsA}>
                 <Label top={labelTopFrom} for="depart">
-                  From where?
+                  Departure?
                 </Label>
                 <input
                   type="text"
@@ -578,7 +584,7 @@ export default function SingleSearchCityForm({
             <FlightInputAndDropDown>
               <FlightInputWrapper onClick={handleShowFlightInputsB}>
                 <Label top={labelTopTo} for="depart">
-                  To where?
+                  Destination?
                 </Label>
                 <input
                   type="text"

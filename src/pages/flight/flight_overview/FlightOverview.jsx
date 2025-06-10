@@ -337,8 +337,8 @@ export default function FlightOverview() {
     const resPriceLookup = await flightPriceLookup(data);
 
     if (resPriceLookup) {
-      Price = resPriceLookup.flightOffers[0]?.price?.total;
-      priceChecked = resPriceLookup?.flightOffers[0];
+      Price = resPriceLookup.data?.flightOffers[0]?.price?.total;
+      priceChecked = resPriceLookup?.data?.flightOffers[0];
     } else {
       setBottonLoading(false);
     }
@@ -591,17 +591,33 @@ export default function FlightOverview() {
                     </ContainerHeader>
                     <Containerbody>
                       <div>
-                        <ContainerTime>Economy (F)</ContainerTime>
+                        <ContainerTime>
+                          {
+                            data?.travelerPricings[0]?.fareDetailsBySegment[
+                              Index
+                            ]?.cabin
+                          }{" "}
+                          (
+                          {
+                            data?.travelerPricings[0]?.fareDetailsBySegment[
+                              Index
+                            ]?.class
+                          }
+                          )
+                        </ContainerTime>
                         <span>
-                          Adult: {singleFlightResult?.[6]} piece(s), upto 23kg
-                          each
+                          Adult: {singleFlightResult?.[6]}
+                          {/* piece(s), upto 23kg
+                          each */}
                         </span>
                         <span>
-                          Child: {singleFlightResult?.[7]} piece(s), upto 23kg
-                          each
+                          Child: {singleFlightResult?.[7]}
+                          {/* piece(s), upto 23kg
+                          each */}
                         </span>
                         <span>
-                          Infant: {singleFlightResult?.[8]} piece(s), upto 23kg
+                          Infant: {singleFlightResult?.[8]}
+                          {/* piece(s), upto 23kg */}
                         </span>
                       </div>
                       <div></div>
@@ -624,175 +640,197 @@ export default function FlightOverview() {
               <p>Inbound Flight</p>
             </FlightIconWrapper>
 
-            {data?.itineraries?.[1]?.segments?.map((flightData, Index) => (
-              <>
-                <FlightHeader>
-                  <h5>{`${
-                    filterIataAirport(flightData?.departure?.iataCode)
-                      ?.Airport_name
-                  },  ${
-                    filterIataAirport(flightData?.departure?.iataCode)
-                      ?.Location_served
-                  }`}</h5>
-                  <FlightIcon
-                    IconSize={"13px"}
-                    rotate={"90deg"}
-                    iconColor={"black"}
-                  />
-                  <h5>
-                    {" "}
-                    {`${
-                      filterIataAirport(flightData?.arrival?.iataCode)
+            {data?.itineraries?.[1]?.segments?.map((flightData, Index) => {
+              let fItinerary = data?.itineraries?.[0].segments.length;
+
+              return (
+                <>
+                  <FlightHeader>
+                    <h5>{`${
+                      filterIataAirport(flightData?.departure?.iataCode)
                         ?.Airport_name
                     },  ${
-                      filterIataAirport(flightData?.arrival?.iataCode)
+                      filterIataAirport(flightData?.departure?.iataCode)
                         ?.Location_served
-                    }`}
-                  </h5>
-                  <p>
-                    {new Date(flightData?.departure?.at).toLocaleString(
-                      "en-US",
-                      {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric",
-                      }
-                    )}
-                  </p>
-                </FlightHeader>
+                    }`}</h5>
+                    <FlightIcon
+                      IconSize={"13px"}
+                      rotate={"90deg"}
+                      iconColor={"black"}
+                    />
+                    <h5>
+                      {" "}
+                      {`${
+                        filterIataAirport(flightData?.arrival?.iataCode)
+                          ?.Airport_name
+                      },  ${
+                        filterIataAirport(flightData?.arrival?.iataCode)
+                          ?.Location_served
+                      }`}
+                    </h5>
+                    <p>
+                      {new Date(flightData?.departure?.at).toLocaleString(
+                        "en-US",
+                        {
+                          weekday: "long",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
+                    </p>
+                  </FlightHeader>
 
-                <FlightTimeContainer>
-                  {/* Departure */}
-                  <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Departure</b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                        <ContainerTime>
-                          <b>
-                            {new Date(
-                              flightData?.departure?.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </b>{" "}
-                          {flightData?.departure?.iataCode}
-                        </ContainerTime>
-                        <span>{`${
-                          filterIataAirport(flightData?.departure?.iataCode)
-                            ?.Airport_name
-                        },  ${
-                          filterIataAirport(flightData?.departure?.iataCode)
-                            ?.Location_served
-                        }`}</span>
-                      </div>
-                      <div>
-                        <span>
-                          <FaCheckCircle />
-                        </span>
-                        <span>{`${
-                          parseDuration(flightData?.duration).hours
-                        }hr ${
-                          parseDuration(flightData?.duration).minutes
-                        }min`}</span>
-                        <span>{flightData?.numberOfStops}-stop</span>
-                      </div>
-                    </Containerbody>
-                  </ContainerWrapper>
+                  <FlightTimeContainer>
+                    {/* Departure */}
+                    <ContainerWrapper>
+                      <ContainerHeader>
+                        <b>Departure</b>
+                      </ContainerHeader>
+                      <Containerbody>
+                        <div>
+                          <ContainerTime>
+                            <b>
+                              {new Date(
+                                flightData?.departure?.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </b>{" "}
+                            {flightData?.departure?.iataCode}
+                          </ContainerTime>
+                          <span>{`${
+                            filterIataAirport(flightData?.departure?.iataCode)
+                              ?.Airport_name
+                          },  ${
+                            filterIataAirport(flightData?.departure?.iataCode)
+                              ?.Location_served
+                          }`}</span>
+                        </div>
+                        <div>
+                          <span>
+                            <FaCheckCircle />
+                          </span>
+                          <span>{`${
+                            parseDuration(flightData?.duration).hours
+                          }hr ${
+                            parseDuration(flightData?.duration).minutes
+                          }min`}</span>
+                          <span>{flightData?.numberOfStops}-stop</span>
+                        </div>
+                      </Containerbody>
+                    </ContainerWrapper>
 
-                  {/* Arrival */}
-                  <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Arrival</b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                        <ContainerTime>
-                          <b>
-                            {new Date(
-                              flightData?.arrival?.at
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </b>{" "}
-                          {flightData?.arrival?.iataCode}
-                        </ContainerTime>
-                        <span>{`${
-                          filterIataAirport(flightData?.arrival?.iataCode)
-                            ?.Airport_name
-                        },  ${
-                          filterIataAirport(flightData?.arrival?.iataCode)
-                            ?.Location_served
-                        }`}</span>
-                      </div>
-                      <div>
-                        <span
-                          style={{
-                            color: "red",
-                            fontStyle: "italic",
-                            fontWeight: "bold",
-                            fontSize: "9px",
-                          }}
-                        >
-                          {flightData?.operating &&
-                            singleFlightResult?.[9]?.carriers[
+                    {/* Arrival */}
+                    <ContainerWrapper>
+                      <ContainerHeader>
+                        <b>Arrival</b>
+                      </ContainerHeader>
+                      <Containerbody>
+                        <div>
+                          <ContainerTime>
+                            <b>
+                              {new Date(
+                                flightData?.arrival?.at
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </b>{" "}
+                            {flightData?.arrival?.iataCode}
+                          </ContainerTime>
+                          <span>{`${
+                            filterIataAirport(flightData?.arrival?.iataCode)
+                              ?.Airport_name
+                          },  ${
+                            filterIataAirport(flightData?.arrival?.iataCode)
+                              ?.Location_served
+                          }`}</span>
+                        </div>
+                        <div>
+                          <span
+                            style={{
+                              color: "red",
+                              fontStyle: "italic",
+                              fontWeight: "bold",
+                              fontSize: "9px",
+                            }}
+                          >
+                            {flightData?.operating &&
+                              singleFlightResult?.[9]?.carriers[
+                                flightData?.operating?.carrierCode
+                              ]}
+                            - {flightData?.number}
+                          </span>
+                          <img
+                            src={`https://images.wakanow.com/Images/flight-logos/${
                               flightData?.operating?.carrierCode
-                            ]}
-                          - {flightData?.number}
-                        </span>
-                        <img
-                          src={`https://images.wakanow.com/Images/flight-logos/${
-                            flightData?.operating?.carrierCode
-                              ? flightData?.operating?.carrierCode
-                              : singleFlightResult[2][flightResultIndex]
-                                  .validatingAirlineCodes[0]
-                          }.gif`}
-                          height={20}
-                          width={40}
-                          alt=""
-                          srcset=""
-                        />
+                                ? flightData?.operating?.carrierCode
+                                : singleFlightResult[2][flightResultIndex]
+                                    .validatingAirlineCodes[0]
+                            }.gif`}
+                            height={20}
+                            width={40}
+                            alt=""
+                            srcset=""
+                          />
 
-                        {/* <img
+                          {/* <img
                           src={flightLogo}
                           height={20}
                           width={40}
                           alt=""
                           srcset=""
                         /> */}
-                      </div>
-                    </Containerbody>
-                  </ContainerWrapper>
+                        </div>
+                      </Containerbody>
+                    </ContainerWrapper>
 
-                  {/* Class/ Baggage */}
-                  <ContainerWrapper>
-                    <ContainerHeader>
-                      <b>Class/Checked Baggage Allowance </b>
-                    </ContainerHeader>
-                    <Containerbody>
-                      <div>
-                        <ContainerTime>Economy (F)</ContainerTime>
-                        <span>
-                          Adult: {singleFlightResult?.[6]} piece(s), upto 23kg
-                          each
-                        </span>
-                        <span>
-                          Child: {singleFlightResult?.[7]} piece(s), upto 23kg
-                          each
-                        </span>
-                        <span>
-                          Infant: {singleFlightResult?.[8]} piece(s), upto 23kg
-                        </span>
-                      </div>
-                      <div></div>
-                    </Containerbody>
-                  </ContainerWrapper>
-                </FlightTimeContainer>
-              </>
-            ))}
+                    {/* Class/ Baggage */}
+                    <ContainerWrapper>
+                      <ContainerHeader>
+                        <b>Class/Checked Baggage Allowance </b>
+                      </ContainerHeader>
+                      <Containerbody>
+                        <div>
+                          <ContainerTime>
+                            {" "}
+                            {
+                              data?.travelerPricings[0]?.fareDetailsBySegment[
+                                fItinerary + Index
+                              ]?.cabin
+                            }{" "}
+                            (
+                            {
+                              data?.travelerPricings[0]?.fareDetailsBySegment[
+                                fItinerary + Index
+                              ]?.class
+                            }
+                            )
+                          </ContainerTime>
+                          <span>
+                            Adult: {singleFlightResult?.[6]}
+                            {/* piece(s), upto 23kg
+                            each */}
+                          </span>
+                          <span>
+                            Child: {singleFlightResult?.[7]}
+                            {/* piece(s), upto 23kg
+                            each */}
+                          </span>
+                          <span>
+                            Infant: {singleFlightResult?.[8]}
+                            {/* piece(s), upto
+                            23kg */}
+                          </span>
+                        </div>
+                        <div></div>
+                      </Containerbody>
+                    </ContainerWrapper>
+                  </FlightTimeContainer>
+                </>
+              );
+            })}
           </FlightContainer>
 
           {/* Passengers Detail */}

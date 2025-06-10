@@ -111,7 +111,7 @@ export default function MulticityCustomization() {
 
         if (res) {
           console.log(res);
-          setFResult(res?.flightOffers[0]);
+          setFResult(res?.data?.flightOffers[0]);
         }
       } catch (err) {
         console.log(err?.response?.data);

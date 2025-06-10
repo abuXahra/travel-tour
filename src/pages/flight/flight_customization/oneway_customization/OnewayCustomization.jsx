@@ -97,7 +97,7 @@ export default function OnewayCustomization() {
 
         if (res) {
           console.log(res);
-          setFResult(res?.flightOffers[0]);
+          setFResult(res?.data?.flightOffers[0]);
         }
       } catch (err) {
         console.log(err?.response?.data);
@@ -336,7 +336,26 @@ export default function OnewayCustomization() {
                               <h4>BAGGAGE:</h4> <p>ADULT</p>
                             </span>
                             <span>
-                              <h4>CHECK IN:</h4> <p>20KG</p>
+                              <h4>CHECK IN:</h4>{" "}
+                              <p>
+                                {" "}
+                                {oneWayFlightResult?.[2]?.[
+                                  oneWayFlightResultIndex
+                                ]?.travelerPricings[0]?.fareDetailsBySegment[
+                                  Index
+                                ]?.includedCheckedBags?.weight
+                                  ? oneWayFlightResult?.[2]?.[
+                                      oneWayFlightResultIndex
+                                    ]?.travelerPricings[0]
+                                      ?.fareDetailsBySegment[Index]
+                                      ?.includedCheckedBags?.weight +
+                                    oneWayFlightResult?.[2]?.[
+                                      oneWayFlightResultIndex
+                                    ]?.travelerPricings[0]
+                                      ?.fareDetailsBySegment[Index]
+                                      ?.includedCheckedBags?.weightUnit
+                                  : ""}
+                              </p>
                             </span>
                           </div>
                           <div style={{ fontSize: "12px" }}>

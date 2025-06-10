@@ -34,6 +34,7 @@
     <title>Manzo - Book Flights, Hotels & Travel Packages in Nigeria</title>
 
     <meta property="og:title" content="Travel Made Easy with Manzo" />
+    <meta property="og:site_name" content="Manzo - Traveling and Tour Agency" />
     <meta
       property="og:description"
       content="Plan your dream trip with Manzo! Book cheap flights, hotels, and holiday packages. Travel smart and stress-free."
@@ -46,6 +47,11 @@
     <meta property="og:type" content="website" />
   </head>
   <body>
+    <h1>Welcome to Manzo – Your Trusted Travel Partner in Nigeria</h1>
+    <p>
+      At Manzo, we help you book affordable flights, hotels, and tour packages
+      across Africa.
+    </p>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
