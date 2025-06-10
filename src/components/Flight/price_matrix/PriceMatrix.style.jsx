@@ -1,21 +1,34 @@
 import styled from "styled-components";
 
+// export const TableWrapper = styled.div`
+//   width: 100%;
+//   position: relative;
+//   background-color: #ffffff;
+//   border-radius: 10px;
+//   border: 1px solid #0D3984;
+//   /* padding: 10px; */
+//   overflow: hidden;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 10px;
+// `;
+
 export const TableWrapper = styled.div`
-  width: 100%;
+  width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "fit-content")};
   position: relative;
   background-color: #ffffff;
   border-radius: 10px;
   border: 1px solid #0D3984;
-  /* padding: 10px; */
   overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 10px;
 `;
 
+
 export const TableContainer = styled.div`
   display: flex;
-  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;

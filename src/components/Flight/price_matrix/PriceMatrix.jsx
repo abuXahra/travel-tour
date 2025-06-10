@@ -230,3 +230,124 @@ export default function PriceMatrix({ flightSearchResultData, dictionaries }) {
     </TableWrapper>
   );
 }
+
+
+
+
+
+
+
+
+
+// const PriceMatrix = ({ flightSearchResultData, dictionaries }) => {
+//   const [tableData, setTableData] = useState({});
+//   const [showScrollButtons, setShowScrollButtons] = useState(false);
+
+//   const scrollRef = useRef(null);
+//   const containerRef = useRef(null); // New ref to check container size
+
+//   useEffect(() => {
+//     const grouped = {};
+
+//     flightSearchResultData?.forEach((flight) => {
+//       const airline = flight.validatingAirlineCodes[0];
+//       const stop = stopLabel(flight.itineraries);
+//       const price = `₦${parseInt(flight.price.total).toLocaleString()}`;
+
+//       if (!grouped[airline]) grouped[airline] = {};
+//       grouped[airline][stop] = price;
+//     });
+
+//     setTableData(grouped);
+//   }, [flightSearchResultData]);
+
+//   const stopTypes = ["Non stop", "Stop 1", "Stops 1+"];
+//   const airlines = Object.keys(tableData);
+
+//   const COLUMN_WIDTH = 120;
+
+//   const scroll = (direction) => {
+//     if (scrollRef.current) {
+//       scrollRef.current.scrollBy({
+//         left: direction === "left" ? -COLUMN_WIDTH : COLUMN_WIDTH,
+//         behavior: "smooth",
+//       });
+//     }
+//   };
+
+//   const checkForOverflow = () => {
+//     if (scrollRef.current && containerRef.current) {
+//       setShowScrollButtons(
+//         scrollRef.current.scrollWidth > containerRef.current.offsetWidth
+//       );
+//     }
+//   };
+
+//   useEffect(() => {
+//     checkForOverflow();
+//     window.addEventListener("resize", checkForOverflow);
+//     return () => window.removeEventListener("resize", checkForOverflow);
+//   }, [airlines.length]);
+
+//   return (
+//     <TableWrapper $fullWidth={showScrollButtons}>
+//       {showScrollButtons && (
+//         <>
+//           <NavButton onClick={() => scroll("left")}>
+//             <FaLongArrowAltLeft />
+//           </NavButton>
+//           <NavButton onClick={() => scroll("right")}>
+//             <FaLongArrowAltRight />
+//           </NavButton>
+//         </>
+//       )}
+
+//       <TableContainer ref={containerRef}>
+//         <StickyCol>
+//           <table>
+//             <thead>
+//               <tr>
+//                 <th>FLIGHTS</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {stopTypes.map((stop, idx) => (
+//                 <tr key={idx}>
+//                   <td>{stop}</td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </StickyCol>
+
+//         <ScrollableContent ref={scrollRef}>
+//           <TableStyle>
+//             <thead>
+//               <tr>
+//                 {airlines.map((code, idx) => (
+//                   <th key={idx}>
+//                     <div style={{ display: "flex", fontSize: "10px", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+//                       <img src={`https://images.wakanow.com/Images/flight-logos/${code}.gif`} alt={code} />
+//                       <span>{dictionaries.carriers[code]}</span>
+//                     </div>
+//                   </th>
+//                 ))}
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {stopTypes.map((stop) => (
+//                 <tr key={stop}>
+//                   {airlines.map((code) => (
+//                     <td key={code + stop}>
+//                       {tableData[code][stop] || "—"}
+//                     </td>
+//                   ))}
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </TableStyle>
+//         </ScrollableContent>
+//       </TableContainer>
+//     </TableWrapper>
+//   );
+// };
