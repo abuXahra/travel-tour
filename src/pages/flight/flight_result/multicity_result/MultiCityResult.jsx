@@ -568,7 +568,7 @@ export default function FlightResult() {
                                     }`}
                                   </p>
                                 </DNRDetailTimeSec>
-                                <DNRDetailTimeSec>
+                                <DNRDetailTimeSec alignItems="center">
                                   <p>
                                     {`${
                                       parseDuration(flightData?.duration).hours
