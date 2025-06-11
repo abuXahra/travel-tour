@@ -16,12 +16,12 @@ export const LoaderWrapper = styled.div`
   margin-top: -120px;
   gap: 10px;
   img {
-    width: 200px;
+    width: 120px;
   }
 
   @media (max-width: 768px) {
     img {
-      width: 150px;
+      width: 100px;
     }
   }
 `;
@@ -33,15 +33,16 @@ export const LoaderIconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   position: absolute;
-  height: 40px;
-  width: 40px;
-  bottom: 41.3%;
+  height: 400px;
+  width: 400px;
+  /* bottom: 41.3%;
   right: 50;
-  left: 50;
+  left: 50; */
+ 
 
   @media (max-width: 768px) {
-    bottom: 45%;
-    right: 30%;
+    /* bottom: 45%;
+    right: 30%; */
   }
 `;
 
@@ -91,4 +92,20 @@ export const HrStyled = styled.hr`
   width: 100%;
   /* height: 2px; */
   border: 1px solid ${({ bg }) => bg || "orange"};
+`;
+
+
+
+// Create a styled component with the animation
+export const RotatingContainer = styled.div`
+  animation: ${rotate} 10s linear infinite;
+  width: 200px; // Customize size as needed
+  height: 200px;
+  border-radius: 100%;
+  border: 7px dashed #0d3984cf;
+  position: absolute;
+
+  @media (max-width: 768px) {
+    font-size: 400px;
+  }
 `;

@@ -483,7 +483,7 @@ export default function FlightResult() {
                       }
                     /> */}
                               </DNRDetailTimeSec>
-                              <DNRDetailTimeSec>
+                              <DNRDetailTimeSec alignItems={'center'}>
                                 <p>
                                   {" "}
                                   {`${
@@ -683,8 +683,8 @@ export default function FlightResult() {
                       }
                     /> */}
                               </DNRDetailTimeSec>
-                              <DNRDetailTimeSec>
-                                <p style={{ fontSize: "8px" }}>
+                              <DNRDetailTimeSec alignItems={'center'}>
+                                <p>
                                   {" "}
                                   {`${
                                     parseDuration(flightData?.duration).hours
@@ -811,7 +811,7 @@ export default function FlightResult() {
                   )}
                 </FlightDetailDNR>
 
-                <ContainerWrapper>
+                <ContainerWrapper contentWidth={'80%'}>
                   <RulesAndCondHeader
                     bt={"none"}
                     onClick={() => handleOpenAndClose()}
@@ -829,8 +829,8 @@ export default function FlightResult() {
                   </RulesAndCondHeader>
                 </ContainerWrapper>
                 {showFareRules && (
-                  <div>
-                    <h4>Refunds Rules</h4>
+                  <div style={{width: "80%", fontSize: "12px", textTransform: "lowercase"}}>
+                    {/* <h4>Refunds Rules</h4> */}
                     <br />
                     <p style={{ whiteSpace: "pre-wrap" }}>
                       {price?.included?.["detailed-fare-rules"]?.[

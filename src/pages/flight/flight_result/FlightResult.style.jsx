@@ -57,7 +57,7 @@ export const FlightResultContent = styled.div`
   }
 `;
 export const ContainerWrapper = styled.div`
-  width: 100%;
+  width: ${({contentWidth}) => contentWidth || "100%"};
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -376,37 +376,29 @@ export const DNRDetailFlightImage = styled.div`
 
 export const DNRDetailTime = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 180px;
+  justify-content: space-between;
+  align-items:flex-start;
+  /* gap: 180px; */
   width: 100%;
   padding-top: 10px;
+   padding-bottom: 10px;
   border-bottom: 1px solid #8080804a;
   font-size: 13px;
 
-  span {
-    width: 100%;
-    display: flex;
-    gap: 20px;
-    /* justify-content: space-between;
-            align-items: center;
-            border: none; */
-    flex-direction: column;
-    justify-content: center;
-    align-items: start;
-    font-size: 9.5px;
-  }
+
+ 
   @media (max-width: 668px) {
     gap: 30px;
   }
 `;
 
-export const DNRDetailTimeSec = styled.span`
+export const DNRDetailTimeSec = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  gap: 10px;
   justify-content: center;
-  align-items: start;
+  align-items: ${({alignItems})=> alignItems || 'start'};
   font-size: 9.5px;
   border-bottom: none !important;
   border: none !important;
@@ -483,5 +475,5 @@ export const FlightMainHeader = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; 
 `;

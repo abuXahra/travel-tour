@@ -443,7 +443,7 @@ export default function OneWayResult() {
                       }
                     /> */}
                               </DNRDetailTimeSec>
-                              <DNRDetailTimeSec>
+                              <DNRDetailTimeSec alignItems={'center'}>
                                 <p>
                                   {" "}
                                   {`${
