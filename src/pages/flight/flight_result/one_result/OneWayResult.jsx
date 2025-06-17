@@ -24,14 +24,18 @@ import {
   FlightResultMain,
   FlightResultWrapper,
   FlightTitleWrapper,
+  IconWrapper,
   LayoverWrapper,
   MdFlightStyled,
   ResultCounter,
   ResultCounterLeft,
   ResultCounterRight,
+  RulesAndCondHeader,
+  ContainerWrapper,
   ResultSidebar,
 } from "../FlightResult.style";
 import { MdDateRange, MdFlight } from "react-icons/md";
+import { IoIosArrowDown } from "react-icons/io";
 import { FaCircle, FaTimes } from "react-icons/fa";
 import FlightIcon from "../../../../components/flight_icon/FlightIcon";
 import Button from "../../../../components/button/Button";
@@ -72,8 +76,10 @@ import FlightResultForm from "../../flight_booking/single_city/single_resultform
 export default function OneWayResult() {
   const [data, setData] = useState([]);
   const [fIndex, setFIndex] = useState(0);
-  const { oneWayFlightResult, FData, loader, flexible } = useAuthStore();
+  const { oneWayFlightResult, FData, loader, flexible, flightPriceLookup } =
+    useAuthStore();
   // const flightData = JSON.parse(myObject);
+  const [rotateIcon2, setRotateIcon2] = useState("360deg");
 
   const getCityName = (locationString) => {
     const parts = locationString?.split(",");
@@ -103,10 +109,13 @@ export default function OneWayResult() {
   // Show View Detail Variable
   const [showViewDetailCard, setShowViewDetailCard] = useState(false);
 
+  const [showFareRules, setShowFareRules] = useState(false);
+
   //show view detail handler
-  const showViewDetail = (i) => {
+  const showViewDetail = async (i) => {
     setFIndex(Number(i));
     setShowViewDetailCard(true);
+    await flightPrice();
   };
 
   //hide view detail handler
@@ -178,6 +187,14 @@ export default function OneWayResult() {
 
   // This is the Show View Detail Variable index
   const [index, setIndex] = useState(0);
+  const [price, setPrice] = useState({});
+
+  const flightPrice = async () => {
+    let flightPrice = await flightPriceLookup(oneWayFlightResult?.[2]?.[index]);
+    // Promise.resolve(accessToken)
+    setPrice(flightPrice ? flightPrice : false);
+    // return Promise.resolve(flightPrice ? flightPrice : false);
+  };
 
   // Cacula for duration
   function parseDuration(duration) {
@@ -238,6 +255,10 @@ export default function OneWayResult() {
   };
   // let loaderl = true;
   // console.log(data);
+  const handleOpenAndClose = () => {
+    setShowFareRules(!showFareRules);
+    setRotateIcon2(!rotateIcon2);
+  };
   const [showFlexibleDate, setShowFlexibleDate] = useState(false);
   return (
     <FlightResultWrapper>
@@ -443,7 +464,7 @@ export default function OneWayResult() {
                       }
                     /> */}
                               </DNRDetailTimeSec>
-                              <DNRDetailTimeSec alignItems={'center'}>
+                              <DNRDetailTimeSec alignItems={"center"}>
                                 <p>
                                   {" "}
                                   {`${
@@ -563,6 +584,57 @@ export default function OneWayResult() {
                   )}
                 </FlightDetailDNR>
               </FLightDetailContent>
+
+              <ContainerWrapper contentWidth={"80%"}>
+                <RulesAndCondHeader
+                  bt={"none"}
+                  onClick={() => handleOpenAndClose()}
+                >
+                  <span>
+                    <h2 style={{ color: "black" }}>Refund Fare Rules</h2>
+                  </span>
+                  <span>
+                    <h2>
+                      <IconWrapper rotateIcon={rotateIcon2}>
+                        <IoIosArrowDown />
+                      </IconWrapper>
+                    </h2>
+                  </span>
+                </RulesAndCondHeader>
+              </ContainerWrapper>
+              {showFareRules && (
+                <div
+                  style={{
+                    width: "80%",
+                    fontSize: "12px",
+                    textTransform: "lowercase",
+                  }}
+                >
+                  {/* <h4>Refunds Rules</h4> */}
+                  <br />
+                  <p style={{ whiteSpace: "pre-wrap" }}>
+                    {price?.included?.["detailed-fare-rules"]?.[
+                      "1"
+                    ]?.fareNotes?.descriptions?.map((data, idx) => {
+                      if (
+                        idx === 0 &&
+                        data?.text?.toUpperCase().includes("PENALTIES")
+                      ) {
+                        return data?.text;
+                      }
+                    })}
+                    <br />
+                    <br />
+                    {price?.included?.["detailed-fare-rules"]?.[
+                      `${data[index].itineraries[0].segments.length}`
+                    ]?.fareNotes?.descriptions?.map((data, idx) => {
+                      if (data?.text?.toUpperCase().includes("PENALTIES")) {
+                        return data?.text;
+                      }
+                    })}
+                  </p>
+                </div>
+              )}
 
               <FlightDetailButton>
                 <Button text={"Continue Booking"} onClick={continueBooking} />
